@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Quran</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="last_read">Last Read</string>
+    <string name="surah_title">Surah</string>
+    <string name="juz_title">Juz</string>
+    <string name="juz">Juz %d</string>
+    <string name="number_of_verses">%d verses</string>
+    <string name="juz_number_of_verses">(%d verses)</string>
+</resources>

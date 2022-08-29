@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/bg_blue_extra_light.xml" value="0.129" />
+        <entry key="app/src/main/res/drawable/bg_blue_gradient.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/bg_blue_gradient_rounded.xml" value="0.129" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1560139973958333" />
+        <entry key="app/src/main/res/layout/fragment_juz_detail.xml" value="0.24283882000855067" />
+        <entry key="app/src/main/res/layout/fragment_quran.xml" value="0.20880256557065563" />
+        <entry key="app/src/main/res/layout/fragment_surah.xml" value="0.24966572292241446" />
+        <entry key="app/src/main/res/layout/fragment_surah_detail.xml" value="0.1676254272460937" />
+        <entry key="app/src/main/res/layout/item_juz_list.xml" value="0.2535271483539974" />
+        <entry key="app/src/main/res/layout/item_surah_list.xml" value="0.4019539672016536" />
+        <entry key="app/src/main/res/layout/item_verse_list.xml" value="0.2595042715827338" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

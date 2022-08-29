@@ -1,0 +1,1132 @@
+{
+    "code": 200,
+    "status": "OK.",
+    "message": "Success fetching juz.",
+    "data": [
+        {
+            "juz": 1,
+            "surah": [
+                {
+                    "no": 1,
+                    "name": "Al-Fatihah",
+                    "name_arab": "الفاتحة",
+                    "start": 1,
+                    "end": 7
+                },
+                {
+                    "no": 2,
+                    "name": "Al-Baqarah",
+                    "name_arab": "البقرة",
+                    "start": 1,
+                    "end": 141
+                }
+            ],
+            "totalVerses": 148
+        },
+        {
+            "juz": 2,
+            "surah": [
+                {
+                    "no": 2,
+                    "name": "Al-Baqarah",
+                    "name_arab": "البقرة",
+                    "start": 142,
+                    "end": 252
+                }
+            ],
+            "totalVerses": 111
+        },
+        {
+            "juz": 3,
+            "surah": [
+                {
+                    "no": 2,
+                    "name": "Al-Baqarah",
+                    "name_arab": "البقرة",
+                    "start": 253,
+                    "end": 286
+                },
+                {
+                    "no": 3,
+                    "name": "Ali 'Imran",
+                    "name_arab": "آل عمران",
+                    "start": 1,
+                    "end": 92
+                }
+            ],
+            "totalVerses": 126
+        },
+        {
+            "juz": 4,
+            "surah": [
+                {
+                    "no": 3,
+                    "name": "Ali 'Imran",
+                    "name_arab": "آل عمران",
+                    "start": 93,
+                    "end": 200
+                },
+                {
+                    "no": 4,
+                    "name": "An-Nisa'",
+                    "name_arab": "النساء",
+                    "start": 1,
+                    "end": 23
+                }
+            ],
+            "totalVerses": 131
+        },
+        {
+            "juz": 5,
+            "surah": [
+                {
+                    "no": 4,
+                    "name": "An-Nisa'",
+                    "name_arab": "النساء",
+                    "start": 24,
+                    "end": 147
+                }
+            ],
+            "totalVerses": 124
+        },
+        {
+            "juz": 6,
+            "surah": [
+                {
+                    "no": 4,
+                    "name": "An-Nisa'",
+                    "name_arab": "النساء",
+                    "start": 148,
+                    "end": 176
+                },
+                {
+                    "no": 5,
+                    "name": "Al-Ma'idah",
+                    "name_arab": "المائدة",
+                    "start": 1,
+                    "end": 81
+                }
+            ],
+            "totalVerses": 110
+        },
+        {
+            "juz": 7,
+            "surah": [
+                {
+                    "no": 5,
+                    "name": "Al-Ma'idah",
+                    "name_arab": "المائدة",
+                    "start": 82,
+                    "end": 120
+                },
+                {
+                    "no": 6,
+                    "name": "Al-An'am",
+                    "name_arab": "الأنعام",
+                    "start": 1,
+                    "end": 110
+                }
+            ],
+            "totalVerses": 149
+        },
+        {
+            "juz": 8,
+            "surah": [
+                {
+                    "no": 6,
+                    "name": "Al-An'am",
+                    "name_arab": "الأنعام",
+                    "start": 111,
+                    "end": 165
+                },
+                {
+                    "no": 7,
+                    "name": "Al-A'raf",
+                    "name_arab": "الأعراف",
+                    "start": 1,
+                    "end": 87
+                }
+            ],
+            "totalVerses": 142
+        },
+        {
+            "juz": 9,
+            "surah": [
+                {
+                    "no": 7,
+                    "name": "Al-A'raf",
+                    "name_arab": "الأعراف",
+                    "start": 88,
+                    "end": 206
+                },
+                {
+                    "no": 8,
+                    "name": "Al-Anfaal",
+                    "name_arab": "الأنفال",
+                    "start": 1,
+                    "end": 40
+                }
+            ],
+            "totalVerses": 159
+        },
+        {
+            "juz": 10,
+            "surah": [
+                {
+                    "no": 8,
+                    "name": "Al-Anfal",
+                    "name_arab": "الأنفال",
+                    "start": 41,
+                    "end": 75
+                },
+                {
+                    "no": 9,
+                    "name": "At-Taubah",
+                    "name_arab": "التوبة",
+                    "start": 1,
+                    "end": 92
+                }
+            ],
+            "totalVerses": 127
+        },
+        {
+            "juz": 11,
+            "surah": [
+                {
+                    "no": 9,
+                    "name": "At-Taubah",
+                    "name_arab": "التوبة",
+                    "start": 93,
+                    "end": 129
+                },
+                {
+                    "no": 10,
+                    "name": "Yunus",
+                    "name_arab": "يونس",
+                    "start": 1,
+                    "end": 109
+                },
+                {
+                    "no": 11,
+                    "name": "Hud",
+                    "name_arab": "هود",
+                    "start": 1,
+                    "end": 5
+                }
+            ],
+            "totalVerses": 151
+        },
+        {
+            "juz": 12,
+            "surah": [
+                {
+                    "no": 11,
+                    "name": "Hud",
+                    "name_arab": "هود",
+                    "start": 6,
+                    "end": 123
+                },
+                {
+                    "no": 12,
+                    "name": "Yusuf",
+                    "name_arab": "يوسف",
+                    "start": 1,
+                    "end": 52
+                }
+            ],
+            "totalVerses": 170
+        },
+        {
+            "juz": 13,
+            "surah": [
+                {
+                    "no": 12,
+                    "name": "Yusuf",
+                    "name_arab": "يوسف",
+                    "start": 53,
+                    "end": 111
+                },
+                {
+                    "no": 13,
+                    "name": "Ar Ra'd",
+                    "name_arab": "الرعد",
+                    "start": 1,
+                    "end": 43
+                },
+                {
+                    "no": 14,
+                    "name": "Ibrahim",
+                    "name_arab": "ابراهيم",
+                    "start": 1,
+                    "end": 52
+                }
+            ],
+            "totalVerses": 154
+        },
+        {
+            "juz": 14,
+            "surah": [
+                {
+                    "no": 15,
+                    "name": "Al-Hijr",
+                    "name_arab": "الحجر",
+                    "start": 1,
+                    "end": 99
+                },
+                {
+                    "no": 16,
+                    "name": "An-Nahl",
+                    "name_arab": "النحل",
+                    "start": 1,
+                    "end": 128
+                }
+            ],
+            "totalVerses": 227
+        },
+        {
+            "juz": 15,
+            "surah": [
+                {
+                    "no": 17,
+                    "name": "Al-Israa",
+                    "name_arab": "الإسراء",
+                    "start": 1,
+                    "end": 111
+                },
+                {
+                    "no": 18,
+                    "name": "Al-Kahf",
+                    "name_arab": "الكهف",
+                    "start": 1,
+                    "end": 74
+                }
+            ],
+            "totalVerses": 185
+        },
+        {
+            "juz": 16,
+            "surah": [
+                {
+                    "no": 18,
+                    "name": "Al-Kahf",
+                    "name_arab": "الكهف",
+                    "start": 75,
+                    "end": 110
+                },
+                {
+                    "no": 19,
+                    "name": "Maryam",
+                    "name_arab": "مريم",
+                    "start": 1,
+                    "end": 98
+                },
+                {
+                    "no": 20,
+                    "name": "Taa-haa",
+                    "name_arab": "طه",
+                    "start": 1,
+                    "end": 135
+                }
+            ],
+            "totalVerses": 269
+        },
+        {
+            "juz": 17,
+            "surah": [
+                {
+                    "no": 21,
+                    "name": "Al-Anbiyaa",
+                    "name_arab": "الأنبياء",
+                    "start": 1,
+                    "end": 112
+                },
+                {
+                    "no": 22,
+                    "name": "Al-Hajj",
+                    "name_arab": "الحج",
+                    "start": 1,
+                    "end": 78
+                }
+            ],
+            "totalVerses": 190
+        },
+        {
+            "juz": 18,
+            "surah": [
+                {
+                    "no": 23,
+                    "name": "Al-Muminoon",
+                    "name_arab": "المؤمنون",
+                    "start": 1,
+                    "end": 112
+                },
+                {
+                    "no": 24,
+                    "name": "An-Noor",
+                    "name_arab": "النور",
+                    "start": 1,
+                    "end": 64
+                },
+                {
+                    "no": 25,
+                    "name": "Al-Furqaan",
+                    "name_arab": "الفرقان",
+                    "start": 1,
+                    "end": 20
+                }
+            ],
+            "totalVerses": 202
+        },
+        {
+            "juz": 19,
+            "surah": [
+                {
+                    "no": 25,
+                    "name": "Al-Furqaan",
+                    "name_arab": "الفرقان",
+                    "start": 21,
+                    "end": 77
+                },
+                {
+                    "no": 26,
+                    "name": "Asy-Syu'araa",
+                    "name_arab": "الشعراء",
+                    "start": 1,
+                    "end": 227
+                },
+                {
+                    "no": 27,
+                    "name": "An-Naml",
+                    "name_arab": "النمل",
+                    "start": 1,
+                    "end": 55
+                }
+            ],
+            "totalVerses": 339
+        },
+        {
+            "juz": 20,
+            "surah": [
+                {
+                    "no": 27,
+                    "name": "An-Naml",
+                    "name_arab": "النمل",
+                    "start": 56,
+                    "end": 93
+                },
+                {
+                    "no": 28,
+                    "name": "Al-Qasas",
+                    "name_arab": "القصص",
+                    "start": 1,
+                    "end": 88
+                },
+                {
+                    "no": 29,
+                    "name": "Al-'Ankaboot",
+                    "name_arab": "العنكبوت",
+                    "start": 1,
+                    "end": 45
+                }
+            ],
+            "totalVerses": 171
+        },
+        {
+            "juz": 21,
+            "surah": [
+                {
+                    "no": 29,
+                    "name": "Al-'Ankabut",
+                    "name_arab": "العنكبوت",
+                    "start": 46,
+                    "end": 69
+                },
+                {
+                    "no": 30,
+                    "name": "Ar-Room",
+                    "name_arab": "الروم",
+                    "start": 1,
+                    "end": 60
+                },
+                {
+                    "no": 31,
+                    "name": "Luqman",
+                    "name_arab": "لقمان",
+                    "start": 1,
+                    "end": 34
+                },
+                {
+                    "no": 32,
+                    "name": "As-Sajdah",
+                    "name_arab": "السجدة",
+                    "start": 1,
+                    "end": 30
+                },
+                {
+                    "no": 33,
+                    "name": "Al-Ahzaab",
+                    "name_arab": "الأحزاب",
+                    "start": 1,
+                    "end": 30
+                }
+            ],
+            "totalVerses": 178
+        },
+        {
+            "juz": 22,
+            "surah": [
+                {
+                    "no": 33,
+                    "name": "Al-Ahzaab",
+                    "name_arab": "الأحزاب",
+                    "start": 31,
+                    "end": 73
+                },
+                {
+                    "no": 34,
+                    "name": "Saba",
+                    "name_arab": "سبإ",
+                    "start": 1,
+                    "end": 54
+                },
+                {
+                    "no": 35,
+                    "name": "Faatir",
+                    "name_arab": "فاطر",
+                    "start": 1,
+                    "end": 45
+                },
+                {
+                    "no": 36,
+                    "name": "Yaseen",
+                    "name_arab": "يس",
+                    "start": 1,
+                    "end": 27
+                }
+            ],
+            "totalVerses": 169
+        },
+        {
+            "juz": 23,
+            "surah": [
+                {
+                    "no": 36,
+                    "name": "Yaseen",
+                    "name_arab": "يس",
+                    "start": 28,
+                    "end": 83
+                },
+                {
+                    "no": 37,
+                    "name": "Ash-Shaaffat",
+                    "name_arab": "الصافات",
+                    "start": 1,
+                    "end": 182
+                },
+                {
+                    "no": 38,
+                    "name": "Shaad",
+                    "name_arab": "ص",
+                    "start": 1,
+                    "end": 88
+                },
+                {
+                    "no": 39,
+                    "name": "Az-Zumar",
+                    "name_arab": "الزمر",
+                    "start": 1,
+                    "end": 31
+                }
+            ],
+            "totalVerses": 357
+        },
+        {
+            "juz": 24,
+            "surah": [
+                {
+                    "no": 39,
+                    "name": "Az-Zumar",
+                    "name_arab": "الزمر",
+                    "start": 32,
+                    "end": 75
+                },
+                {
+                    "no": 40,
+                    "name": "Ghafir",
+                    "name_arab": "غافر",
+                    "start": 1,
+                    "end": 85
+                },
+                {
+                    "no": 41,
+                    "name": "Fussilat",
+                    "name_arab": "فصلت",
+                    "start": 1,
+                    "end": 46
+                }
+            ],
+            "totalVerses": 175
+        },
+        {
+            "juz": 25,
+            "surah": [
+                {
+                    "no": 41,
+                    "name": "Fussilat",
+                    "name_arab": "فصلت",
+                    "start": 47,
+                    "end": 54
+                },
+                {
+                    "no": 42,
+                    "name": "Asy-Syuura",
+                    "name_arab": "الشورى",
+                    "start": 1,
+                    "end": 53
+                },
+                {
+                    "no": 43,
+                    "name": "Az-Zukhruf",
+                    "name_arab": "الزخرف",
+                    "start": 1,
+                    "end": 89
+                },
+                {
+                    "no": 44,
+                    "name": "Ad-Dukhaan",
+                    "name_arab": "الدخان",
+                    "start": 1,
+                    "end": 58
+                },
+                {
+                    "no": 45,
+                    "name": "Al-Jaathiya",
+                    "name_arab": "الجاثية",
+                    "start": 1,
+                    "end": 37
+                }
+            ],
+            "totalVerses": 246
+        },
+        {
+            "juz": 26,
+            "surah": [
+                {
+                    "no": 46,
+                    "name": "Al-Ahqaf",
+                    "name_arab": "الأحقاف",
+                    "start": 1,
+                    "end": 35
+                },
+                {
+                    "no": 47,
+                    "name": "Muhammad",
+                    "name_arab": "محمد",
+                    "start": 1,
+                    "end": 38
+                },
+                {
+                    "no": 48,
+                    "name": "Al-Fath",
+                    "name_arab": "الفتح",
+                    "start": 1,
+                    "end": 29
+                },
+                {
+                    "no": 49,
+                    "name": "Al-Hujuraat",
+                    "name_arab": "الحجرات",
+                    "start": 1,
+                    "end": 18
+                },
+                {
+                    "no": 50,
+                    "name": "Qaaf",
+                    "name_arab": "ق",
+                    "start": 1,
+                    "end": 45
+                },
+                {
+                    "no": 51,
+                    "name": "Adh-Dhaariyat",
+                    "name_arab": "الذاريات",
+                    "start": 1,
+                    "end": 30
+                }
+            ],
+            "totalVerses": 246
+        },
+        {
+            "juz": 27,
+            "surah": [
+                {
+                    "no": 51,
+                    "name": "Adh-Dhaariyat",
+                    "name_arab": "الذاريات",
+                    "start": 31,
+                    "end": 60
+                },
+                {
+                    "no": 52,
+                    "name": "At-Tur",
+                    "name_arab": "الطور",
+                    "start": 1,
+                    "end": 49
+                },
+                {
+                    "no": 53,
+                    "name": "An-Najm",
+                    "name_arab": "النجم",
+                    "start": 1,
+                    "end": 62
+                },
+                {
+                    "no": 54,
+                    "name": "Al-Qamar",
+                    "name_arab": "القمر",
+                    "start": 1,
+                    "end": 55
+                },
+                {
+                    "no": 55,
+                    "name": "Ar-Rahmaan",
+                    "name_arab": "الرحمن",
+                    "start": 1,
+                    "end": 78
+                },
+                {
+                    "no": 56,
+                    "name": "Al-Waaqiah",
+                    "name_arab": "الواقعة",
+                    "start": 1,
+                    "end": 96
+                },
+                {
+                    "no": 57,
+                    "name": "Al-Hadid",
+                    "name_arab": "الحديد",
+                    "start": 1,
+                    "end": 29
+                }
+            ],
+            "totalVerses": 399
+        },
+        {
+            "juz": 28,
+            "surah": [
+                {
+                    "no": 58,
+                    "name": "Al-Mujaadila",
+                    "name_arab": "المجادلة",
+                    "start": 1,
+                    "end": 22
+                },
+                {
+                    "no": 59,
+                    "name": "Al-Hasyr",
+                    "name_arab": "الحشر",
+                    "start": 1,
+                    "end": 24
+                },
+                {
+                    "no": 60,
+                    "name": "Al-Mumtahana",
+                    "name_arab": "الممتحنة",
+                    "start": 1,
+                    "end": 13
+                },
+                {
+                    "no": 61,
+                    "name": "Ash-Shaff",
+                    "name_arab": "الصف",
+                    "start": 1,
+                    "end": 14
+                },
+                {
+                    "no": 62,
+                    "name": "Al-Jumu'a",
+                    "name_arab": "الجمعة",
+                    "start": 1,
+                    "end": 11
+                },
+                {
+                    "no": 63,
+                    "name": "Al-Munafiqun",
+                    "name_arab": "المنافقون",
+                    "start": 1,
+                    "end": 11
+                },
+                {
+                    "no": 64,
+                    "name": "At-Taghaabun",
+                    "name_arab": "التغابن",
+                    "start": 1,
+                    "end": 18
+                },
+                {
+                    "no": 65,
+                    "name": "At-Thalaaq",
+                    "name_arab": "الطلاق",
+                    "start": 1,
+                    "end": 12
+                },
+                {
+                    "no": 66,
+                    "name": "At-Tahrim",
+                    "name_arab": "التحريم",
+                    "start": 1,
+                    "end": 12
+                }
+            ],
+            "totalVerses": 137
+        },
+        {
+            "juz": 29,
+            "surah": [
+                {
+                    "no": 67,
+                    "name": "Al-Mulk",
+                    "name_arab": "الملك",
+                    "start": 1,
+                    "end": 30
+                },
+                {
+                    "no": 68,
+                    "name": "Al-Qalam",
+                    "name_arab": "القلم",
+                    "start": 1,
+                    "end": 52
+                },
+                {
+                    "no": 69,
+                    "name": "Al-Haaqqa",
+                    "name_arab": "الحاقة",
+                    "start": 1,
+                    "end": 52
+                },
+                {
+                    "no": 70,
+                    "name": "Al-Ma'aarij",
+                    "name_arab": "المعارج",
+                    "start": 1,
+                    "end": 44
+                },
+                {
+                    "no": 71,
+                    "name": "Nooh",
+                    "name_arab": "نوح",
+                    "start": 1,
+                    "end": 28
+                },
+                {
+                    "no": 72,
+                    "name": "Al-Jinn",
+                    "name_arab": "الجن",
+                    "start": 1,
+                    "end": 28
+                },
+                {
+                    "no": 73,
+                    "name": "Al-Muzammil",
+                    "name_arab": "المزمل",
+                    "start": 1,
+                    "end": 20
+                },
+                {
+                    "no": 74,
+                    "name": "Al-Muddaththir",
+                    "name_arab": "المدثر",
+                    "start": 1,
+                    "end": 56
+                },
+                {
+                    "no": 75,
+                    "name": "Al-Qiyaama",
+                    "name_arab": "القيامة",
+                    "start": 1,
+                    "end": 40
+                },
+                {
+                    "no": 76,
+                    "name": "Al-Insaan",
+                    "name_arab": "الانسان",
+                    "start": 1,
+                    "end": 31
+                },
+                {
+                    "no": 77,
+                    "name": "Al-Mursalaat",
+                    "name_arab": "المرسلات",
+                    "start": 1,
+                    "end": 50
+                }
+            ],
+            "totalVerses": 431
+        },
+        {
+            "juz": 30,
+            "surah": [
+                {
+                    "no": 78,
+                    "name": "An-Naba'",
+                    "name_arab": "النبإ",
+                    "start": 1,
+                    "end": 40
+                },
+                {
+                    "no": 79,
+                    "name": "An-Naazi'aat",
+                    "name_arab": "النازعات",
+                    "start": 1,
+                    "end": 46
+                },
+                {
+                    "no": 80,
+                    "name": "Abasa",
+                    "name_arab": "عبس",
+                    "start": 1,
+                    "end": 42
+                },
+                {
+                    "no": 81,
+                    "name": "At-Takwir",
+                    "name_arab": "التكوير",
+                    "start": 1,
+                    "end": 29
+                },
+                {
+                    "no": 82,
+                    "name": "Al-Infitaar",
+                    "name_arab": "الإنفطار",
+                    "start": 1,
+                    "end": 19
+                },
+                {
+                    "no": 83,
+                    "name": "Al-Muthaffirin",
+                    "name_arab": "المطففين",
+                    "start": 1,
+                    "end": 36
+                },
+                {
+                    "no": 84,
+                    "name": "Al-Insyiqaaq",
+                    "name_arab": "الإنشقاق",
+                    "start": 1,
+                    "end": 25
+                },
+                {
+                    "no": 85,
+                    "name": "Al-Burooj",
+                    "name_arab": "البروج",
+                    "start": 1,
+                    "end": 22
+                },
+                {
+                    "no": 86,
+                    "name": "At-Taariq",
+                    "name_arab": "الطارق",
+                    "start": 1,
+                    "end": 17
+                },
+                {
+                    "no": 87,
+                    "name": "Al-A'laa",
+                    "name_arab": "الأعلى",
+                    "start": 1,
+                    "end": 19
+                },
+                {
+                    "no": 88,
+                    "name": "Al-Ghaashiya",
+                    "name_arab": "الغاشية",
+                    "start": 1,
+                    "end": 26
+                },
+                {
+                    "no": 89,
+                    "name": "Al-Fajr",
+                    "name_arab": "الفجر",
+                    "start": 1,
+                    "end": 30
+                },
+                {
+                    "no": 90,
+                    "name": "Al-Balad",
+                    "name_arab": "البلد",
+                    "start": 1,
+                    "end": 20
+                },
+                {
+                    "no": 91,
+                    "name": "Asy-Syams",
+                    "name_arab": "الشمس",
+                    "start": 1,
+                    "end": 15
+                },
+                {
+                    "no": 92,
+                    "name": "Al-Lail",
+                    "name_arab": "الليل",
+                    "start": 1,
+                    "end": 21
+                },
+                {
+                    "no": 93,
+                    "name": "Ad-Dhuhaa",
+                    "name_arab": "الضحى",
+                    "start": 1,
+                    "end": 11
+                },
+                {
+                    "no": 94,
+                    "name": "Asy-Syarh",
+                    "name_arab": "الشرح",
+                    "start": 1,
+                    "end": 8
+                },
+                {
+                    "no": 95,
+                    "name": "At-Tin",
+                    "name_arab": "التين",
+                    "start": 1,
+                    "end": 8
+                },
+                {
+                    "no": 96,
+                    "name": "Al-Alaq",
+                    "name_arab": "العلق",
+                    "start": 1,
+                    "end": 19
+                },
+                {
+                    "no": 97,
+                    "name": "Al-Qadr",
+                    "name_arab": "القدر",
+                    "start": 1,
+                    "end": 5
+                },
+                {
+                    "no": 98,
+                    "name": "Al-Bayyina",
+                    "name_arab": "البينة",
+                    "start": 1,
+                    "end": 8
+                },
+                {
+                    "no": 99,
+                    "name": "Az-Zalzala",
+                    "name_arab": "الزلزلة",
+                    "start": 1,
+                    "end": 8
+                },
+                {
+                    "no": 100,
+                    "name": "Al-Aadiyaat",
+                    "name_arab": "العاديات",
+                    "start": 1,
+                    "end": 11
+                },
+                {
+                    "no": 101,
+                    "name": "Al-Qaari'a",
+                    "name_arab": "القارعة",
+                    "start": 1,
+                    "end": 11
+                },
+                {
+                    "no": 102,
+                    "name": "At-Takaathur",
+                    "name_arab": "التكاثر",
+                    "start": 1,
+                    "end": 8
+                },
+                {
+                    "no": 103,
+                    "name": "Al-Asr",
+                    "name_arab": "العصر",
+                    "start": 1,
+                    "end": 3
+                },
+                {
+                    "no": 104,
+                    "name": "Al-Humaza",
+                    "name_arab": "الهمزة",
+                    "start": 1,
+                    "end": 9
+                },
+                {
+                    "no": 105,
+                    "name": "Al-Fill",
+                    "name_arab": "الفيل",
+                    "start": 1,
+                    "end": 5
+                },
+                {
+                    "no": 106,
+                    "name": "Quraish",
+                    "name_arab": "قريش",
+                    "start": 1,
+                    "end": 4
+                },
+                {
+                    "no": 107,
+                    "name": "Al-Maa'uun",
+                    "name_arab": "الماعون",
+                    "start": 1,
+                    "end": 7
+                },
+                {
+                    "no": 108,
+                    "name": "Al-Kawthar",
+                    "name_arab": "الكوثر",
+                    "start": 1,
+                    "end": 3
+                },
+                {
+                    "no": 109,
+                    "name": "Al-Kafiroon",
+                    "name_arab": "الكافرون",
+                    "start": 1,
+                    "end": 6
+                },
+                {
+                    "no": 110,
+                    "name": "An-Nasr",
+                    "name_arab": "النصر",
+                    "start": 1,
+                    "end": 3
+                },
+                {
+                    "no": 111,
+                    "name": "Al-Masad",
+                    "name_arab": "المسد",
+                    "start": 1,
+                    "end": 5
+                },
+                {
+                    "no": 112,
+                    "name": "Al-Ikhlaas",
+                    "name_arab": "الإخلاص",
+                    "start": 1,
+                    "end": 4
+                },
+                {
+                    "no": 113,
+                    "name": "Al-Falaq",
+                    "name_arab": "الفلق",
+                    "start": 1,
+                    "end": 5
+                },
+                {
+                    "no": 114,
+                    "name": "An-Naas",
+                    "name_arab": "الناس",
+                    "start": 1,
+                    "end": 6
+                }
+            ],
+            "totalVerses": 564
+        }
+    ]
+}
