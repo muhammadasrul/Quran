@@ -2,6 +2,7 @@ package com.acun.quran.ui.quran.juz
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.acun.quran.R
@@ -38,6 +39,10 @@ class JuzListAdapter(
                 })
                 root.setOnClickListener {
                     onItemClickListener.onItemClicked(item, 0)
+                }
+
+                if (adapterPosition == juzList.lastIndex) {
+                    rvSurah.updatePadding(bottom = 162)
                 }
             }
         }

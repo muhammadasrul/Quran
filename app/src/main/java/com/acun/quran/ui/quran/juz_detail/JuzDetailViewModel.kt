@@ -1,11 +1,8 @@
 package com.acun.quran.ui.quran.juz_detail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.acun.quran.data.local.datastore.LastReadDataStore
+import androidx.lifecycle.*
 import com.acun.quran.data.local.datastore.LastReadVerse
+import com.acun.quran.data.local.datastore.QuranDataStore
 import com.acun.quran.data.remote.response.Resource
 import com.acun.quran.data.remote.response.juz.JuzDetail
 import com.acun.quran.repository.QuranRepository
@@ -16,20 +13,16 @@ import javax.inject.Inject
 @HiltViewModel
 class JuzDetailViewModel @Inject constructor(
     private val repository: QuranRepository,
-    private val dataStore: LastReadDataStore
+    private val dataStore: QuranDataStore
 ): ViewModel() {
 
-    private val _juz = MutableLiveData<JuzDetail>()
-    val juz: LiveData<JuzDetail> = _juz
+    private val _juz = MutableLiveData<Resource<JuzDetail>>()
+    val juz: LiveData<Resource<JuzDetail>> = _juz
 
     fun getJuzDetail(number: Int) {
         viewModelScope.launch {
             repository.getJuz(number).collect {
-                if (it is Resource.Success) {
-                    it.data?.let { juzDetail ->
-                        _juz.postValue(juzDetail)
-                    }
-                }
+                _juz.postValue(it)
             }
         }
     }
@@ -39,4 +32,7 @@ class JuzDetailViewModel @Inject constructor(
             dataStore.setLastRead(lastRead)
         }
     }
+
+    val lastRead = dataStore.lastRead.asLiveData()
+    val versePreference = dataStore.versePreference.asLiveData()
 }

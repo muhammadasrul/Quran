@@ -2,11 +2,13 @@ package com.acun.quran.data.remote.repository
 
 import android.content.Context
 import com.acun.quran.R
+import com.acun.quran.data.remote.PrayerApi
 import com.acun.quran.data.remote.QuranApi
 import com.acun.quran.data.remote.response.Resource
 import com.acun.quran.data.remote.response.juz.JuzDetail
 import com.acun.quran.data.remote.response.juz_list.Juz
 import com.acun.quran.data.remote.response.juz_list.JuzListResponse
+import com.acun.quran.data.remote.response.prayer.PrayerTimeData
 import com.acun.quran.data.remote.response.surah.SurahDetail
 import com.acun.quran.data.remote.response.surah_list.Surah
 import com.acun.quran.repository.QuranRepository
@@ -18,7 +20,10 @@ import java.io.IOException
 import java.io.InputStreamReader
 import javax.inject.Inject
 
-class QuranRepositoryImpl @Inject constructor(private val quranApi: QuranApi): QuranRepository {
+class QuranRepositoryImpl @Inject constructor(
+    private val quranApi: QuranApi,
+    private val prayerApi: PrayerApi
+): QuranRepository {
     override suspend fun getAllSurah(): Flow<Resource<List<Surah>>> = flow {
         emit(Resource.Loading())
 
@@ -74,6 +79,35 @@ class QuranRepositoryImpl @Inject constructor(private val quranApi: QuranApi): Q
                 emit(Resource.Success(data = juz.data, message = juz.message))
             } else {
                 emit(Resource.Failed(message = juz.message))
+            }
+        } catch (e: HttpException) {
+            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+        } catch (e: IOException) {
+            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+        }
+    }
+
+    override suspend fun getPrayer(
+        latitude: Double,
+        longitude: Double,
+        methode: Int,
+        month: Int,
+        year: Int
+    ): Flow<Resource<List<PrayerTimeData>>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val prayer = prayerApi.getPrayerTime(
+                latitude = latitude,
+                longitude = longitude,
+                methode = methode,
+                month = month,
+                year = year
+            )
+            if (prayer.code == 200) {
+                emit(Resource.Success(data = prayer.data, message = "Success"))
+            } else {
+                emit(Resource.Failed(message = "Failed"))
             }
         } catch (e: HttpException) {
             emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))

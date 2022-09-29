@@ -52,7 +52,7 @@
         tools:text="ِميِحَّرلا ِنَٰمْحَّرلا ِهَّللا ِمْسِب" />
 
     <TextView
-        android:id="@+id/tvTranslation"
+        android:id="@+id/tvTransliteration"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_light"
@@ -61,6 +61,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvArab"
+        tools:text="Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang" />
+
+    <TextView
+        android:id="@+id/tvTranslation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_light"
+        android:textColor="@color/text_black"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTransliteration"
         tools:text="Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang" />
 
     <View

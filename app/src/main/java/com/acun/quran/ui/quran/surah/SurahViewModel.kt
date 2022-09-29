@@ -14,8 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SurahViewModel @Inject constructor(private val repository: QuranRepository) : ViewModel() {
 
-    private val _surahList: MutableLiveData<List<Surah>> = MutableLiveData()
-    val surahList: LiveData<List<Surah>> = _surahList
+    private val _surahList: MutableLiveData<Resource<List<Surah>>> = MutableLiveData()
+    val surahList: LiveData<Resource<List<Surah>>> = _surahList
 
     init {
         getSurahList()
@@ -24,11 +24,7 @@ class SurahViewModel @Inject constructor(private val repository: QuranRepository
     private fun getSurahList() {
         viewModelScope.launch {
             repository.getAllSurah().collect {
-                if (it is Resource.Success) {
-                    it.data?.let { surahList ->
-                        _surahList.postValue(surahList)
-                    }
-                }
+                _surahList.postValue(it)
             }
         }
     }

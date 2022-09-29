@@ -6,6 +6,14 @@
     <string name="surah_title">Surah</string>
     <string name="juz_title">Juz</string>
     <string name="juz">Juz %d</string>
+    <string name="surah_detail_verse_name">(%s)</string>
     <string name="number_of_verses">%d verses</string>
     <string name="juz_number_of_verses">(%d verses)</string>
+    <string name="error_location_not_found">Location not found</string>
+
+    <array name="text_size">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </array>
 </resources>

@@ -5,11 +5,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.acun.quran.R
 import com.acun.quran.data.local.datastore.LastReadVerse
+import com.acun.quran.data.local.datastore.VersePreference
 import com.acun.quran.data.remote.response.juz_list.JuzSurah
 import com.acun.quran.data.remote.response.surah.Verse
 import com.acun.quran.databinding.ItemJuzListBinding
@@ -17,6 +20,7 @@ import com.acun.quran.ui.quran.surah_detail.VerseListAdapter
 
 class JuzVerseListAdapter(
     private val juzSurah: List<JuzSurah>,
+    private val versePreference: VersePreference,
     private val onItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<JuzVerseListAdapter.SurahListViewHolder>() {
 
@@ -32,22 +36,27 @@ class JuzVerseListAdapter(
     override fun getItemCount(): Int = juzSurah.size
 
     inner class SurahListViewHolder(private val binding: ItemJuzListBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val ctx = binding.root.context
         fun bind(juzSurah: JuzSurah) {
             with(binding) {
                 tvJuz.text = juzSurah.name
                 tvJuz.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    width = 0
                     endToEnd = ConstraintSet.PARENT_ID
+                    bottomToTop = R.id.rvSurah
+                    bottomMargin = 18
                 }
-                tvJuz.updatePadding(bottom = 16)
+                tvJuz.updatePadding(top = 8)
+                tvJuz.background = ContextCompat.getDrawable(root.context, R.drawable.bg_blue_extra_light)
                 tvJuz.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-                rvSurah.layoutManager = LinearLayoutManager(ctx)
                 juzSurah.verses?.let {
-                    rvSurah.adapter = VerseListAdapter(it, object : VerseListAdapter.OnItemClickListener {
-                        override fun onItemClicked(item: Verse) {
-                            onItemClickListener.onItemClicked(LastReadVerse(ayah = item.number.inSurah, surah = juzSurah.name))
-                        }
-                    })
+                    rvSurah.apply {
+                        layoutManager = LinearLayoutManager(rvSurah.context)
+                        adapter = VerseListAdapter(it, versePreference, object : VerseListAdapter.OnItemClickListener {
+                            override fun onItemClicked(item: Verse) {
+                                onItemClickListener.onItemClicked(LastReadVerse(ayah = item.number.inSurah, surah = juzSurah.name))
+                            }
+                        })
+                    }
                 }
             }
         }

@@ -7,14 +7,19 @@
         <entry key="app/src/main/res/drawable/bg_blue_extra_light.xml" value="0.129" />
         <entry key="app/src/main/res/drawable/bg_blue_gradient.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/bg_blue_gradient_rounded.xml" value="0.129" />
+        <entry key="app/src/main/res/drawable/ic_circle.xml" value="0.151" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1560139973958333" />
         <entry key="app/src/main/res/layout/fragment_juz_detail.xml" value="0.24283882000855067" />
+        <entry key="app/src/main/res/layout/fragment_prayer.xml" value="0.19011688232421875" />
+        <entry key="app/src/main/res/layout/fragment_preference.xml" value="0.24283882000855067" />
         <entry key="app/src/main/res/layout/fragment_quran.xml" value="0.20880256557065563" />
-        <entry key="app/src/main/res/layout/fragment_surah.xml" value="0.24966572292241446" />
-        <entry key="app/src/main/res/layout/fragment_surah_detail.xml" value="0.1676254272460937" />
-        <entry key="app/src/main/res/layout/item_juz_list.xml" value="0.2535271483539974" />
+        <entry key="app/src/main/res/layout/fragment_surah.xml" value="0.15946491725835193" />
+        <entry key="app/src/main/res/layout/fragment_surah_detail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_juz_list.xml" value="0.35394981681102866" />
+        <entry key="app/src/main/res/layout/item_prayer.xml" value="0.2535271483539974" />
         <entry key="app/src/main/res/layout/item_surah_list.xml" value="0.4019539672016536" />
         <entry key="app/src/main/res/layout/item_verse_list.xml" value="0.2595042715827338" />
+        <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2535271483539974" />
       </map>
     </option>
   </component>

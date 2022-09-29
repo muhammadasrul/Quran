@@ -19,8 +19,8 @@ class JuzViewModel @Inject constructor(
     private val repository: QuranRepository
 ) : ViewModel() {
 
-    private val _juzList = MutableLiveData<List<Juz>>()
-    val juzList: LiveData<List<Juz>> = _juzList
+    private val _juzList = MutableLiveData<Resource<List<Juz>>>()
+    val juzList: LiveData<Resource<List<Juz>>> = _juzList
 
     init {
         getJuzList()
@@ -29,11 +29,7 @@ class JuzViewModel @Inject constructor(
     private fun getJuzList() {
         viewModelScope.launch {
             repository.getAllJuz(context).collect {
-                if (it is Resource.Success) {
-                    it.data?.let { juz ->
-                        _juzList.postValue(juz)
-                    }
-                }
+                _juzList.postValue(it)
             }
         }
     }

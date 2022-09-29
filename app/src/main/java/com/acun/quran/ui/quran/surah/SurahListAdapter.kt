@@ -2,6 +2,7 @@ package com.acun.quran.ui.quran.surah
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.acun.quran.R
 import com.acun.quran.data.remote.response.surah_list.Surah
@@ -32,6 +33,10 @@ class SurahListAdapter(
                 tvNumberOfVerses.text = binding.root.context.getString(R.string.number_of_verses, item.numberOfVerses)
                 root.setOnClickListener {
                     onItemClickListener.onItemClicked(item)
+                }
+
+                if (adapterPosition == surahList.lastIndex) {
+                    root.updatePadding(bottom = 162)
                 }
             }
         }

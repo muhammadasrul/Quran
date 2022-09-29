@@ -1,69 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.quran.surah_detail.SurahDetailFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/white"
+        android:elevation="1dp"
+        app:layout_collapseMode="pin"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:navigationIcon="@drawable/ic_arrow_left"
+        app:titleTextAppearance="@style/Theme.Quran.Toolbar.Title"
+        app:titleTextColor="@color/text_black"
+        tools:title="Al-Fatiha" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:elevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_left"
-            app:navigationIconTint="@color/text_black"
-            app:title="@string/surah_title"
-            app:titleTextAppearance="@style/Theme.Quran.Toolbar.Title"
-            app:titleTextColor="@color/text_black" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout">
+        android:layout_marginTop="?actionBarSize"
+        android:background="@color/white"
+        app:elevation="0dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/surahCardView"
-                android:layout_width="0dp"
-                android:layout_height="172dp"
-                android:layout_marginHorizontal="2dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="112dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginVertical="8dp"
+                app:cardBackgroundColor="@color/blue_background"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="0dp"
                 app:cardUseCompatPadding="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:strokeColor="@color/primary_blue"
+                app:strokeWidth=".5dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_blue_extra_light">
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="-100dp"
+                        android:src="@drawable/fg_prayer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/primary_blue"
+                        tools:ignore="RtlSymmetry" />
 
                     <TextView
                         android:id="@+id/tvSurahName"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
                         android:fontFamily="@font/poppins_medium"
                         android:textAlignment="center"
                         android:textColor="@color/text_black"
                         android:textSize="16sp"
-                        app:layout_constraintBottom_toTopOf="@id/tvSurahNameArab"
+                        app:layout_constraintBottom_toTopOf="@id/tvSurahNameTranslation"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -71,24 +75,23 @@
                         tools:text="Al-Fatihah" />
 
                     <TextView
-                        android:id="@+id/tvSurahNameArab"
+                        android:id="@+id/tvSurahNameTranslation"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/poppins"
                         android:textAlignment="center"
                         android:textColor="@color/text_black"
-                        android:textSize="16sp"
+                        android:textSize="13sp"
                         app:layout_constraintBottom_toTopOf="@id/tvNumberOfVerses"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvSurahName"
-                        tools:text="ةحتافلا" />
+                        tools:text="(The Opening)" />
 
                     <TextView
                         android:id="@+id/tvNumberOfVerses"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
                         android:fontFamily="@font/poppins"
                         android:textAlignment="center"
                         android:textColor="@color/text_black"
@@ -96,22 +99,41 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvSurahNameArab"
+                        app:layout_constraintTop_toBottomOf="@id/tvSurahNameTranslation"
                         tools:text="7 Ayah" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvVerse"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/surahCardView"
-                tools:listitem="@layout/item_verse_list" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/white"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:title="@string/app_name"
+                app:titleTextAppearance="@style/Theme.Quran.Toolbar.Title"
+                app:titleTextColor="@color/text_black" />
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvVerse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:listitem="@layout/item_verse_list" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingAnimation"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading_animation" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
