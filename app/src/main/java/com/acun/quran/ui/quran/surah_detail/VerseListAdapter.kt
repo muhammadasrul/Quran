@@ -13,7 +13,7 @@ import com.acun.quran.util.visibility
 class VerseListAdapter(
     private val verseList: List<Verse>,
     private val preference: VersePreference,
-    private val onItemClickListener: OnItemClickListener
+    private val onClickListener: OnClickListener
 ): RecyclerView.Adapter<VerseListAdapter.VerseListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VerseListViewHolder {
@@ -59,13 +59,18 @@ class VerseListAdapter(
                     line.visibility = View.GONE
                 }
                 root.setOnClickListener {
-                    onItemClickListener.onItemClicked(item)
+                    onClickListener.onItemClicked(item)
+                }
+
+                btnPlay.setOnClickListener {
+                    onClickListener.onPlayButtonClicked(item, btnPlay)
                 }
             }
         }
     }
 
-    interface OnItemClickListener {
+    interface OnClickListener {
         fun onItemClicked(item: Verse)
+        fun onPlayButtonClicked(item: Verse, buttonView: View)
     }
 }

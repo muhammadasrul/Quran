@@ -1,6 +1,7 @@
 package com.acun.quran.ui.quran.juz_detail
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -51,9 +52,13 @@ class JuzVerseListAdapter(
                 juzSurah.verses?.let {
                     rvSurah.apply {
                         layoutManager = LinearLayoutManager(rvSurah.context)
-                        adapter = VerseListAdapter(it, versePreference, object : VerseListAdapter.OnItemClickListener {
+                        adapter = VerseListAdapter(it, versePreference, object : VerseListAdapter.OnClickListener {
                             override fun onItemClicked(item: Verse) {
                                 onItemClickListener.onItemClicked(LastReadVerse(ayah = item.number.inSurah, surah = juzSurah.name))
+                            }
+
+                            override fun onPlayButtonClicked(item: Verse, buttonView: View) {
+                                onItemClickListener.onPlayButtonClicked(item)
                             }
                         })
                     }
@@ -64,5 +69,6 @@ class JuzVerseListAdapter(
 
     interface OnItemClickListener {
         fun onItemClicked(lastRead: LastReadVerse)
+        fun onPlayButtonClicked(item: Verse)
     }
 }

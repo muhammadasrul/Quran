@@ -1,15 +1,5 @@
 package com.acun.quran.data.remote.response.juz
 
-import com.acun.quran.data.remote.response.juz_list.Juz
-import com.acun.quran.data.remote.response.juz_list.JuzSurah
-import com.acun.quran.data.remote.response.surah.*
-import com.acun.quran.data.remote.response.surah.Audio
-import com.acun.quran.data.remote.response.surah.Id
-import com.acun.quran.data.remote.response.surah.Meta
-import com.acun.quran.data.remote.response.surah.Number
-import com.acun.quran.data.remote.response.surah.Sajda
-import com.acun.quran.data.remote.response.surah.Text
-import com.acun.quran.data.remote.response.surah.Translation
 import com.acun.quran.data.remote.response.surah.Verse
 import com.google.gson.annotations.SerializedName
 

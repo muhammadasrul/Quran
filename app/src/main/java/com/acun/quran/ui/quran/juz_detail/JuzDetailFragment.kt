@@ -1,5 +1,7 @@
 package com.acun.quran.ui.quran.juz_detail
 
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -97,11 +99,24 @@ class JuzDetailFragment : Fragment() {
                                     override fun onItemClicked(lastRead: LastReadVerse) {
                                         val temp = lastReadVerse
                                         viewModel.setLastRead(lastRead)
-                                        customToast(view, "Marked as last read.", object :SnackBarOnClickListener {
+                                        customToast(view, "Marked as last read.", object : SnackBarOnClickListener {
                                             override fun onClicked() {
                                                 temp?.let { last -> viewModel.setLastRead(last) }
                                             }
                                         })
+                                    }
+
+                                    override fun onPlayButtonClicked(item: Verse) {
+                                        MediaPlayer().apply {
+                                            setAudioAttributes(
+                                                AudioAttributes.Builder()
+                                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                                    .build()
+                                            )
+                                            setDataSource(item.audio.primary)
+                                            prepare()
+                                            start()
+                                        }
                                     }
                                 })
                                 scrollToPosition(navArgs.pos)
