@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.acun.quran.data.local.datastore.VersePreference
 import com.acun.quran.data.remote.response.surah.Verse
 import com.acun.quran.databinding.ItemVerseListBinding
+import com.acun.quran.util.hide
+import com.acun.quran.util.show
 import com.acun.quran.util.visibility
 
 class VerseListAdapter(
@@ -50,6 +52,11 @@ class VerseListAdapter(
                         tvTranslation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                     }
                 }
+
+                if (item.headerName.isNotEmpty()) {
+                    tvSurahName.show()
+                    tvSurahName.text = item.surahName
+                } else tvSurahName.hide()
 
                 tvArab.text = item.text.arab
                 tvTransliteration.text = item.text.transliteration.en

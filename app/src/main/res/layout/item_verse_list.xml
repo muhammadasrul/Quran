@@ -10,6 +10,7 @@
     <TextView
         android:id="@+id/tvSurahName"
         android:layout_width="0dp"
+        android:paddingTop="2dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:background="@drawable/bg_blue_extra_light"

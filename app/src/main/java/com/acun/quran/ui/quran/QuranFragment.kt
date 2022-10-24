@@ -37,6 +37,7 @@ class QuranFragment : Fragment() {
             binding.textViewLastSurah.text = it.surah
         }
 
+        binding.quranViewPager.isUserInputEnabled = false
         binding.quranViewPager.adapter = QuranViewPagerAdapter(this)
         binding.quranViewPager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {

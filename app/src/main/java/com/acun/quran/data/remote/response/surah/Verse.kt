@@ -18,5 +18,7 @@ data class Verse(
     @SerializedName("text")
     val text: Text,
     @SerializedName("translation")
-    val translation: Translation
+    val translation: Translation,
+    val surahName: String = "",
+    val headerName: String = ""
 ): Parcelable

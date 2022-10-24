@@ -1,7 +1,6 @@
 package com.acun.quran.ui.quran
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.acun.quran.R
 import com.acun.quran.ui.quran.juz.JuzFragment

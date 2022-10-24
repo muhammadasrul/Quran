@@ -15,9 +15,9 @@ import com.acun.quran.R
 import com.acun.quran.data.local.datastore.LastReadVerse
 import com.acun.quran.data.local.datastore.VersePreference
 import com.acun.quran.data.remote.response.Resource
-import com.acun.quran.data.remote.response.juz_list.JuzSurah
 import com.acun.quran.data.remote.response.surah.Verse
 import com.acun.quran.databinding.FragmentJuzDetailBinding
+import com.acun.quran.ui.quran.surah_detail.VerseListAdapter
 import com.acun.quran.util.SnackBarOnClickListener
 import com.acun.quran.util.customToast
 import com.acun.quran.util.hide
@@ -64,63 +64,51 @@ class JuzDetailFragment : Fragment() {
                 is Resource.Success -> {
                     binding.loadingAnimation.hide()
                     resource.data?.let {
-                        val juzSurah = mutableListOf<JuzSurah>()
-
-                        val versesMap = mutableMapOf<Int, List<Verse>>()
+                        val pos = mutableListOf<Int>()
                         val verses = mutableListOf<Verse>()
                         it.verses.forEachIndexed { i, verse ->
-                            if ((i != 0 && verse.number.inSurah == 1) || it.verses.lastIndex == i) {
-                                if (versesMap.isEmpty()) {
-                                    versesMap[0] = verses.toList()
-                                } else {
-                                    versesMap[versesMap.size] = verses.toList()
-                                }
-                                verses.clear()
-                            }
-                            verses.add(verse)
-                        }
-
-                        navArgs.juz.surah.forEachIndexed { i, surah ->
-                            juzSurah.add(
-                                JuzSurah(
-                                    end = surah.end,
-                                    name = surah.name,
-                                    name_arab = surah.name_arab,
-                                    no = surah.no,
-                                    start = surah.start,
-                                    verses = versesMap[i]
+                            if ((verse.number.inSurah != 1 && i == 0) || verse.number.inSurah == 1) {
+                                pos.add(pos.size)
+                                verses.add(verse.copy(
+                                    headerName = navArgs.juz.surah[pos.lastIndex].name,
+                                    surahName = navArgs.juz.surah[pos.lastIndex].name)
                                 )
-                            )
-                        }
-
-                        versePreference?.let {
-                            binding.rvJuzVerse.apply {
-                                adapter = JuzVerseListAdapter(juzSurah.toList(), it, object : JuzVerseListAdapter.OnItemClickListener {
-                                    override fun onItemClicked(lastRead: LastReadVerse) {
-                                        val temp = lastReadVerse
-                                        viewModel.setLastRead(lastRead)
-                                        customToast(view, "Marked as last read.", object : SnackBarOnClickListener {
-                                            override fun onClicked() {
-                                                temp?.let { last -> viewModel.setLastRead(last) }
-                                            }
-                                        })
-                                    }
-
-                                    override fun onPlayButtonClicked(item: Verse) {
-                                        MediaPlayer().apply {
-                                            setAudioAttributes(
-                                                AudioAttributes.Builder()
-                                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                                    .build()
-                                            )
-                                            setDataSource(item.audio.primary)
-                                            prepare()
-                                            start()
-                                        }
-                                    }
-                                })
-                                scrollToPosition(navArgs.pos)
+                            } else {
+                                verses.add(verse.copy(
+                                    headerName = "",
+                                    surahName = navArgs.juz.surah[pos.lastIndex].name)
+                                )
                             }
+                        }
+                        binding.rvJuzVerse.apply {
+                            adapter = VerseListAdapter(verses, versePreference as VersePreference, object : VerseListAdapter.OnClickListener {
+                                override fun onItemClicked(item: Verse) {
+                                    val temp = lastReadVerse
+                                    viewModel.setLastRead(LastReadVerse(item.number.inSurah, item.surahName))
+                                    customToast(view, "Marked as last read.", object :
+                                        SnackBarOnClickListener {
+                                        override fun onClicked() {
+                                            temp?.let { last -> viewModel.setLastRead(last) }
+                                        } })
+                                }
+
+                                override fun onPlayButtonClicked(
+                                    item: Verse,
+                                    buttonView: View
+                                ) {
+                                    MediaPlayer().apply {
+                                        setAudioAttributes(
+                                            AudioAttributes.Builder()
+                                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                                .build()
+                                        )
+                                        setDataSource(item.audio.primary)
+                                        prepare()
+                                        start()
+                                    }
+                                }
+                            })
+                            scrollToPosition(navArgs.pos)
                         }
                     }
                 }

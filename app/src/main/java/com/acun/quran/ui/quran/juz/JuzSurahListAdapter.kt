@@ -33,7 +33,21 @@ class JuzSurahListAdapter(
                 tvSurahNumber.text = item.no.toString()
                 tvNumberOfVerses.text = "${item.start} - ${item.end}"
                 root.setOnClickListener {
-                    onItemClickListener.onItemClicked(juz, adapterPosition)
+                    var pos = juz.surah[0].end-juz.surah[0].start+1
+                    when (adapterPosition) {
+                        0 -> {
+                            onItemClickListener . onItemClicked (juz, 0)
+                        }
+                        1 -> {
+                            onItemClickListener . onItemClicked (juz, pos)
+                        }
+                        else -> {
+                            for (i in 1 until adapterPosition) {
+                                pos+=juz.surah[i].end
+                            }
+                            onItemClickListener.onItemClicked(juz, pos)
+                        }
+                    }
                 }
             }
         }
