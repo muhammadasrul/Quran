@@ -73,7 +73,8 @@ class SurahDetailFragment : Fragment() {
                     binding.loadingAnimation.hide()
                     resource.data?.let {
                         versePreference?.let { preference ->
-                            binding.rvVerse.adapter = VerseListAdapter(it.verses, preference, object : VerseListAdapter.OnClickListener {
+                            val verses = it.verses.map { it.copy(headerName = "", surahName = "") }
+                            binding.rvVerse.adapter = VerseListAdapter(verses, preference, object : VerseListAdapter.OnClickListener {
                                 override fun onItemClicked(item: Verse) {
                                     val temp = lastReadVerse
                                     viewModel.setLastRead(LastReadVerse(ayah = item.number.inSurah, surah = surah.name.transliteration.en))

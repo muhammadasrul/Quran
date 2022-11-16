@@ -53,4 +53,9 @@
         android:name="com.acun.quran.ui.preference.PreferenceFragment"
         android:label="fragment_preference"
         tools:layout="@layout/fragment_preference" />
+    <fragment
+        android:id="@+id/compassFragment"
+        android:name="com.acun.quran.ui.compass.CompassFragment"
+        android:label="Compass"
+        tools:layout="@layout/fragment_compass" />
 </navigation>

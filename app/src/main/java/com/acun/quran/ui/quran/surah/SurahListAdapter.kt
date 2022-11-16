@@ -37,7 +37,7 @@ class SurahListAdapter(
 
                 if (adapterPosition == surahList.lastIndex) {
                     root.updatePadding(bottom = 162)
-                }
+                } else root.updatePadding(bottom = 0)
             }
         }
     }

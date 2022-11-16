@@ -4,6 +4,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.acun.quran.data.local.datastore.VersePreference
 import com.acun.quran.data.remote.response.surah.Verse
@@ -63,8 +64,9 @@ class VerseListAdapter(
                 tvTranslation.text = item.translation.en
                 tvVerseNumber.text = item.number.inSurah.toString()
                 if (adapterPosition == verseList.lastIndex) {
-                    line.visibility = View.GONE
-                }
+                    line.hide()
+                    root.updatePadding(bottom = 162)
+                } else root.updatePadding(bottom = 0)
                 root.setOnClickListener {
                     onClickListener.onItemClicked(item)
                 }

@@ -5,6 +5,10 @@
         android:icon="@drawable/ic_houseline"
         android:title="Home" />
     <item
+        android:id="@+id/compassFragment"
+        android:icon="@drawable/ic_play"
+        android:title="Compass" />
+    <item
         android:id="@+id/quranFragment"
         android:icon="@drawable/ic_bookopen"
         android:title="Quran" />
