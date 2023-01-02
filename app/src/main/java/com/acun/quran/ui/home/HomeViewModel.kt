@@ -1,5 +1,6 @@
 package com.acun.quran.ui.home
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,8 +18,11 @@ class HomeViewModel @Inject constructor(
     private val repository: QuranRepository
 ): ViewModel() {
 
-    private val _prayer = MutableLiveData< Resource<List<PrayerTimeData>>>()
+    private val _prayer = MutableLiveData<Resource<List<PrayerTimeData>>>()
     val prayer: LiveData<Resource<List<PrayerTimeData>>> = _prayer
+
+    private val _location = MutableLiveData<Location>()
+    val location: LiveData<Location> = _location
 
     fun getPrayer(lat: Double, long: Double) {
         val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Jakarta"), Locale.getDefault())
@@ -35,5 +39,9 @@ class HomeViewModel @Inject constructor(
                 _prayer.postValue(resource)
             }
         }
+    }
+
+    fun setLocation(location: Location) {
+        _location.postValue(location)
     }
 }

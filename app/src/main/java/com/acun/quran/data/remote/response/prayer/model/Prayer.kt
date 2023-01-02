@@ -2,7 +2,9 @@ package com.acun.quran.data.remote.response.prayer.model
 
 data class Prayer(
     val name: String,
-    val time: String
+    val time: String,
+    var isNowPrayer: Boolean,
+    var isNearestPrayer: Boolean
 )
 
 fun Prayer.hour(): Int {

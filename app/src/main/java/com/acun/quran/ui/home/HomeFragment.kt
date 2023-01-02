@@ -1,41 +1,54 @@
 package com.acun.quran.ui.home
 
-import android.Manifest
-import android.content.pm.PackageManager
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener2
+import android.hardware.SensorManager
 import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
 import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.acun.quran.R
 import com.acun.quran.data.remote.response.Resource
 import com.acun.quran.data.remote.response.prayer.getNearestPrayer
+import com.acun.quran.data.remote.response.prayer.getNowPrayer
 import com.acun.quran.data.remote.response.prayer.model.hour
 import com.acun.quran.data.remote.response.prayer.model.minute
 import com.acun.quran.data.remote.response.prayer.toPrayerList
 import com.acun.quran.databinding.FragmentHomeBinding
+import com.acun.quran.util.toGone
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), SensorEventListener2 {
 
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
+    private var currentDegree = 0F
+    private var location = Location("my_location")
+    private val  sensorManager by lazy {
+        requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    }
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,39 +61,26 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-
-        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                getLocation()
-            } else {
-                Toast.makeText(requireContext(), "Permission Deny", Toast.LENGTH_SHORT).show()
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+            if (it != null) {
+                viewModel.setLocation(it)
             }
         }
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-            return
-        } else {
-            getLocation()
+        val now = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        binding.bannerBackground.background = when (now) {
+            in 19 .. 24, in 1 .. 5 -> ContextCompat.getDrawable(requireContext(), R.drawable.malam)
+            in 5..7 -> ContextCompat.getDrawable(requireContext(), R.drawable.pagi)
+            in 7..15 -> ContextCompat.getDrawable(requireContext(), R.drawable.siang)
+            in 15 .. 19 -> ContextCompat.getDrawable(requireContext(), R.drawable.sore)
+            else -> ContextCompat.getDrawable(requireContext(), R.drawable.pagi)
         }
 
+        observeLocation()
         observePrayer()
-    }
 
-    private fun getLocation() {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { loc ->
-                binding.textViewCurrentLocation.text = getLocationName(loc.latitude, loc.longitude)
-                viewModel.getPrayer(lat = loc.latitude, long = loc.longitude)
-            }
     }
 
     private fun getLocationName(lat: Double, long: Double): String {
@@ -89,28 +89,37 @@ class HomeFragment : Fragment() {
     }
 
     private fun observePrayer() {
-        val day = Calendar.getInstance(TimeZone.getTimeZone("Jakarta/Asia"), Locale.getDefault()).get(Calendar.DAY_OF_MONTH)
+        val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         viewModel.prayer.observe(viewLifecycleOwner) { resources ->
             when (resources) {
                 is Resource.Loading -> Unit
                 is Resource.Success -> {
+                    binding.shimmerContainer.toGone()
                     resources.data?.get(day)?.timings?.let { time ->
-                        binding.rvPrayerTime.layoutManager = LinearLayoutManager(requireContext())
-                        binding.rvPrayerTime.adapter = PrayerTimeAdapter(time.toPrayerList())
-                        binding.textViewNextPrayerName.text = "next: ${time.getNearestPrayer()?.name}"
-                        binding.textViewNextPrayerTime.text = time.getNearestPrayer()?.time
+                        val prayerList = time.toPrayerList()
 
-                        val now = Calendar.getInstance(TimeZone.getTimeZone("Asia/Jakarta"), Locale.getDefault()).time.time
-                        val nearest = Calendar.getInstance(TimeZone.getTimeZone("Asia/Jakarta"), Locale.getDefault())
+                        binding.rvPrayerTime.setHasFixedSize(true)
+                        binding.rvPrayerTime.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                        binding.rvPrayerTime.adapter = PrayerTimeAdapter(prayerList)
+
+                        val nowPrayerTime = time.getNowPrayer()
+                        if (nowPrayerTime != null) binding.rvPrayerTime.scrollToPosition(prayerList.indexOf(nowPrayerTime))
+
+                        val nearestPrayerTime = time.getNearestPrayer()
+                        binding.textViewNextPrayerName.text = "next: ${nearestPrayerTime?.name}"
+                        binding.textViewNextPrayerTime.text = nearestPrayerTime?.time
+
+                        val now = Calendar.getInstance().time.time
+                        val nearest = Calendar.getInstance()
                             .apply {
                                 set(Calendar.YEAR, get(Calendar.YEAR))
                                 set(Calendar.MONTH, get(Calendar.MONTH))
-                                if (get(Calendar.HOUR_OF_DAY) >= 20) {
+                                if (get(Calendar.HOUR_OF_DAY) >= prayerList.last().hour()) {
                                     set(Calendar.DATE, get(Calendar.DATE)+1)
                                 } else {
                                     set(Calendar.DATE, get(Calendar.DATE))
                                 }
-                                time.getNearestPrayer()?.let {
+                                nearestPrayerTime?.let {
                                     set(Calendar.HOUR_OF_DAY, it.hour())
                                     set(Calendar.MINUTE, it.minute())
                                 }
@@ -121,6 +130,14 @@ class HomeFragment : Fragment() {
                 }
                 is Resource.Failed -> Unit
             }
+        }
+    }
+
+    private fun observeLocation() {
+        viewModel.location.observe(viewLifecycleOwner) {
+            location = it
+            binding.textViewCurrentLocation.text = getLocationName(it.latitude, it.longitude)
+            viewModel.getPrayer(lat = it.latitude, long = it.longitude)
         }
     }
 
@@ -135,8 +152,69 @@ class HomeFragment : Fragment() {
             }
 
             override fun onFinish() {
-                getLocation()
+//                getLocation()
             }
         }.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sensorManager.registerListener(
+            this,
+            sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+            SensorManager.SENSOR_DELAY_GAME
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(
+            this,
+            sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION)
+        )
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {
+        val degree = event.values[0].roundToInt()
+        val kaabaLocation = Location("kaaba_location").apply {
+            latitude = 21.4234756
+            longitude = 39.8246424
+        }
+        val bearingToKaaba = location.bearingTo(kaabaLocation)
+        val direction = bearingToKaaba-degree
+
+        val kaabaRotateAnimation = RotateAnimation(
+            direction,
+            -degree.toFloat(),
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        kaabaRotateAnimation.duration = 210
+        kaabaRotateAnimation.fillAfter = true
+        binding.kaabaImage.startAnimation(kaabaRotateAnimation)
+
+        val compassRotateAnimation = RotateAnimation(
+            currentDegree,
+            (-degree).toFloat(),
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        compassRotateAnimation.duration = 210
+        compassRotateAnimation.fillAfter = true
+        binding.compassImage.startAnimation(compassRotateAnimation)
+
+        currentDegree = -degree.toFloat()
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, p1: Int) {
+        Log.d("onAccuracyChanged", "${sensor?.name} $p1")
+    }
+
+    override fun onFlushCompleted(sensor: Sensor?) {
+        Log.d("onFlushCompleted", sensor?.name.toString())
     }
 }

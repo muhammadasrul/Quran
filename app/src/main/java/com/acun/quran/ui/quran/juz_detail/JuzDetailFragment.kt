@@ -20,8 +20,8 @@ import com.acun.quran.databinding.FragmentJuzDetailBinding
 import com.acun.quran.ui.quran.surah_detail.VerseListAdapter
 import com.acun.quran.util.SnackBarOnClickListener
 import com.acun.quran.util.customToast
-import com.acun.quran.util.hide
-import com.acun.quran.util.show
+import com.acun.quran.util.toGone
+import com.acun.quran.util.toVisible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,6 +35,8 @@ class JuzDetailFragment : Fragment() {
 
     private var lastReadVerse: LastReadVerse? = null
     private var versePreference: VersePreference? = null
+
+    private val verses = mutableListOf<Verse>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,15 +59,15 @@ class JuzDetailFragment : Fragment() {
 
         viewModel.lastRead.observe(viewLifecycleOwner) { lastReadVerse = it }
         viewModel.versePreference.observe(viewLifecycleOwner) { versePreference = it}
-        viewModel.getJuzDetail(navArgs.juz.juz)
+
+        verses.ifEmpty { viewModel.getJuzDetail(navArgs.juz.juz) }
         viewModel.juz.observe(viewLifecycleOwner) { resource ->
             when (resource) {
-                is Resource.Loading -> binding.loadingAnimation.show()
+                is Resource.Loading -> binding.loadingAnimation.toVisible()
                 is Resource.Success -> {
-                    binding.loadingAnimation.hide()
+                    binding.loadingAnimation.toGone()
                     resource.data?.let {
                         val pos = mutableListOf<Int>()
-                        val verses = mutableListOf<Verse>()
                         it.verses.forEachIndexed { i, verse ->
                             if ((verse.number.inSurah != 1 && i == 0) || verse.number.inSurah == 1) {
                                 pos.add(pos.size)
@@ -92,10 +94,7 @@ class JuzDetailFragment : Fragment() {
                                         } })
                                 }
 
-                                override fun onPlayButtonClicked(
-                                    item: Verse,
-                                    buttonView: View
-                                ) {
+                                override fun onPlayButtonClicked(item: Verse, position: Int) {
                                     MediaPlayer().apply {
                                         setAudioAttributes(
                                             AudioAttributes.Builder()
@@ -107,12 +106,16 @@ class JuzDetailFragment : Fragment() {
                                         start()
                                     }
                                 }
+
+                                override fun onShareButtonClicked(item: Verse) {
+                                    findNavController().navigate(JuzDetailFragmentDirections.actionJuzDetailFragmentToShareFragment(item))
+                                }
                             })
                             scrollToPosition(navArgs.pos)
                         }
                     }
                 }
-                is Resource.Failed -> binding.loadingAnimation.hide()
+                is Resource.Failed -> binding.loadingAnimation.toGone()
             }
         }
     }

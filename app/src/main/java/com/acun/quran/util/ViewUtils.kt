@@ -5,13 +5,13 @@ import androidx.core.content.ContextCompat
 import com.acun.quran.R
 import com.google.android.material.snackbar.Snackbar
 
-fun View.hide() {
+fun View.toGone() {
     visibility = View.GONE
 }
-fun View.show() {
+fun View.toVisible() {
     visibility = View.VISIBLE
 }
-fun View.visibility(isVisible: Boolean) {
+fun View.setVisibility(isVisible: Boolean) {
     visibility = if (isVisible) View.VISIBLE  else View.GONE
 }
 

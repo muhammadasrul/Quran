@@ -7,8 +7,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.acun.quran.R
 import com.acun.quran.databinding.ActivityMainBinding
-import com.acun.quran.util.hide
-import com.acun.quran.util.show
+import com.acun.quran.util.toGone
+import com.acun.quran.util.toVisible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,14 +28,15 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
-                R.id.juzDetailFragment -> binding.bottomNavigation.hide()
-                R.id.surahDetailFragment -> binding.bottomNavigation.hide()
-                R.id.surahFragment -> binding.bottomNavigation.hide()
-                else -> binding.bottomNavigation.show()
+                R.id.surahDetailFragment,
+                R.id.juzDetailFragment,
+                R.id.surahFragment,
+                R.id.shareFragment,
+                R.id.splashScreenFragment-> binding.bottomNavigation.toGone()
+                else -> binding.bottomNavigation.toVisible()
             }
         }
     }
-
 
     override fun onNavigateUp(): Boolean {
         navController.navigateUp()

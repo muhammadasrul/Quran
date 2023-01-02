@@ -16,12 +16,23 @@ class SurahDetailViewModel @Inject constructor(
     private val dataStore: QuranDataStore
 ): ViewModel() {
 
-    private val _surahDetail = MutableLiveData< Resource<SurahDetail>>()
+    private val _surahDetail = MutableLiveData<Resource<SurahDetail>>()
     val surahDetail: LiveData<Resource<SurahDetail>> = _surahDetail
+
+    private val _audioProgress = MutableLiveData(0)
+    val audioProgress: LiveData<Int> = _audioProgress
+
+    fun setAudioProgress(progress: Int) {
+        _audioProgress.postValue(progress)
+    }
 
     fun getSurah(number: Int) {
         viewModelScope.launch {
             repository.getSurah(number).collect {
+                val verses = it.data?.verses?.map { verse ->
+                    verse.copy(headerName = "", surahName = "")
+                }
+                it.data?.verses = verses ?: listOf()
                 _surahDetail.postValue(it)
             }
         }

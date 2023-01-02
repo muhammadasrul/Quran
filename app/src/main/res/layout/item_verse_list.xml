@@ -10,11 +10,11 @@
     <TextView
         android:id="@+id/tvSurahName"
         android:layout_width="0dp"
-        android:paddingTop="2dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:background="@drawable/bg_blue_extra_light"
         android:fontFamily="@font/poppins_medium"
+        android:paddingTop="2dp"
         android:textAlignment="center"
         android:textColor="@color/text_black"
         android:textSize="20sp"
@@ -48,45 +48,36 @@
             tools:text="1" />
     </com.google.android.material.card.MaterialCardView>
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageViewCircle"-->
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/btnPlay"-->
     <!--        android:layout_width="wrap_content"-->
     <!--        android:layout_height="wrap_content"-->
-    <!--        android:src="@drawable/ic_circle"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--        android:layout_marginEnd="4dp"-->
+    <!--        android:background="@null"-->
+    <!--        android:src="@drawable/ic_play"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/verseNumberContainer"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintEnd_toStartOf="@id/imageViewDots"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/verseNumberContainer" />-->
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/tvVerseNumber"-->
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/imageViewDots"-->
     <!--        android:layout_width="wrap_content"-->
     <!--        android:layout_height="wrap_content"-->
-    <!--        android:fontFamily="@font/poppins_medium"-->
-    <!--        android:paddingTop="3dp"-->
-    <!--        android:textColor="@color/white"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@id/imageViewCircle"-->
-    <!--        app:layout_constraintEnd_toEndOf="@id/imageViewCircle"-->
-    <!--        app:layout_constraintStart_toStartOf="@id/imageViewCircle"-->
-    <!--        app:layout_constraintTop_toTopOf="@id/imageViewCircle"-->
-    <!--        tools:text="1" />-->
+    <!--        android:background="@null"-->
+    <!--        android:src="@drawable/ic_dots_three_vertical"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/verseNumberContainer"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/verseNumberContainer" />-->
 
     <ImageButton
-        android:id="@+id/btnPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/imageShare"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginEnd="4dp"
         android:background="@null"
-        android:src="@drawable/ic_play"
-        app:layout_constraintBottom_toBottomOf="@id/verseNumberContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/imageViewDots"
-        app:layout_constraintTop_toTopOf="@id/verseNumberContainer" />
-
-    <ImageButton
-        android:id="@+id/imageViewDots"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/ic_dots_three_vertical"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_baseline_share_24"
         app:layout_constraintBottom_toBottomOf="@id/verseNumberContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/verseNumberContainer" />

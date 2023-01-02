@@ -15,4 +15,16 @@
     <color name="text_black">#FF333333</color>
     <color name="text_black_light">#FF6171A3</color>
     <color name="blue_background">#FFEEF2FE</color>
+
+    <array name="share_background">
+        <item>@color/primary_blue_extra_light</item>
+        <item>@color/primary_blue</item>
+        <item>@color/black</item>
+        <item>@color/white</item>
+    </array>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
 </resources>

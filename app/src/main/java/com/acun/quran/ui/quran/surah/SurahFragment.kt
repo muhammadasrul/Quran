@@ -12,8 +12,8 @@ import com.acun.quran.data.remote.response.Resource
 import com.acun.quran.data.remote.response.surah_list.Surah
 import com.acun.quran.databinding.FragmentSurahBinding
 import com.acun.quran.ui.quran.QuranFragmentDirections
-import com.acun.quran.util.hide
-import com.acun.quran.util.show
+import com.acun.quran.util.toGone
+import com.acun.quran.util.toVisible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,9 +39,9 @@ class SurahFragment : Fragment() {
 
         viewModel.surahList.observe(viewLifecycleOwner) { resource ->
             when (resource) {
-                is Resource.Loading -> binding.loadingAnimation.show()
+                is Resource.Loading -> binding.loadingAnimation.toVisible()
                 is Resource.Success -> {
-                    binding.loadingAnimation.hide()
+                    binding.loadingAnimation.toGone()
                     resource.data?.let {
                         binding.rvSurah.adapter = SurahListAdapter(it, object : SurahListAdapter.OnItemClickListener {
                             override fun onItemClicked(item: Surah) {
@@ -50,7 +50,7 @@ class SurahFragment : Fragment() {
                         })
                     }
                 }
-                is Resource.Failed -> binding.loadingAnimation.hide()
+                is Resource.Failed -> binding.loadingAnimation.toGone()
             }
         }
     }

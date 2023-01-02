@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/splashScreenFragment">
 
     <fragment
         android:id="@+id/surahDetailFragment"
@@ -13,6 +13,9 @@
         <argument
             android:name="surah"
             app:argType="com.acun.quran.data.remote.response.surah_list.Surah" />
+        <action
+            android:id="@+id/action_surahDetailFragment_to_shareFragment"
+            app:destination="@id/shareFragment" />
     </fragment>
     <fragment
         android:id="@+id/surahFragment"
@@ -42,6 +45,9 @@
         <argument
             android:name="pos"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_juzDetailFragment_to_shareFragment"
+            app:destination="@id/shareFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -54,8 +60,29 @@
         android:label="fragment_preference"
         tools:layout="@layout/fragment_preference" />
     <fragment
-        android:id="@+id/compassFragment"
-        android:name="com.acun.quran.ui.compass.CompassFragment"
-        android:label="Compass"
-        tools:layout="@layout/fragment_compass" />
+        android:id="@+id/shareFragment"
+        android:name="com.acun.quran.ui.quran.share.ShareFragment"
+        android:label="fragment_share"
+        tools:layout="@layout/fragment_share" >
+        <argument
+            android:name="verse"
+            app:argType="com.acun.quran.data.remote.response.surah.Verse" />
+        <argument
+            android:name="surah"
+            app:argType="com.acun.quran.data.remote.response.surah_list.Surah"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashScreenFragment"
+        android:name="com.acun.quran.ui.SplashScreenFragment"
+        android:label="fragment_splash_screen"
+        tools:layout="@layout/fragment_splash_screen" >
+        <action
+            android:id="@+id/action_splashScreenFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

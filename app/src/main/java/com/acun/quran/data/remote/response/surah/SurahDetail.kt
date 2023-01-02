@@ -19,5 +19,5 @@ data class SurahDetail(
     @SerializedName("tafsir")
     val tafsir: Tafsir,
     @SerializedName("verses")
-    val verses: List<Verse>
+    var verses: List<Verse>
 )
