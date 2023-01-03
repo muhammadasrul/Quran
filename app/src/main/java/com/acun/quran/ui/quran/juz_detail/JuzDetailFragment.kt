@@ -73,11 +73,15 @@ class JuzDetailFragment : Fragment() {
                                 pos.add(pos.size)
                                 verses.add(verse.copy(
                                     headerName = navArgs.juz.surah[pos.lastIndex].name,
+                                    numberOfVerse = "",
+                                    surahNameTranslation = "",
                                     surahName = navArgs.juz.surah[pos.lastIndex].name)
                                 )
                             } else {
                                 verses.add(verse.copy(
                                     headerName = "",
+                                    numberOfVerse = "",
+                                    surahNameTranslation = "",
                                     surahName = navArgs.juz.surah[pos.lastIndex].name)
                                 )
                             }

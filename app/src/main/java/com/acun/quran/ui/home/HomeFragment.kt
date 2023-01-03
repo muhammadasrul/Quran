@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.TextView
+import androidx.constraintlayout.motion.widget.Debug.getLocation
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -84,8 +85,8 @@ class HomeFragment : Fragment(), SensorEventListener2 {
     }
 
     private fun getLocationName(lat: Double, long: Double): String {
-        val addresses = Geocoder(requireContext()).getFromLocation(lat, long, 1)
-        return addresses?.let { it[0].locality } ?: requireContext().getString(R.string.error_location_not_found)
+        val addresses = Geocoder(requireContext()).getFromLocation(lat, long, 1)?.firstOrNull()
+        return addresses?.locality ?: requireContext().getString(R.string.error_location_not_found)
     }
 
     private fun observePrayer() {
@@ -152,7 +153,7 @@ class HomeFragment : Fragment(), SensorEventListener2 {
             }
 
             override fun onFinish() {
-//                getLocation()
+                observeLocation()
             }
         }.start()
     }
