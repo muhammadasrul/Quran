@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         navController = findNavController(R.id.fragmentContainerView)
         binding.bottomNavigation.setupWithNavController(navController)
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.surahDetailFragment,
                 R.id.juzDetailFragment,
