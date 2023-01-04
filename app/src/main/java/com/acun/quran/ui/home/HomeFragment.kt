@@ -62,7 +62,6 @@ class HomeFragment : Fragment(), SensorEventListener2 {
         super.onViewCreated(view, savedInstanceState)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
         fusedLocationProviderClient.lastLocation.addOnSuccessListener {
             if (it != null) {
                 viewModel.setLocation(it)
@@ -84,8 +83,8 @@ class HomeFragment : Fragment(), SensorEventListener2 {
     }
 
     private fun getLocationName(lat: Double, long: Double): String {
-        val addresses = Geocoder(requireContext()).getFromLocation(lat, long, 1)
-        return addresses?.let { it[0].locality } ?: requireContext().getString(R.string.error_location_not_found)
+        val addresses = Geocoder(requireContext()).getFromLocation(lat, long, 1)?.firstOrNull()
+        return addresses?.locality ?: requireContext().getString(R.string.error_location_not_found)
     }
 
     private fun observePrayer() {
@@ -106,24 +105,20 @@ class HomeFragment : Fragment(), SensorEventListener2 {
                         if (nowPrayerTime != null) binding.rvPrayerTime.scrollToPosition(prayerList.indexOf(nowPrayerTime))
 
                         val nearestPrayerTime = time.getNearestPrayer()
-                        binding.textViewNextPrayerName.text = "next: ${nearestPrayerTime?.name}"
+                        binding.textViewNextPrayerName.text = getString(R.string.next_prayer, nearestPrayerTime?.name)
                         binding.textViewNextPrayerTime.text = nearestPrayerTime?.time
 
                         val now = Calendar.getInstance().time.time
-                        val nearest = Calendar.getInstance()
-                            .apply {
-                                set(Calendar.YEAR, get(Calendar.YEAR))
-                                set(Calendar.MONTH, get(Calendar.MONTH))
+                        val nearest = Calendar.getInstance().apply {
                                 if (get(Calendar.HOUR_OF_DAY) >= prayerList.last().hour()) {
-                                    set(Calendar.DATE, get(Calendar.DATE)+1)
-                                } else {
-                                    set(Calendar.DATE, get(Calendar.DATE))
+                                    add(Calendar.DATE, 1)
                                 }
                                 nearestPrayerTime?.let {
                                     set(Calendar.HOUR_OF_DAY, it.hour())
                                     set(Calendar.MINUTE, it.minute())
                                 }
                             }.time.time
+
                         val diff = nearest-now
                         binding.textViewNextPrayerCounter.prayerTimeCounter(diff)
                     }
@@ -148,11 +143,16 @@ class HomeFragment : Fragment(), SensorEventListener2 {
                 val minute = timeInMiles / (1000 * 60) % 60
                 val second = (timeInMiles / 1000) % 60
                 fun timeFormat(time: Long) = String.format("%02d", time)
-                this@prayerTimeCounter.text = "in ${timeFormat(hour)}h ${timeFormat(minute)}m ${timeFormat(second)}s"
+                this@prayerTimeCounter.text = getString(R.string.prayer_time_counter, timeFormat(hour), timeFormat(minute), timeFormat(second))
             }
 
             override fun onFinish() {
-//                getLocation()
+//                Log.d("waduh", "location: $it")
+//                fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+//                    if (it != null) {
+//                        viewModel.setLocation(it)
+//                    }
+//                }
             }
         }.start()
     }

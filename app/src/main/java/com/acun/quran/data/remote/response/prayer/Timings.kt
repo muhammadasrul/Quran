@@ -36,18 +36,27 @@ fun Timings.toPrayerList(): List<Prayer> {
         Prayer(name = "Isha", time = isha, isNowPrayer = false, isNearestPrayer = false))
 
     val cal = Calendar.getInstance()
-    val nowPrayer = prayerList.lastOrNull { cal.get(Calendar.HOUR_OF_DAY) >= it.hour() && cal.get(Calendar.MINUTE) >= it.minute()}
-    if (nowPrayer != null) {
-        prayerList[prayerList.indexOf(nowPrayer)].isNowPrayer = true
+    run breaking@ {
+        prayerList.forEachIndexed { index, prayer ->
+            val prayerDate = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, prayer.hour())
+                set(Calendar.MINUTE, prayer.minute())
+            }
 
-        if (prayerList.indexOf(nowPrayer) != prayerList.lastIndex) {
-            prayerList[prayerList.indexOf(nowPrayer)+1].isNearestPrayer = true
-        } else {
-            prayerList[0].isNearestPrayer = true
+            if (prayerDate.after(cal)) {
+                prayer.isNearestPrayer = true
+
+                if (index == 0) prayerList[prayerList.lastIndex].isNowPrayer = true
+                else prayerList[index-1].isNowPrayer = true
+
+                return@breaking
+            }
+
+            if (index == prayerList.lastIndex) {
+                prayer.isNowPrayer = true
+                prayerList.first().isNearestPrayer = true
+            }
         }
-    } else {
-        prayerList.last().isNowPrayer = true
-        prayerList[0].isNearestPrayer = true
     }
     return prayerList
 }

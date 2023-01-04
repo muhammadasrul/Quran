@@ -152,9 +152,9 @@ class SurahDetailFragment : Fragment() {
                 adapter = verseAdapter
             }
             toolbar.title = surah.name.transliteration.en
-            tvSurahName.text = surah.name.transliteration.en
-            tvSurahNameTranslation.text = requireContext().getString(R.string.surah_detail_verse_name, surah.name.translation.en)
-            tvNumberOfVerses.text = requireContext().getString(R.string.number_of_verses, surah.numberOfVerses)
+//            tvSurahName.text = surah.name.transliteration.en
+//            tvSurahNameTranslation.text = requireContext().getString(R.string.surah_detail_verse_name, surah.name.translation.en)
+//            tvNumberOfVerses.text = requireContext().getString(R.string.number_of_verses, surah.numberOfVerses)
         }
 
         viewModel.lastRead.observe(viewLifecycleOwner) { lastReadVerse = it }
@@ -167,6 +167,11 @@ class SurahDetailFragment : Fragment() {
                 is Resource.Success -> {
                     resource.data?.let { surah ->
                         verseList = surah.verses
+                        if (verseList.isNotEmpty()) {
+                            verseList[0].surahName = navArgs.surah.name.transliteration.en
+                            verseList[0].surahNameTranslation = requireContext().getString(R.string.surah_detail_verse_name, surah.name.translation.en)
+                            verseList[0].numberOfVerse = requireContext().getString(R.string.number_of_verses, surah.numberOfVerses)
+                        }
                         verseAdapter.setVerseList(surah.verses)
                         binding.loadingAnimation.toGone()
                     }

@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.acun.quran.data.local.datastore.VersePreference
 import com.acun.quran.data.remote.response.surah.Verse
 import com.acun.quran.databinding.ItemVerseListBinding
+import com.acun.quran.util.setVisibility
 import com.acun.quran.util.toGone
 import com.acun.quran.util.toVisible
-import com.acun.quran.util.setVisibility
 
 class VerseListAdapter(
     private var verseList: List<Verse>,
@@ -18,9 +18,9 @@ class VerseListAdapter(
     private val onClickListener: OnClickListener
 ): RecyclerView.Adapter<VerseListAdapter.VerseListViewHolder>() {
 
-    fun setVerseList(verseList: List<Verse>) {
-        this.verseList = verseList
-        notifyItemRangeChanged(0, this.verseList.size)
+    fun setVerseList(newList: List<Verse>) {
+        verseList = newList
+        notifyItemRangeChanged(0, verseList.size)
     }
 
     fun setPreference(preference: VersePreference) {
@@ -72,10 +72,21 @@ class VerseListAdapter(
                     }
                 }
 
+                if ((item.surahName.isNotEmpty() && item.surahNameTranslation.isNotEmpty() && item.numberOfVerse.isNotEmpty()) || item.headerName.isNotEmpty()) {
+                    headerContainer.toVisible()
+                } else headerContainer.toGone()
+
                 if (item.headerName.isNotEmpty()) {
-                    tvSurahName.toVisible()
+                    tvTitleOnly.toVisible()
+                    tvTitleOnly.text = item.surahName
+                } else tvTitleOnly.toGone()
+
+                if (item.surahName.isNotEmpty() && item.surahNameTranslation.isNotEmpty() && item.numberOfVerse.isNotEmpty()) {
+                    headerCardView.toVisible()
                     tvSurahName.text = item.surahName
-                } else tvSurahName.toGone()
+                    tvSurahNameTranslation.text = item.surahNameTranslation
+                    tvNumberOfVerses.text = item.numberOfVerse
+                } else headerCardView.toGone()
 
                 tvArab.text = item.text.arab
                 tvTransliteration.text = item.text.transliteration.en

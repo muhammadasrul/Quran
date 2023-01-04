@@ -43,7 +43,7 @@ class ShareFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setSystemUIVisibility(false)
+//        setSystemUIVisibility(false)
         binding.imageButtonBack.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -107,8 +107,10 @@ class ShareFragment : Fragment() {
             binding.cardContainer.setCardBackgroundColor(currentColor)
             if (currentColor == ContextCompat.getColor(requireContext(), R.color.black)) {
                 binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.text_black))
+                requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.text_black)
             } else {
                 binding.root.setBackgroundColor(currentColor)
+                requireActivity().window.statusBarColor = currentColor
             }
 
             val inverseColor = getInverseBWColor(currentColor)
@@ -154,6 +156,7 @@ class ShareFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        setSystemUIVisibility(true)
+//        setSystemUIVisibility(true)
+        requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
     }
 }

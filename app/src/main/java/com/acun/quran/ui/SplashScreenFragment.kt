@@ -51,11 +51,11 @@ class SplashScreenFragment : Fragment(), ActivityResultCallback<Map<String, Bool
         permissionDialog = AlertDialog.Builder(requireContext()).apply {
             setTitle("Location permission is required")
             setMessage("This app need permission to access this device's location")
-            setPositiveButton("Open Setting") { p0, p1 ->
+            setPositiveButton("Open Setting") { _, _ ->
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${requireActivity().packageName}"))
                 startActivity(intent)
             }
-            setNegativeButton("Cancel") {p0, p1 ->
+            setNegativeButton("Cancel") { _, _ ->
                 requireActivity().finishAffinity()
             }
             setCancelable(false)

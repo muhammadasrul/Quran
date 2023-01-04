@@ -30,7 +30,12 @@ class SurahDetailViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getSurah(number).collect {
                 val verses = it.data?.verses?.map { verse ->
-                    verse.copy(headerName = "", surahName = "")
+                    verse.copy(
+                        headerName = "",
+                        surahName = "",
+                        numberOfVerse = "",
+                        surahNameTranslation = ""
+                    )
                 }
                 it.data?.verses = verses ?: listOf()
                 _surahDetail.postValue(it)
