@@ -10,6 +10,13 @@
     <string name="number_of_verses">%d verses</string>
     <string name="juz_number_of_verses">(%d verses)</string>
     <string name="error_location_not_found">Location not found</string>
+    <string name="home">Home</string>
+    <string name="quran">Quran</string>
+    <string name="settings">Settings</string>
+    <string name="prayer_times">Prayer Times</string>
+    <string name="qibla_finder">Qibla Finder</string>
+    <string name="prayer_time_counter">in %sh %sm %ss</string>
+    <string name="next_prayer">next: %s</string>
 
     <array name="text_size">
         <item>Small</item>

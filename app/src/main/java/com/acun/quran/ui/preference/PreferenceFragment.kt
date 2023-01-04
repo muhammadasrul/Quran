@@ -52,11 +52,11 @@ class PreferenceFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.spinnerTextSize.adapter = spinnerAdapter
         binding.spinnerTextSize.onItemSelectedListener = this
 
-        binding.switchTranslation.setOnCheckedChangeListener { compoundButton, b ->
+        binding.switchTranslation.setOnCheckedChangeListener { _, b ->
             translation = b
         }
 
-        binding.switchTransliteration.setOnCheckedChangeListener { compoundButton, b ->
+        binding.switchTransliteration.setOnCheckedChangeListener { _, b ->
             transliteration = b
         }
     }
