@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.acun.quran.R
+import com.acun.quran.data.local.datastore.LastReadVerse
 import com.acun.quran.data.local.datastore.VersePreference
 import com.acun.quran.data.remote.response.surah.Verse
 import com.acun.quran.databinding.ItemVerseListBinding
@@ -17,6 +20,13 @@ class VerseListAdapter(
     private var preference: VersePreference,
     private val onClickListener: OnClickListener
 ): RecyclerView.Adapter<VerseListAdapter.VerseListViewHolder>() {
+
+    private var savePosition = -1
+
+    fun setSavePosition(pos: Int) {
+        savePosition = pos
+        notifyItemRangeChanged(0, verseList.size)
+    }
 
     fun setVerseList(newList: List<Verse>) {
         verseList = newList
@@ -50,6 +60,7 @@ class VerseListAdapter(
 
     inner class VerseListViewHolder(private val binding: ItemVerseListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Verse) {
+            val surah = verseList.firstOrNull { it.surahName.isNotEmpty() }?.surahName ?: ""
             with(binding) {
                 tvTransliteration.setVisibility(preference.transliteration)
                 tvTranslation.setVisibility(preference.translation)
@@ -96,8 +107,26 @@ class VerseListAdapter(
                     line.toGone()
                     root.updatePadding(bottom = 162)
                 } else root.updatePadding(bottom = 0)
-                tvArab.setOnClickListener {
-                    onClickListener.onItemClicked(item)
+
+                if (item.isBookmark) {
+                    imageSave.load(R.drawable.ic_bookmark_active)
+                } else {
+                    imageSave.load(R.drawable.ic_bookmark)
+                }
+
+                imageSave.setOnClickListener {
+                    notifyItemChanged(adapterPosition)
+                    notifyItemChanged(savePosition)
+                    if (savePosition != -1) {
+                        verseList[savePosition].isBookmark = false
+                    }
+                    savePosition = adapterPosition
+                    item.isBookmark = true
+                    onClickListener.onSaveButtonClicked(LastReadVerse(
+                        surah = surah,
+                        numberInSurah = item.number.inSurah,
+                        numberInQuran = item.number.inQuran
+                    ))
                 }
 
 //                btnPlay.load(if (isPlay) R.drawable.ic_pause else R.drawable.ic_play)
@@ -116,8 +145,8 @@ class VerseListAdapter(
     }
 
     interface OnClickListener {
-        fun onItemClicked(item: Verse)
         fun onPlayButtonClicked(item: Verse, position: Int)
         fun onShareButtonClicked(item: Verse)
+        fun onSaveButtonClicked(item: LastReadVerse)
     }
 }

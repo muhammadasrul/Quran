@@ -22,5 +22,6 @@ data class Verse(
     var surahName: String = "",
     var surahNameTranslation: String = "",
     var numberOfVerse: String = "",
-    val headerName: String = ""
+    val headerName: String = "",
+    var isBookmark: Boolean = false
 ): Parcelable

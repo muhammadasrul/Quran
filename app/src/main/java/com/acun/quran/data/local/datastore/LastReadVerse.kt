@@ -1,6 +1,7 @@
 package com.acun.quran.data.local.datastore
 
 data class LastReadVerse(
-    val ayah: Int,
-    val surah: String
+    val surah: String,
+    val numberInSurah: Int,
+    val numberInQuran: Int
 )

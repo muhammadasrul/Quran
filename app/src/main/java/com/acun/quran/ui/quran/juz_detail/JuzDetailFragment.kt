@@ -34,9 +34,9 @@ class JuzDetailFragment : Fragment() {
     private val navArgs: JuzDetailFragmentArgs by navArgs()
 
     private var lastReadVerse: LastReadVerse? = null
-    private var versePreference: VersePreference? = null
 
     private val verses = mutableListOf<Verse>()
+    private lateinit var verseAdapter: VerseListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,8 +49,42 @@ class JuzDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        verseAdapter = VerseListAdapter(verses, VersePreference(
+            transliteration = true,
+            translation = true,
+            textSizePos = 1
+        ), object : VerseListAdapter.OnClickListener {
+            override fun onPlayButtonClicked(item: Verse, position: Int) {
+                MediaPlayer().apply {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build()
+                    )
+                    setDataSource(item.audio.primary)
+                    prepare()
+                    start()
+                }
+            }
+
+            override fun onShareButtonClicked(item: Verse) {
+                findNavController().navigate(JuzDetailFragmentDirections.actionJuzDetailFragmentToShareFragment(item))
+            }
+
+            override fun onSaveButtonClicked(item: LastReadVerse) {
+                val temp = lastReadVerse
+                viewModel.setLastRead(item)
+                customToast(view, "Marked as last read.", object :
+                    SnackBarOnClickListener {
+                    override fun onClicked() {
+                        temp?.let { last -> viewModel.setLastRead(last) }
+                    } })
+            }
+        })
+
         with(binding) {
             rvJuzVerse.layoutManager = LinearLayoutManager(requireContext())
+            rvJuzVerse.adapter = verseAdapter
             toolbar.title = requireContext().getString(R.string.juz, navArgs.juz.juz)
             toolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
@@ -58,7 +92,9 @@ class JuzDetailFragment : Fragment() {
         }
 
         viewModel.lastRead.observe(viewLifecycleOwner) { lastReadVerse = it }
-        viewModel.versePreference.observe(viewLifecycleOwner) { versePreference = it}
+        viewModel.versePreference.observe(viewLifecycleOwner) {
+            verseAdapter.setPreference(it)
+        }
 
         verses.ifEmpty { viewModel.getJuzDetail(navArgs.juz.juz) }
         viewModel.juz.observe(viewLifecycleOwner) { resource ->
@@ -66,9 +102,9 @@ class JuzDetailFragment : Fragment() {
                 is Resource.Loading -> binding.loadingAnimation.toVisible()
                 is Resource.Success -> {
                     binding.loadingAnimation.toGone()
-                    resource.data?.let {
+                    resource.data?.let { juzDetail ->
                         val pos = mutableListOf<Int>()
-                        it.verses.forEachIndexed { i, verse ->
+                        juzDetail.verses.forEachIndexed { i, verse ->
                             if ((verse.number.inSurah != 1 && i == 0) || verse.number.inSurah == 1) {
                                 pos.add(pos.size)
                                 verses.add(verse.copy(
@@ -86,37 +122,14 @@ class JuzDetailFragment : Fragment() {
                                 )
                             }
                         }
-                        binding.rvJuzVerse.apply {
-                            adapter = VerseListAdapter(verses, versePreference as VersePreference, object : VerseListAdapter.OnClickListener {
-                                override fun onItemClicked(item: Verse) {
-                                    val temp = lastReadVerse
-                                    viewModel.setLastRead(LastReadVerse(item.number.inSurah, item.surahName))
-                                    customToast(view, "Marked as last read.", object :
-                                        SnackBarOnClickListener {
-                                        override fun onClicked() {
-                                            temp?.let { last -> viewModel.setLastRead(last) }
-                                        } })
-                                }
-
-                                override fun onPlayButtonClicked(item: Verse, position: Int) {
-                                    MediaPlayer().apply {
-                                        setAudioAttributes(
-                                            AudioAttributes.Builder()
-                                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                                .build()
-                                        )
-                                        setDataSource(item.audio.primary)
-                                        prepare()
-                                        start()
-                                    }
-                                }
-
-                                override fun onShareButtonClicked(item: Verse) {
-                                    findNavController().navigate(JuzDetailFragmentDirections.actionJuzDetailFragmentToShareFragment(item))
-                                }
-                            })
-                            scrollToPosition(navArgs.pos)
+                        var saveIndex = -1
+                        verses.firstOrNull { it.number.inQuran == lastReadVerse?.numberInQuran}?.let {
+                            saveIndex = verses.indexOf(it)
+                            verses[saveIndex].isBookmark = true
                         }
+                        verseAdapter.setVerseList(verses)
+                        verseAdapter.setSavePosition(saveIndex)
+                        binding.rvJuzVerse.scrollToPosition(navArgs.pos)
                     }
                 }
                 is Resource.Failed -> binding.loadingAnimation.toGone()

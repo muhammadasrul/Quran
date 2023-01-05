@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(
     val location: LiveData<Location> = _location
 
     fun getPrayer(lat: Double, long: Double) {
-        val cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Jakarta"), Locale.getDefault())
+        val cal = Calendar.getInstance()
         val month = cal.get(Calendar.MONTH)+1
         val year = cal.get(Calendar.YEAR)
         viewModelScope.launch {

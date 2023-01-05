@@ -15,13 +15,18 @@ val Context.preferenceDataStore by preferencesDataStore("preference")
 class QuranDataStore @Inject constructor(private val context: Context) {
 
     val lastRead: Flow<LastReadVerse> = context.lastReadDataStore.data.map {
-        LastReadVerse(it[AYAH] ?: 0, surah = it[SURAH] ?: "")
+        LastReadVerse(
+            surah = it[SURAH] ?: "",
+            numberInSurah = it[NUMBER_IN_SURAH] ?: 0,
+            numberInQuran = it[NUMBER_IN_QURAN] ?: 0
+        )
     }
 
     suspend fun setLastRead(lastRead: LastReadVerse) {
         context.lastReadDataStore.edit {
-            it[AYAH] = lastRead.ayah
             it[SURAH] = lastRead.surah
+            it[NUMBER_IN_SURAH] = lastRead.numberInSurah
+            it[NUMBER_IN_QURAN] = lastRead.numberInQuran
         }
     }
 
@@ -42,8 +47,9 @@ class QuranDataStore @Inject constructor(private val context: Context) {
     }
 
     companion object {
-        val AYAH = intPreferencesKey("ayah")
         val SURAH = stringPreferencesKey("surah")
+        val NUMBER_IN_SURAH = intPreferencesKey("number_in_surah")
+        val NUMBER_IN_QURAN = intPreferencesKey("number")
 
         val TRANSLITERATION = booleanPreferencesKey("transliteration")
         val TRANSLATION = booleanPreferencesKey("translation")

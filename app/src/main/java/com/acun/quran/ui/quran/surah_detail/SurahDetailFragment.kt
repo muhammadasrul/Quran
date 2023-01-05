@@ -37,7 +37,6 @@ class SurahDetailFragment : Fragment() {
     private val navArgs by navArgs<SurahDetailFragmentArgs>()
 
     private var lastReadVerse: LastReadVerse? = null
-    private var versePreference: VersePreference? = null
 
     private lateinit var mediaPlayer: MediaPlayer
     private var lastVersePosition: Int = -1
@@ -70,15 +69,6 @@ class SurahDetailFragment : Fragment() {
             translation = true,
             textSizePos = 1
         ), object : VerseListAdapter.OnClickListener {
-            override fun onItemClicked(item: Verse) {
-                val temp = lastReadVerse
-                viewModel.setLastRead(LastReadVerse(ayah = item.number.inSurah, surah = surah.name.transliteration.en))
-                customToast(view, "Marked as last read.", object : SnackBarOnClickListener {
-                    override fun onClicked() {
-                        temp?.let { last -> viewModel.setLastRead(last) }
-                    }
-                })
-            }
 
             override fun onPlayButtonClicked(item: Verse, position: Int) {
                 mediaPlayer.setOnBufferingUpdateListener { mediaPlayer, _ ->
@@ -141,6 +131,16 @@ class SurahDetailFragment : Fragment() {
             override fun onShareButtonClicked(item: Verse) {
                 findNavController().navigate(SurahDetailFragmentDirections.actionSurahDetailFragmentToShareFragment(item, surah))
             }
+
+            override fun onSaveButtonClicked(item: LastReadVerse) {
+                val temp = lastReadVerse
+                viewModel.setLastRead(item)
+                customToast(view, "Marked as last read.", object : SnackBarOnClickListener {
+                    override fun onClicked() {
+                        temp?.let { last -> viewModel.setLastRead(last) }
+                    }
+                })
+            }
         })
 
         with(binding) {
@@ -152,13 +152,9 @@ class SurahDetailFragment : Fragment() {
                 adapter = verseAdapter
             }
             toolbar.title = surah.name.transliteration.en
-//            tvSurahName.text = surah.name.transliteration.en
-//            tvSurahNameTranslation.text = requireContext().getString(R.string.surah_detail_verse_name, surah.name.translation.en)
-//            tvNumberOfVerses.text = requireContext().getString(R.string.number_of_verses, surah.numberOfVerses)
         }
 
-        viewModel.lastRead.observe(viewLifecycleOwner) { lastReadVerse = it }
-        viewModel.versePreference.observe(viewLifecycleOwner) {versePreference = it}
+        viewModel.lastRead.observe(viewLifecycleOwner) {lastReadVerse = it }
 
         verseList.ifEmpty { viewModel.getSurah(surah.number) }
         viewModel.surahDetail.observe(viewLifecycleOwner) { resource ->
@@ -172,6 +168,12 @@ class SurahDetailFragment : Fragment() {
                             verseList[0].surahNameTranslation = requireContext().getString(R.string.surah_detail_verse_name, surah.name.translation.en)
                             verseList[0].numberOfVerse = requireContext().getString(R.string.number_of_verses, surah.numberOfVerses)
                         }
+                        var saveIndex = -1
+                        verseList.firstOrNull { it.number.inQuran == lastReadVerse?.numberInQuran}?.let {
+                            saveIndex = verseList.indexOf(it)
+                            verseList[saveIndex].isBookmark = true
+                        }
+                        verseAdapter.setSavePosition(saveIndex)
                         verseAdapter.setVerseList(surah.verses)
                         binding.loadingAnimation.toGone()
                     }

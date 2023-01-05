@@ -152,6 +152,18 @@
     <!--        app:layout_constraintBottom_toBottomOf="@id/verseNumberContainer"-->
     <!--        app:layout_constraintEnd_toEndOf="parent"-->
     <!--        app:layout_constraintTop_toTopOf="@id/verseNumberContainer" />-->
+    <ImageButton
+        android:id="@+id/imageSave"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="6dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_bookmark"
+        app:layout_constraintBottom_toBottomOf="@id/verseNumberContainer"
+        app:layout_constraintEnd_toStartOf="@id/imageShare"
+        app:layout_constraintTop_toTopOf="@id/verseNumberContainer"
+        app:tint="@color/primary_blue" />
 
     <ImageButton
         android:id="@+id/imageShare"

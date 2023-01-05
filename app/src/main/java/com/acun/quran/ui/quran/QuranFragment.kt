@@ -33,7 +33,7 @@ class QuranFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.lastRead.observe(viewLifecycleOwner) {
-            binding.textViewLastAyah.text = if (it.ayah != 0) "Ayah no ${it.ayah}" else "you haven't read anything"
+            binding.textViewLastAyah.text = if (it.numberInSurah != 0) "Ayah no ${it.numberInSurah}" else "you haven't read anything"
             binding.textViewLastSurah.text = it.surah
         }
 
