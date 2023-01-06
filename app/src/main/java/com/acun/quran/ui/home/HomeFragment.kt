@@ -147,12 +147,11 @@ class HomeFragment : Fragment(), SensorEventListener2 {
             }
 
             override fun onFinish() {
-//                Log.d("waduh", "location: $it")
-//                fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-//                    if (it != null) {
-//                        viewModel.setLocation(it)
-//                    }
-//                }
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+                    if (it != null) {
+                        viewModel.setLocation(it)
+                    }
+                }
             }
         }.start()
     }

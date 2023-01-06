@@ -21,13 +21,6 @@ class VerseListAdapter(
     private val onClickListener: OnClickListener
 ): RecyclerView.Adapter<VerseListAdapter.VerseListViewHolder>() {
 
-    private var savePosition = -1
-
-    fun setSavePosition(pos: Int) {
-        savePosition = pos
-        notifyItemRangeChanged(0, verseList.size)
-    }
-
     fun setVerseList(newList: List<Verse>) {
         verseList = newList
         notifyItemRangeChanged(0, verseList.size)
@@ -115,13 +108,6 @@ class VerseListAdapter(
                 }
 
                 imageSave.setOnClickListener {
-                    notifyItemChanged(adapterPosition)
-                    notifyItemChanged(savePosition)
-                    if (savePosition != -1) {
-                        verseList[savePosition].isBookmark = false
-                    }
-                    savePosition = adapterPosition
-                    item.isBookmark = true
                     onClickListener.onSaveButtonClicked(LastReadVerse(
                         surah = surah,
                         numberInSurah = item.number.inSurah,

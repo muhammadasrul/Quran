@@ -74,11 +74,23 @@ class JuzDetailFragment : Fragment() {
             override fun onSaveButtonClicked(item: LastReadVerse) {
                 val temp = lastReadVerse
                 viewModel.setLastRead(item)
-                customToast(view, "Marked as last read.", object :
-                    SnackBarOnClickListener {
+
+                val itemInList = verses.firstOrNull { it.number.inQuran == item.numberInQuran }
+                val lastInList = verses.firstOrNull { it.number.inQuran == temp?.numberInQuran }
+                itemInList?.isBookmark = true
+                lastInList?.isBookmark = false
+                verseAdapter.setVerseList(verses)
+
+                customToast(view, "Marked as last read.", object : SnackBarOnClickListener {
                     override fun onClicked() {
-                        temp?.let { last -> viewModel.setLastRead(last) }
-                    } })
+                        temp?.let { last ->
+                            viewModel.setLastRead(last)
+                            itemInList?.isBookmark = false
+                            lastInList?.isBookmark = true
+                            verseAdapter.setVerseList(verses)
+                        }
+                    }
+                })
             }
         })
 
@@ -122,13 +134,8 @@ class JuzDetailFragment : Fragment() {
                                 )
                             }
                         }
-                        var saveIndex = -1
-                        verses.firstOrNull { it.number.inQuran == lastReadVerse?.numberInQuran}?.let {
-                            saveIndex = verses.indexOf(it)
-                            verses[saveIndex].isBookmark = true
-                        }
+                        verses.firstOrNull { it.number.inQuran == lastReadVerse?.numberInQuran}?.isBookmark = true
                         verseAdapter.setVerseList(verses)
-                        verseAdapter.setSavePosition(saveIndex)
                         binding.rvJuzVerse.scrollToPosition(navArgs.pos)
                     }
                 }

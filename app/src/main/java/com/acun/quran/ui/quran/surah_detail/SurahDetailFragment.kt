@@ -135,9 +135,21 @@ class SurahDetailFragment : Fragment() {
             override fun onSaveButtonClicked(item: LastReadVerse) {
                 val temp = lastReadVerse
                 viewModel.setLastRead(item)
+
+                val itemInList = verseList.firstOrNull { it.number.inQuran == item.numberInQuran }
+                val lastInList = verseList.firstOrNull { it.number.inQuran == temp?.numberInQuran }
+                itemInList?.isBookmark = true
+                lastInList?.isBookmark = false
+                verseAdapter.setVerseList(verseList)
+
                 customToast(view, "Marked as last read.", object : SnackBarOnClickListener {
                     override fun onClicked() {
-                        temp?.let { last -> viewModel.setLastRead(last) }
+                        temp?.let { last ->
+                            viewModel.setLastRead(last)
+                            itemInList?.isBookmark = false
+                            lastInList?.isBookmark = true
+                            verseAdapter.setVerseList(verseList)
+                        }
                     }
                 })
             }
@@ -168,13 +180,8 @@ class SurahDetailFragment : Fragment() {
                             verseList[0].surahNameTranslation = requireContext().getString(R.string.surah_detail_verse_name, surah.name.translation.en)
                             verseList[0].numberOfVerse = requireContext().getString(R.string.number_of_verses, surah.numberOfVerses)
                         }
-                        var saveIndex = -1
-                        verseList.firstOrNull { it.number.inQuran == lastReadVerse?.numberInQuran}?.let {
-                            saveIndex = verseList.indexOf(it)
-                            verseList[saveIndex].isBookmark = true
-                        }
-                        verseAdapter.setSavePosition(saveIndex)
-                        verseAdapter.setVerseList(surah.verses)
+                        verseList.firstOrNull { it.number.inQuran == lastReadVerse?.numberInQuran}?.isBookmark = true
+                        verseAdapter.setVerseList(verseList)
                         binding.loadingAnimation.toGone()
                     }
                 }
