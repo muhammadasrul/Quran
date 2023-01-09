@@ -96,49 +96,62 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/switchTranslation" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/tvAppPreference"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="18dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:fontFamily="@font/poppins_medium"-->
-<!--        android:text="Application"-->
-<!--        android:textColor="@color/text_black_light"-->
-<!--        android:textSize="16sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/tvTextSize" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvAppPreference"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginHorizontal="18dp"-->
+    <!--        android:layout_marginTop="24dp"-->
+    <!--        android:fontFamily="@font/poppins_medium"-->
+    <!--        android:text="Application"-->
+    <!--        android:textColor="@color/text_black_light"-->
+    <!--        android:textSize="16sp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/tvTextSize" />-->
 
-<!--    <TextView-->
-<!--        android:id="@+id/tvHelpAndFeedback"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="28dp"-->
-<!--        android:drawablePadding="18dp"-->
-<!--        android:fontFamily="@font/poppins"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:paddingVertical="18dp"-->
-<!--        android:text="Help and Feedback"-->
-<!--        android:textColor="@color/text_black"-->
-<!--        app:drawableStartCompat="@drawable/ic_setting"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/tvAppPreference" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvHelpAndFeedback"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginHorizontal="28dp"-->
+    <!--        android:drawablePadding="18dp"-->
+    <!--        android:fontFamily="@font/poppins"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        android:paddingVertical="18dp"-->
+    <!--        android:text="Help and Feedback"-->
+    <!--        android:textColor="@color/text_black"-->
+    <!--        app:drawableStartCompat="@drawable/ic_setting"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/tvAppPreference" />-->
 
-<!--    <TextView-->
-<!--        android:id="@+id/tvAbout"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="28dp"-->
-<!--        android:drawablePadding="12dp"-->
-<!--        android:fontFamily="@font/poppins"-->
-<!--        android:gravity="center_vertical"-->
-<!--        android:paddingVertical="18dp"-->
-<!--        android:text="About"-->
-<!--        android:textColor="@color/text_black"-->
-<!--        app:drawableStartCompat="@drawable/ic_bookopen"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/tvHelpAndFeedback" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvAbout"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginHorizontal="28dp"-->
+    <!--        android:drawablePadding="12dp"-->
+    <!--        android:fontFamily="@font/poppins"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        android:paddingVertical="18dp"-->
+    <!--        android:text="About"-->
+    <!--        android:textColor="@color/text_black"-->
+    <!--        app:drawableStartCompat="@drawable/ic_bookopen"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/tvHelpAndFeedback" />-->
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:fontFamily="@font/poppins"
+        android:textAlignment="center"
+        android:textColor="@color/text_black_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="v1.0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
