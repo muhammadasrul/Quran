@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PreferenceViewModel @Inject constructor(val quranDataStore: QuranDataStore): ViewModel() {
+class PreferenceViewModel @Inject constructor(private val quranDataStore: QuranDataStore): ViewModel() {
 
     fun setVersePreference(versePreference: VersePreference) {
         viewModelScope.launch {

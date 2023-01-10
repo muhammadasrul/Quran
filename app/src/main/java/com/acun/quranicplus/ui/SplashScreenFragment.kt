@@ -13,6 +13,8 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -43,6 +45,15 @@ class SplashScreenFragment : Fragment(), ActivityResultCallback<Map<String, Bool
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme {
+                    SplashScreen()
+                }
+            }
+        }
 
         locationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions(), this)
         locationPermissionLauncher.launch(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION))
@@ -99,7 +110,7 @@ class SplashScreenFragment : Fragment(), ActivityResultCallback<Map<String, Bool
 
     private fun navigateToHome() {
         lifecycleScope.launch {
-            delay(300)
+            delay(1000)
             if (findNavController().currentDestination == currentDestination) {
                 findNavController().navigate(SplashScreenFragmentDirections.actionSplashScreenFragmentToHomeFragment())
             }
