@@ -19,112 +19,118 @@
         app:titleTextAppearance="@style/Theme.Quran.Toolbar.Title"
         app:titleTextColor="@color/text_black" />
 
-    <TextView
-        android:id="@+id/tvVersePreference"
-        android:layout_width="0dp"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="18dp"
-        android:layout_marginTop="12dp"
-        android:fontFamily="@font/poppins_medium"
-        android:text="Verse Preference"
-        android:textColor="@color/text_black_light"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchTransliteration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="18dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvVersePreference" />
+<!--        <TextView-->
+<!--            android:id="@+id/tvVersePreference"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="18dp"-->
+<!--            android:layout_marginTop="12dp"-->
+<!--            android:fontFamily="@font/poppins_medium"-->
+<!--            android:text="Verse Preference"-->
+<!--            android:textColor="@color/text_black_light"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/toolbar" />-->
 
-    <TextView
-        android:id="@+id/tvTransliteration"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:fontFamily="@font/poppins"
-        android:text="Transliteration"
-        android:textColor="@color/text_black"
-        app:layout_constraintBottom_toBottomOf="@id/switchTransliteration"
-        app:layout_constraintEnd_toStartOf="@id/switchTransliteration"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/switchTransliteration" />
+<!--        <com.google.android.material.switchmaterial.SwitchMaterial-->
+<!--            android:id="@+id/switchTransliteration"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingHorizontal="18dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tvVersePreference" />-->
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchTranslation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="18dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/switchTransliteration" />
+<!--        <TextView-->
+<!--            android:id="@+id/tvTransliteration"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="28dp"-->
+<!--            android:fontFamily="@font/poppins"-->
+<!--            android:text="Transliteration"-->
+<!--            android:textColor="@color/text_black"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/switchTransliteration"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/switchTransliteration"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@id/switchTransliteration" />-->
 
-    <TextView
-        android:id="@+id/tvTranslation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:fontFamily="@font/poppins"
-        android:text="Translation"
-        android:textColor="@color/text_black"
-        app:layout_constraintBottom_toBottomOf="@id/switchTranslation"
-        app:layout_constraintEnd_toStartOf="@id/switchTranslation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/switchTranslation" />
+<!--        <com.google.android.material.switchmaterial.SwitchMaterial-->
+<!--            android:id="@+id/switchTranslation"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingHorizontal="18dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/switchTransliteration" />-->
 
-    <TextView
-        android:id="@+id/tvTextSize"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:fontFamily="@font/poppins"
-        android:text="Text Size"
-        android:textColor="@color/text_black"
-        app:layout_constraintBottom_toBottomOf="@id/spinnerTextSize"
-        app:layout_constraintEnd_toStartOf="@id/spinnerTextSize"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/spinnerTextSize" />
+<!--        <TextView-->
+<!--            android:id="@+id/tvTranslation"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="28dp"-->
+<!--            android:fontFamily="@font/poppins"-->
+<!--            android:text="Translation"-->
+<!--            android:textColor="@color/text_black"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/switchTranslation"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/switchTranslation"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@id/switchTranslation" />-->
 
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/spinnerTextSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="18dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/switchTranslation" />
+<!--    <TextView-->
+<!--        android:id="@+id/tvTextSize"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="28dp"-->
+<!--        android:fontFamily="@font/poppins"-->
+<!--        android:text="Text Size"-->
+<!--        android:textColor="@color/text_black"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/spinnerTextSize"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/spinnerTextSize"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@id/spinnerTextSize" />-->
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/tvAppPreference"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginHorizontal="18dp"-->
-    <!--        android:layout_marginTop="24dp"-->
-    <!--        android:fontFamily="@font/poppins_medium"-->
-    <!--        android:text="Application"-->
-    <!--        android:textColor="@color/text_black_light"-->
-    <!--        android:textSize="16sp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/tvTextSize" />-->
+<!--    <androidx.appcompat.widget.AppCompatSpinner-->
+<!--        android:id="@+id/spinnerTextSize"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="18dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/switchTranslation" />-->
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/tvHelpAndFeedback"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginHorizontal="28dp"-->
-    <!--        android:drawablePadding="18dp"-->
-    <!--        android:fontFamily="@font/poppins"-->
-    <!--        android:gravity="center_vertical"-->
-    <!--        android:paddingVertical="18dp"-->
-    <!--        android:text="Help and Feedback"-->
-    <!--        android:textColor="@color/text_black"-->
-    <!--        app:drawableStartCompat="@drawable/ic_setting"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/tvAppPreference" />-->
+<!--        <TextView-->
+<!--            android:id="@+id/tvAppPreference"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="18dp"-->
+<!--            android:layout_marginTop="24dp"-->
+<!--            android:fontFamily="@font/poppins_medium"-->
+<!--            android:text="Application"-->
+<!--            android:textColor="@color/text_black_light"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tvTextSize" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tvHelpAndFeedback"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="28dp"-->
+<!--            android:drawablePadding="18dp"-->
+<!--            android:fontFamily="@font/poppins"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:paddingVertical="18dp"-->
+<!--            android:text="Help and Feedback"-->
+<!--            android:textColor="@color/text_black"-->
+<!--            app:drawableStartCompat="@drawable/ic_setting"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tvAppPreference" />-->
 
     <!--    <TextView-->
     <!--        android:id="@+id/tvAbout"-->

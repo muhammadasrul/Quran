@@ -5,13 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.local.datastore.VersePreference
 import com.acun.quranicplus.databinding.FragmentPreferenceBinding
+import com.acun.quranicplus.ui.compose.PreferenceScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,29 +39,38 @@ class PreferenceFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        binding.composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme {
+                    PreferenceScreen(viewModel = viewModel)
+                }
+            }
+        }
 
         textSizeArr = resources.getStringArray(R.array.text_size)
         viewModel.versePreference.observe(viewLifecycleOwner) {
-            binding.switchTranslation.isChecked = it.translation
-            binding.switchTransliteration.isChecked = it.transliteration
-            binding.spinnerTextSize.setSelection(it.textSizePos)
+//            binding.switchTranslation.isChecked = it.translation
+//            binding.switchTransliteration.isChecked = it.transliteration
+//            binding.spinnerTextSize.setSelection(it.textSizePos)
 
             translation = it.translation
             transliteration = it.transliteration
             textSize = if (it.textSizePos != -1) textSizeArr[it.textSizePos] else textSizeArr[1]
         }
 
-        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, textSizeArr)
-        binding.spinnerTextSize.adapter = spinnerAdapter
-        binding.spinnerTextSize.onItemSelectedListener = this
+//        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, textSizeArr)
+//        binding.spinnerTextSize.adapter = spinnerAdapter
+//        binding.spinnerTextSize.onItemSelectedListener = this
 
-        binding.switchTranslation.setOnCheckedChangeListener { _, b ->
-            translation = b
-        }
-
-        binding.switchTransliteration.setOnCheckedChangeListener { _, b ->
-            transliteration = b
-        }
+//        binding.switchTranslation.setOnCheckedChangeListener { _, b ->
+//            translation = b
+//        }
+//
+//        binding.switchTransliteration.setOnCheckedChangeListener { _, b ->
+//            transliteration = b
+//        }
 
         binding.tvVersion.text = BuildConfig.VERSION_NAME
     }
