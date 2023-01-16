@@ -1,21 +1,31 @@
 package com.acun.quranicplus.ui.quran.share
 
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.R
 import com.acun.quranicplus.databinding.FragmentShareBinding
 import com.acun.quranicplus.ui.compose.ShareScreen
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 class ShareFragment : Fragment() {
 
@@ -24,6 +34,8 @@ class ShareFragment : Fragment() {
 
     private val args: ShareFragmentArgs by navArgs()
     private var file: File? = null
+
+    private val statusBarColor = MutableLiveData(R.color.white)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,63 +48,68 @@ class ShareFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        statusBarColor.observe(viewLifecycleOwner) {
+            requireActivity().window.statusBarColor = if (it == R.color.black) {
+                ContextCompat.getColor(requireContext(), R.color.text_black)
+            } else {
+                ContextCompat.getColor(requireContext(), it)
+            }
+        }
+
         binding.composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val colorArray = arrayOf(R.color.primary_blue_extra_light, R.color.primary_blue ,R.color.black ,R.color.white)
-                val primaryColor = remember { mutableStateOf(R.color.white) }
-                val secondaryColor = remember { mutableStateOf(R.color.black) }
+                var primaryColor by remember { mutableStateOf(R.color.white) }
+                var secondaryColor by remember { mutableStateOf(R.color.black) }
 
                 ShareScreen(
                     verse = args.verse,
                     surah = args.surah,
-                    primaryColor = primaryColor.value,
-                    secondaryColor = secondaryColor.value,
+                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
                     onBackPressed = {
                         findNavController().navigateUp()
                     },
                     onCardClicked = {
-                        val lastIndex = colorArray.indexOfFirst { it == primaryColor.value }
+                        val lastIndex = colorArray.indexOfFirst { it == primaryColor }
                         val index = if (lastIndex == colorArray.lastIndex) 0 else lastIndex + 1
-                        primaryColor.value = colorArray[index]
-                        secondaryColor.value = getInverseBWColor(colorArray[index])
+                        primaryColor = colorArray[index]
+                        secondaryColor = getInverseBWColor(colorArray[index])
+                        statusBarColor.value = colorArray[index]
                     },
-                    onShareClicked = {
-
+                    onShareCaptured = {
+                        shareImage(it)
                     }
                 )
             }
         }
+    }
 
-//        binding.buttonShare.setOnClickListener {
-//            val bitmap: Bitmap = binding.cardContainer.apply { radius = 0f }.drawToBitmap()
-//            file = File.createTempFile("share", ".jpg", requireActivity().cacheDir)
-//
-//            val outputStream: OutputStream
-//            try {
-//                outputStream = FileOutputStream(file)
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-//                outputStream.flush()
-//                outputStream.close()
-//            } catch (e: Exception) {
-//                Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
-//                return@setOnClickListener
-//            }
-//
-//            val fileUri = file?.let {
-//                FileProvider.getUriForFile(
-//                    requireContext(),
-//                    BuildConfig.APPLICATION_ID + ".provider",
-//                    it
-//                )
-//            }
-//
-//            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-//                type = "image/*"
-//                putExtra(Intent.EXTRA_STREAM, fileUri)
-//            }
-//            startActivity(Intent.createChooser(shareIntent, "Share"))
-//        }
+    private fun shareImage(bitmap: Bitmap) {
+        file = File.createTempFile("share", ".jpg", requireActivity().cacheDir)
+        val outputStream: OutputStream
+        try {
+            outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+            return
+        }
+        val fileUri = file?.let {
+            FileProvider.getUriForFile(
+                requireContext(),
+                BuildConfig.APPLICATION_ID + ".provider",
+                it
+            )
+        }
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_STREAM, fileUri)
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share"))
     }
 
     private fun getInverseBWColor(color: Int): Int {
@@ -106,7 +123,6 @@ class ShareFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        binding.cardContainer.radius = (12 * Resources.getSystem().displayMetrics.density).roundToInt().toFloat()
         file?.delete()
     }
 

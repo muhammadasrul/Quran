@@ -1,190 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.quran.QuranFragment">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:background="@color/white"
-        android:elevation="1dp"
-        app:layout_collapseMode="pin"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:title="@string/app_name"
-        app:titleTextAppearance="@style/Theme.Quran.Toolbar.Title"
-        app:titleTextColor="@color/text_black" />
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?actionBarSize"
-        android:background="@color/white"
-        app:elevation="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/bannerCardView"
-                android:layout_width="match_parent"
-                android:layout_height="186dp"
-                android:layout_marginHorizontal="8dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/appBarLayout">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_blue_gradient">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/fg_circle"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:src="@drawable/img_quran"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/iconBookmark"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="24dp"
-                        android:src="@drawable/ic_bookmark_white_bg"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
-                        android:fontFamily="@font/poppins"
-                        android:text="@string/last_read"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        app:layout_constraintBottom_toBottomOf="@id/iconBookmark"
-                        app:layout_constraintStart_toEndOf="@id/iconBookmark"
-                        app:layout_constraintTop_toTopOf="@id/iconBookmark" />
-
-                    <TextView
-                        android:id="@+id/textViewLastSurah"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@id/textViewLastAyah"
-                        app:layout_constraintStart_toStartOf="@id/textViewLastAyah"
-                        tools:text="Al-Fatihah" />
-
-                    <TextView
-                        android:id="@+id/textViewLastAyah"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginBottom="24dp"
-                        android:fontFamily="@font/poppins"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:text="Ayah no 1" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar2"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@color/white"
-                app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:title="@string/app_name"
-                app:titleTextAppearance="@style/Theme.Quran.Toolbar.Title"
-                app:titleTextColor="@color/text_black" />
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/quranViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/quranTabLayout"
-            android:layout_width="0dp"
-            android:layout_height="72dp"
-            android:layout_marginHorizontal="12dp"
-            app:cardCornerRadius="18dp"
-            app:cardElevation="1dp"
-            app:cardUseCompatPadding="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <RadioGroup
-                android:id="@+id/quranRadioGroupTab"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/radioButtonSurahTab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    android:button="@null"
-                    android:checked="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="@string/surah_title"
-                    android:textAlignment="center"
-                    android:textSize="16sp" />
-
-                <com.google.android.material.radiobutton.MaterialRadioButton
-                    android:id="@+id/radioButtonJuzTab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="4dp"
-                    android:layout_weight="1"
-                    android:button="@null"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="@string/juz_title"
-                    android:textAlignment="center"
-                    android:textSize="16sp" />
-            </RadioGroup>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/quranViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/quranTabLayout" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/composeView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

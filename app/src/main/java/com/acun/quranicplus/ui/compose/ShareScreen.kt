@@ -1,23 +1,28 @@
 package com.acun.quranicplus.ui.compose
 
+import android.graphics.Bitmap
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acun.quranicplus.R
@@ -25,6 +30,12 @@ import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.compose.theme.misbah
 import com.acun.quranicplus.ui.compose.theme.poppins
+import dev.shreyaspatil.capturable.Capturable
+import dev.shreyaspatil.capturable.controller.rememberCaptureController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ShareScreen(
@@ -34,21 +45,24 @@ fun ShareScreen(
     secondaryColor: Int,
     onBackPressed: () -> Unit,
     onCardClicked: () -> Unit,
-    onShareClicked: () -> Unit
+    onShareCaptured: (Bitmap) -> Unit
 ) {
+    val captureController = rememberCaptureController()
+    var roundedCornerSize by remember { mutableStateOf(18.dp) }
     Scaffold(
         topBar = {
             TopBarComponent(
                 title = "Share",
                 rightIcon = R.drawable.ic_arrow_left,
                 onRightIconClicked = onBackPressed,
-                color = colorResource(id = secondaryColor)
+                color = colorResource(id = secondaryColor),
+                textAlignment = TextAlign.Center
             )
         },
         bottomBar = {
             Button(
                 modifier = Modifier
-                    .padding(vertical = 18.dp)
+                    .padding(vertical = 24.dp)
                     .fillMaxWidth()
                     .wrapContentWidth(),
                 shape = RoundedCornerShape(24.dp),
@@ -56,7 +70,11 @@ fun ShareScreen(
                     backgroundColor = colorResource(id = secondaryColor),
                     contentColor = colorResource(id = primaryColor)),
                 onClick = {
-                    onShareClicked()
+                    roundedCornerSize = 0.dp
+                    CoroutineScope(Dispatchers.IO).launch {
+                        delay(100)
+                        captureController.capture()
+                    }
                 }
             ) {
                 Text(
@@ -70,7 +88,7 @@ fun ShareScreen(
                 )
             }
         },
-        backgroundColor = colorResource(id = primaryColor)
+        backgroundColor = colorResource(id = if (primaryColor == R.color.black) R.color.text_black else primaryColor)
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -84,25 +102,47 @@ fun ShareScreen(
                 text = "Tap for more",
                 fontFamily = poppins,
                 fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
                 color = colorResource(id = secondaryColor)
             )
             Divider(
                 color = Color.Transparent,
-                thickness = 20.dp
+                thickness = 12.dp
             )
-            ShareCard(
-                title = buildString {
-                    append("QS. ")
-                    append(surah?.name?.transliteration?.en ?: verse.surahName)
-                    append(": ")
-                    append(verse.number.inSurah)
-                },
-                arabText = verse.text.arab,
-                text = verse.translation.en,
-                primaryColor = primaryColor,
-                secondaryColor = secondaryColor,
-                onCardClicked = { onCardClicked() }
-            )
+            var paddingSize by remember { mutableStateOf(38.dp) }
+            Capturable(
+                modifier = Modifier
+                    .animateContentSize()
+                    .padding(paddingSize),
+                controller = captureController,
+                onCaptured = { imageBitmap, _ ->
+                    roundedCornerSize = 18.dp
+                    if (imageBitmap != null) {
+                        onShareCaptured(imageBitmap.asAndroidBitmap())
+                    }
+                }
+            ) {
+                ShareCard(
+                    title = buildString {
+                        append("QS. ")
+                        append(surah?.name?.transliteration?.en ?: verse.surahName)
+                        append(": ")
+                        append(verse.number.inSurah) },
+                    arabText = verse.text.arab,
+                    text = verse.translation.en,
+                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
+                    roundedCornerSize = roundedCornerSize,
+                    onCardClicked = {
+                        onCardClicked()
+                        paddingSize = 42.dp
+                        CoroutineScope(Dispatchers.IO).launch {
+                            delay(100)
+                            paddingSize = 38.dp
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -112,21 +152,21 @@ fun ShareCard(
     title: String,
     arabText: String,
     text: String,
-    onCardClicked: () -> Unit,
     primaryColor: Int,
-    secondaryColor: Int
+    secondaryColor: Int,
+    roundedCornerSize: Dp,
+    onCardClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(horizontal = 38.dp)
             .shadow(
-                elevation = 20.dp,
+                elevation = 18.dp,
                 ambientColor = colorResource(id = secondaryColor),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(roundedCornerSize)
             )
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(roundedCornerSize))
             .background(color = colorResource(id = primaryColor))
             .clickable { onCardClicked() }
             .padding(20.dp)
@@ -141,10 +181,14 @@ fun ShareCard(
             color = colorResource(id = secondaryColor)
         )
         Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             text = arabText,
             fontFamily = misbah,
             fontSize = 20.sp,
-            color = colorResource(id = secondaryColor)
+            color = colorResource(id = secondaryColor),
+            textAlign = TextAlign.Right
         )
         Text(
             text = text,
@@ -155,20 +199,22 @@ fun ShareCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 14.dp),
-            horizontalArrangement = Arrangement.Center
+                .padding(top = 18.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                modifier = Modifier.size(18.dp),
-                painter = painterResource(id = R.drawable.icon),
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(id = R.drawable.ic_quran_active),
                 contentDescription = stringResource(id = R.string.app_name),
-                colorFilter = ColorFilter.tint(colorResource(id = secondaryColor))
+                colorFilter = ColorFilter.tint(colorResource(id = secondaryColor)),
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
+                modifier = Modifier.padding(top = 1.dp),
                 text = stringResource(id = R.string.app_name),
                 fontFamily = poppins,
-                fontSize = 13.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
                 color = colorResource(id = secondaryColor)
             )
@@ -179,5 +225,5 @@ fun ShareCard(
 @Preview(showBackground = true, heightDp = 500, widthDp = 300)
 @Composable
 fun ShareCardPreview() {
-    ShareCard(title = "Al-Fathiha", arabText = "'asdkfangabdkgekbefbcwjkeoifhbvb", text = "bfdkjbvkbkkbksjdnf", {}, R.color.white, R.color.black)
+    ShareCard(title = "Al-Fathiha", arabText = "'asdkfangabdkgekbefbcwjkeoifhbvb", text = "bfdkjbvkbkkbksjdnf", R.color.white, R.color.black, 12.dp) {}
 }
