@@ -16,6 +16,8 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.TextView
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,6 +30,7 @@ import com.acun.quranicplus.data.remote.response.prayer.model.hour
 import com.acun.quranicplus.data.remote.response.prayer.model.minute
 import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.databinding.FragmentHomeBinding
+import com.acun.quranicplus.ui.compose.HomeScreen
 import com.acun.quranicplus.util.toGone
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -80,6 +83,14 @@ class HomeFragment : Fragment(), SensorEventListener2 {
         observeLocation()
         observePrayer()
 
+        binding.composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MaterialTheme {
+                    HomeScreen(viewModel = viewModel)
+                }
+            }
+        }
     }
 
     private fun getLocationName(lat: Double, long: Double): String {
