@@ -1,31 +1,18 @@
 package com.acun.quranicplus.ui.quran.surah_detail
 
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.acun.quranicplus.R
-import com.acun.quranicplus.data.local.datastore.LastReadVerse
-import com.acun.quranicplus.data.local.datastore.VersePreference
-import com.acun.quranicplus.data.remote.response.Resource
-import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.databinding.FragmentSurahDetailBinding
-import com.acun.quranicplus.util.SnackBarOnClickListener
-import com.acun.quranicplus.util.customToast
-import com.acun.quranicplus.util.toGone
-import com.acun.quranicplus.util.toVisible
+import com.acun.quranicplus.ui.compose.QuranDetailScreen
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class SurahDetailFragment : Fragment() {
@@ -35,14 +22,6 @@ class SurahDetailFragment : Fragment() {
 
     private val viewModel: SurahDetailViewModel by viewModels()
     private val navArgs by navArgs<SurahDetailFragmentArgs>()
-
-    private var lastReadVerse: LastReadVerse? = null
-
-    private lateinit var mediaPlayer: MediaPlayer
-    private var lastVersePosition: Int = -1
-    private var verseList = listOf<Verse>()
-
-    private lateinit var verseAdapter: VerseListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,148 +34,23 @@ class SurahDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val surah = navArgs.surah
-
-        mediaPlayer = MediaPlayer().apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-            )
-        }
-
-        verseAdapter = VerseListAdapter(listOf(), VersePreference(
-            transliteration = true,
-            translation = true,
-            textSizePos = 1
-        ), object : VerseListAdapter.OnClickListener {
-
-            override fun onPlayButtonClicked(item: Verse, position: Int) {
-                mediaPlayer.setOnBufferingUpdateListener { mediaPlayer, _ ->
-                    lifecycleScope.launch {
-                        withContext(Dispatchers.IO) {
-                            var current = 0
-                            while (mediaPlayer.isPlaying) {
-                                val progress = (mediaPlayer.currentPosition.toFloat()/mediaPlayer.duration.toFloat()).times(100).toInt()
-                                if (current != progress) {
-                                    viewModel.setAudioProgress(progress)
-                                    current = progress
-                                }
-                            }
-                        }
-                    }
+        
+        binding.composeView.apply { 
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent { 
+                MaterialTheme {
+                    QuranDetailScreen(
+                        surahNavArgs = surah,
+                        viewModel = viewModel,
+                        onBackPressed = { findNavController().navigateUp() },
+                        onShareClicked = { findNavController().navigate(SurahDetailFragmentDirections.actionSurahDetailFragmentToShareFragment(it))}
+                    )
                 }
-
-                mediaPlayer.setOnCompletionListener {
-                    verseAdapter.setNewPosition(position)
-                    mediaPlayer.reset()
-                    if (lastVersePosition != verseList.size) {
-                        lastVersePosition++
-                    }
-                    if (lastVersePosition == verseList.size) return@setOnCompletionListener
-                    mediaPlayer.setDataSource(verseList[lastVersePosition].audio.primary)
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
-//                    buttonView.setImageResource(R.drawable.ic_play)
-                }
-                if (lastVersePosition != -1) {
-                    if (lastVersePosition != position) {
-                        mediaPlayer.reset()
-                        mediaPlayer.setDataSource(verseList[position].audio.primary)
-                        mediaPlayer.prepare()
-                        mediaPlayer.start()
-                        lastVersePosition = position
-//                        buttonView.setImageResource(R.drawable.ic_pause)
-                    } else {
-                        if (mediaPlayer.isPlaying) {
-                            mediaPlayer.pause()
-//                            buttonView.setImageResource(R.drawable.ic_play)
-                        } else {
-                            mediaPlayer.start()
-//                            buttonView.setImageResource(R.drawable.ic_pause)
-                        }
-                    }
-                } else {
-                    mediaPlayer.reset()
-                    mediaPlayer.setDataSource(verseList[position].audio.primary)
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
-                    lastVersePosition = position
-//                    buttonView.setImageResource(R.drawable.ic_pause)
-                }
-
-
-//                binding.playerSurahName.text = "${verseList[lastVersePosition].surahName} (${verseList[lastVersePosition].number}/${verseList.size})"
-            }
-
-            override fun onShareButtonClicked(item: Verse) {
-                findNavController().navigate(SurahDetailFragmentDirections.actionSurahDetailFragmentToShareFragment(item, surah))
-            }
-
-            override fun onSaveButtonClicked(item: LastReadVerse) {
-                val temp = lastReadVerse
-                viewModel.setLastRead(item)
-
-                val itemInList = verseList.firstOrNull { it.number.inQuran == item.numberInQuran }
-                val lastInList = verseList.firstOrNull { it.number.inQuran == temp?.numberInQuran }
-                itemInList?.isBookmark = true
-                lastInList?.isBookmark = false
-                verseAdapter.setVerseList(verseList)
-
-                customToast(view, "Marked as last read.", object : SnackBarOnClickListener {
-                    override fun onClicked() {
-                        temp?.let { last ->
-                            viewModel.setLastRead(last)
-                            itemInList?.isBookmark = false
-                            lastInList?.isBookmark = true
-                            verseAdapter.setVerseList(verseList)
-                        }
-                    }
-                })
-            }
-        })
-
-        with(binding) {
-            toolbar.setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
-            rvVerse.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = verseAdapter
-            }
-            toolbar.title = surah.name.transliteration.en
-        }
-
-        viewModel.lastRead.observe(viewLifecycleOwner) {lastReadVerse = it }
-
-        verseList.ifEmpty { viewModel.getSurah(surah.number) }
-        viewModel.surahDetail.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Loading -> binding.loadingAnimation.toVisible()
-                is Resource.Success -> {
-                    resource.data?.let { surah ->
-                        verseList = surah.verses
-                        if (verseList.isNotEmpty()) {
-                            verseList[0].surahName = navArgs.surah.name.transliteration.en
-                            verseList[0].surahNameTranslation = requireContext().getString(R.string.surah_detail_verse_name, surah.name.translation.en)
-                            verseList[0].numberOfVerse = requireContext().getString(R.string.number_of_verses, surah.numberOfVerses)
-                        }
-                        verseList.firstOrNull { it.number.inQuran == lastReadVerse?.numberInQuran}?.isBookmark = true
-                        verseAdapter.setVerseList(verseList)
-                        binding.loadingAnimation.toGone()
-                    }
-                }
-                is Resource.Failed -> binding.loadingAnimation.toGone()
             }
         }
 
-        viewModel.versePreference.observe(viewLifecycleOwner) { verseAdapter.setPreference(it) }
-        viewModel.audioProgress.observe(viewLifecycleOwner) {
-
-        }
+        // TODO: Set font size based on verse preference 
+//        viewModel.versePreference.observe(viewLifecycleOwner) { verseAdapter.setPreference(it) }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-//        mediaPlayer.release()
-    }
 }
