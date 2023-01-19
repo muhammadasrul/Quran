@@ -47,6 +47,8 @@ import com.acun.quranicplus.R
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.VersePreference
 import com.acun.quranicplus.data.remote.response.Resource
+import com.acun.quranicplus.data.remote.response.juz.JuzDetail
+import com.acun.quranicplus.data.remote.response.juz_list.Juz
 import com.acun.quranicplus.data.remote.response.surah.SurahDetail
 import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
@@ -56,7 +58,8 @@ import com.acun.quranicplus.ui.quran.surah_detail.SurahDetailViewModel
 
 @Composable
 fun QuranDetailScreen(
-    surahNavArgs: Surah,
+    surahNavArgs: Surah? = null,
+    juzNavArgs: Juz? = null,
     viewModel: SurahDetailViewModel,
     onBackPressed: () -> Unit,
     onShareClicked: (Verse) -> Unit
@@ -64,29 +67,36 @@ fun QuranDetailScreen(
     var verseList by remember { mutableStateOf(listOf<Verse>()) }
 
     val lastReadVerseState = viewModel.lastRead.observeAsState()
-    verseList.ifEmpty { viewModel.getSurah(surahNavArgs.number) }
-    val verseState = viewModel.surahDetail.observeAsState()
-
+    surahNavArgs?.number?.let {
+        verseList.ifEmpty { viewModel.getSurah(it) }
+    }
+    juzNavArgs?.juz?.let {
+        verseList.ifEmpty { viewModel.getJuzDetail(it) }
+    }
+    val surahVerseState = viewModel.surahDetail.observeAsState()
+    val juzVerseState = viewModel.juzDetail.observeAsState()
     val versePreference = viewModel.versePreference.observeAsState()
 
     Scaffold(
         topBar = {
             TopBarComponent(
-                title = surahNavArgs.name.transliteration.en,
+                title = surahNavArgs?.name?.transliteration?.en ?: stringResource(id = R.string.juz, juzNavArgs?.juz ?: 0),
                 rightIcon = R.drawable.ic_arrow_left,
                 onRightIconClicked = { onBackPressed() }
             )
         }
     ) { paddingValues ->
-        when (verseState.value) {
+
+        // surah verse
+        when (surahVerseState.value) {
             is Resource.Loading -> {
 
             }
             is Resource.Success -> {
-                (verseState.value as Resource.Success<SurahDetail>).data?.let { surah ->
+                (surahVerseState.value as Resource.Success<SurahDetail>).data?.let { surah ->
                     verseList = surah.verses
                     if (verseList.isNotEmpty()) {
-                        verseList[0].surahName = surahNavArgs.name.transliteration.en
+                        verseList[0].surahName = surahNavArgs?.name?.transliteration?.en ?: ""
                         verseList[0].surahNameTranslation = stringResource(R.string.surah_detail_verse_name, surah.name.translation.en)
                         verseList[0].numberOfVerse = stringResource(R.string.number_of_verses, surah.numberOfVerses)
                     }
@@ -96,11 +106,85 @@ fun QuranDetailScreen(
                         modifier = Modifier
                             .padding(paddingValues)
                     ) {
-                        item {
-                            VerseHeader(verseList.firstOrNull())
-                            Divider(color = Color.Transparent, thickness = 12.dp)
-                        }
                         itemsIndexed(items = verseList) {index, verse ->
+                            if (verse.surahName.isNotEmpty()) {
+                                VerseHeader(verseList.firstOrNull())
+                                Divider(color = Color.Transparent, thickness = 12.dp)
+                            }
+                            VerseItem(
+                                versePreference = versePreference.value,
+                                verse = verse,
+                                isDividerVisible = index != verseList.lastIndex,
+                                isBookmarked = verse.isBookmark,
+                                onBookmarkClicked = { v ->
+                                    val s = verseList.firstOrNull { it.surahName.isNotEmpty() }?.surahName ?: ""
+                                    val temp = lastReadVerseState.value
+                                    viewModel.setLastRead(LastReadVerse(
+                                        surah = s,
+                                        numberInSurah = v.number.inSurah,
+                                        numberInQuran = v.number.inQuran
+                                    ))
+
+                                    val itemInList = verseList.firstOrNull { it.number.inQuran == v.number.inQuran }
+                                    val lastInList = verseList.firstOrNull { it.number.inQuran == temp?.numberInQuran }
+                                    itemInList?.let {
+                                        verseList[verseList.indexOf(it)].isBookmark = true
+                                    }
+                                    lastInList?.let {
+                                        verseList[verseList.indexOf(it)].isBookmark = false
+                                    }
+                                },
+                                onShareClicked = { onShareClicked(it) },
+                            )
+                        }
+                    }
+                }
+            }
+            is Resource.Failed -> {
+
+            }
+            else -> { }
+        }
+
+        // juz verse
+        when (juzVerseState.value) {
+            is Resource.Loading -> {
+
+            }
+            is Resource.Success -> {
+                (juzVerseState.value as Resource.Success<JuzDetail>).data?.let { juz ->
+                    verseList = juz.verses
+
+                    val pos = mutableListOf<Int>()
+                    juz.verses.forEachIndexed { i, verse ->
+                        if ((verse.number.inSurah != 1 && i == 0) || verse.number.inSurah == 1) {
+                            pos.add(pos.size)
+                            verseList[i].headerName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
+                            verseList[i].numberOfVerse = ""
+                            verseList[i].surahNameTranslation = ""
+                            verseList[i].surahName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
+                        } else {
+                            verseList[i].headerName = ""
+                            verseList[i].numberOfVerse = ""
+                            verseList[i].surahNameTranslation = ""
+                            verseList[i].surahName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
+                        }
+                    }
+
+                    verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran}?.isBookmark = true
+
+                    // TODO: Scroll to clicked item
+                    // binding.rvJuzVerse.scrollToPosition(navArgs.pos)
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                    ) {
+                        itemsIndexed(items = verseList) {index, verse ->
+                            if (verse.headerName.isNotEmpty()) {
+                                VerseHeader(verse, true)
+                                Divider(color = Color.Transparent, thickness = 12.dp)
+                            }
                             VerseItem(
                                 versePreference = versePreference.value,
                                 verse = verse,
@@ -264,7 +348,10 @@ fun CircleNumber(number: String) {
 
 
 @Composable
-fun VerseHeader(verse: Verse?) {
+fun VerseHeader(
+    verse: Verse?,
+    isHeaderOnly: Boolean = false
+) {
     Box(
         modifier = Modifier
             .padding(18.dp)
@@ -275,7 +362,7 @@ fun VerseHeader(verse: Verse?) {
             )
             .clip(RoundedCornerShape(6.dp))
             .fillMaxWidth()
-            .height(112.dp)
+            .height(if (isHeaderOnly) 42.dp else 112.dp)
             .background(color = colorResource(id = R.color.blue_background))
     ) {
         Column(
@@ -290,20 +377,22 @@ fun VerseHeader(verse: Verse?) {
                 fontWeight = FontWeight.SemiBold,
                 color = colorResource(id = R.color.text_black)
             )
-            Text(
-                text = verse?.surahNameTranslation ?: "Surah Name Translation",
-                fontFamily = poppins,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = colorResource(id = R.color.text_black)
-            )
-            Text(
-                text = verse?.numberOfVerse ?: "Number of Verse",
-                fontFamily = poppins,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = colorResource(id = R.color.text_black)
-            )
+            if (!isHeaderOnly) {
+                Text(
+                    text = verse?.surahNameTranslation ?: "Surah Name Translation",
+                    fontFamily = poppins,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colorResource(id = R.color.text_black)
+                )
+                Text(
+                    text = verse?.numberOfVerse ?: "Number of Verse",
+                    fontFamily = poppins,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colorResource(id = R.color.text_black)
+                )
+            }
         }
         Image(
             painter = painterResource(id = R.drawable.fg_prayer),
@@ -318,5 +407,5 @@ fun VerseHeader(verse: Verse?) {
 @Preview
 @Composable
 fun VerseHeaderPreview() {
-    VerseHeader(verse = null)
+    VerseHeader(verse = null, isHeaderOnly = true)
 }

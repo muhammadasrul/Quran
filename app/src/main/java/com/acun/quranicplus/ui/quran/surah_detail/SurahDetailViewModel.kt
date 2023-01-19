@@ -1,9 +1,14 @@
 package com.acun.quranicplus.ui.quran.surah_detail
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.response.Resource
+import com.acun.quranicplus.data.remote.response.juz.JuzDetail
 import com.acun.quranicplus.data.remote.response.surah.SurahDetail
 import com.acun.quranicplus.repository.QuranRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,6 +44,17 @@ class SurahDetailViewModel @Inject constructor(
                 }
                 it.data?.verses = verses ?: listOf()
                 _surahDetail.postValue(it)
+            }
+        }
+    }
+
+    private val _juzDetail = MutableLiveData<Resource<JuzDetail>>()
+    val juzDetail: LiveData<Resource<JuzDetail>> = _juzDetail
+
+    fun getJuzDetail(number: Int) {
+        viewModelScope.launch {
+            repository.getJuz(number).collect {
+                _juzDetail.postValue(it)
             }
         }
     }
