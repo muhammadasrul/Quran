@@ -48,9 +48,6 @@ class SurahDetailFragment : Fragment() {
                 }
             }
         }
-
-        // TODO: Set font size based on verse preference 
-//        viewModel.versePreference.observe(viewLifecycleOwner) { verseAdapter.setPreference(it) }
     }
 
 }

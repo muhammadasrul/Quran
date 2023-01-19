@@ -3,14 +3,32 @@ package com.acun.quranicplus.ui.compose
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -27,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
+import com.acun.quranicplus.data.local.datastore.VersePreference
 import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.data.remote.response.surah.SurahDetail
 import com.acun.quranicplus.data.remote.response.surah.Verse
@@ -47,6 +66,8 @@ fun QuranDetailScreen(
     val lastReadVerseState = viewModel.lastRead.observeAsState()
     verseList.ifEmpty { viewModel.getSurah(surahNavArgs.number) }
     val verseState = viewModel.surahDetail.observeAsState()
+
+    val versePreference = viewModel.versePreference.observeAsState()
 
     Scaffold(
         topBar = {
@@ -81,6 +102,7 @@ fun QuranDetailScreen(
                         }
                         itemsIndexed(items = verseList) {index, verse ->
                             VerseItem(
+                                versePreference = versePreference.value,
                                 verse = verse,
                                 isDividerVisible = index != verseList.lastIndex,
                                 isBookmarked = verse.isBookmark,
@@ -119,11 +141,26 @@ fun QuranDetailScreen(
 @Composable
 fun VerseItem(
     verse: Verse,
+    versePreference: VersePreference?,
     isDividerVisible: Boolean,
     isBookmarked: Boolean,
     onBookmarkClicked: (Verse) -> Unit,
     onShareClicked: (Verse) -> Unit
 ) {
+
+    val arabFontSize = when (versePreference?.textSizePos) {
+        0 -> 18.sp
+        1 -> 22.sp
+        2 -> 24.sp
+        else -> 18.sp
+    }
+    val fontSize = when (versePreference?.textSizePos) {
+        0 -> 12.sp
+        1 -> 13.sp
+        2 -> 15.sp
+        else -> 12.sp
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,28 +201,32 @@ fun VerseItem(
                 .padding(horizontal = 8.dp),
             text = verse.text.arab,
             fontFamily = misbah,
-            fontSize = 22.sp,
+            fontSize = arabFontSize,
             color = colorResource(id = R.color.text_black),
             textAlign = TextAlign.End
         )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            text = verse.text.transliteration.en,
-            fontFamily = poppins,
-            fontSize = 13.sp,
-            color = colorResource(id = R.color.text_black_light)
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            text = verse.translation.en,
-            fontFamily = poppins,
-            fontSize = 13.sp,
-            color = colorResource(id = R.color.text_black)
-        )
+        if (versePreference?.transliteration == true) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                text = verse.text.transliteration.en,
+                fontFamily = poppins,
+                fontSize = fontSize,
+                color = colorResource(id = R.color.text_black_light)
+            )
+        }
+        if (versePreference?.translation == true) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                text = verse.translation.en,
+                fontFamily = poppins,
+                fontSize = fontSize,
+                color = colorResource(id = R.color.text_black)
+            )
+        }
 
         Divider(
             modifier = Modifier
