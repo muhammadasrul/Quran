@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,16 +57,20 @@ import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.compose.theme.misbah
 import com.acun.quranicplus.ui.compose.theme.poppins
 import com.acun.quranicplus.ui.quran.surah_detail.SurahDetailViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun QuranDetailScreen(
     surahNavArgs: Surah? = null,
     juzNavArgs: Juz? = null,
+    juzPos: Int = 0,
     viewModel: SurahDetailViewModel,
     onBackPressed: () -> Unit,
     onShareClicked: (Verse) -> Unit
 ) {
     var verseList by remember { mutableStateOf(listOf<Verse>()) }
+    val verseListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     val lastReadVerseState = viewModel.lastRead.observeAsState()
     surahNavArgs?.number?.let {
@@ -173,10 +179,8 @@ fun QuranDetailScreen(
 
                     verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran}?.isBookmark = true
 
-                    // TODO: Scroll to clicked item
-                    // binding.rvJuzVerse.scrollToPosition(navArgs.pos)
-
                     LazyColumn(
+                        state = verseListState,
                         modifier = Modifier
                             .padding(paddingValues)
                     ) {
@@ -211,6 +215,10 @@ fun QuranDetailScreen(
                                 onShareClicked = { onShareClicked(it) },
                             )
                         }
+                    }
+
+                    coroutineScope.launch {
+                        verseListState.scrollToItem(juzPos)
                     }
                 }
             }

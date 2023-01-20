@@ -41,6 +41,7 @@ class JuzDetailFragment : Fragment() {
                 MaterialTheme {
                     QuranDetailScreen(
                         juzNavArgs = navArgs.juz,
+                        juzPos = navArgs.pos,
                         viewModel = viewModel,
                         onBackPressed = { findNavController().navigateUp() },
                         onShareClicked = {
