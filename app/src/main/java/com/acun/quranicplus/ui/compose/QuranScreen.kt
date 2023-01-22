@@ -1,5 +1,6 @@
 package com.acun.quranicplus.ui.compose
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,6 +50,7 @@ import com.acun.quranicplus.ui.compose.theme.misbah
 import com.acun.quranicplus.ui.compose.theme.poppins
 import com.acun.quranicplus.ui.quran.QuranViewModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuranScreen(
     viewModel: QuranViewModel,
@@ -69,22 +72,6 @@ fun QuranScreen(
         ) {
             val lastSurah = lastRead.value?.surah ?: ""
             val lastAyah = if (lastRead.value?.numberInSurah != 0) "Ayah no ${lastRead.value?.numberInSurah}" else "you haven't read anything"
-            QuranCard(
-                modifier = Modifier
-                    .padding(horizontal = 18.dp, vertical = 8.dp),
-                lastAyah = lastAyah,
-                lastSurah = lastSurah
-            )
-            TabComponent(
-                modifier = Modifier
-                    .padding(horizontal = 18.dp),
-                tabTitle = tabTitle,
-                selectedTab = selectedTab,
-                onSelectedTab = {
-                    selectedTab = it
-                    onSelectedTab(it)
-                }
-            )
             val surahState = viewModel.surahList.observeAsState()
             val juzState = viewModel.juzList.observeAsState()
             when (selectedTab) {
@@ -93,19 +80,43 @@ fun QuranScreen(
                         is Resource.Loading -> {
                             // TODO: Add Loading State
                         }
-                        is Resource.Success -> { LazyColumn {
-                            (surahState.value as Resource.Success<List<Surah>>).data?.let { surahList ->
-                                itemsIndexed(items = surahList) { index, surah ->
-                                    SurahItem(
-                                        modifier = Modifier.padding(horizontal = 24.dp),
-                                        surah = surah,
-                                        isDividerEnabled = (index == surahList.lastIndex)
-                                    ) { surahData, _ ->
-                                        surahData?.let(onSurahDetailClicked)
+                        is Resource.Success -> {
+                            LazyColumn {
+                                item {
+                                    QuranCard(
+                                        modifier = Modifier
+                                            .padding(horizontal = 18.dp, vertical = 8.dp),
+                                        lastAyah = lastAyah,
+                                        lastSurah = lastSurah
+                                    )
+                                }
+                                stickyHeader {
+                                    TabComponent(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(Color.White)
+                                            .padding(horizontal = 18.dp),
+                                        tabTitle = tabTitle,
+                                        selectedTab = selectedTab,
+                                        onSelectedTab = {
+                                            selectedTab = it
+                                            onSelectedTab(it)
+                                        }
+                                    )
+                                }
+                                (surahState.value as Resource.Success<List<Surah>>).data?.let { surahList ->
+                                    itemsIndexed(items = surahList) { index, surah ->
+                                        SurahItem(
+                                            modifier = Modifier.padding(horizontal = 24.dp),
+                                            surah = surah,
+                                            isDividerEnabled = (index == surahList.lastIndex)
+                                        ) { surahData, _ ->
+                                            surahData?.let(onSurahDetailClicked)
+                                        }
                                     }
                                 }
                             }
-                        } }
+                        }
                         is Resource.Failed -> {
                             // TODO: Add Error State
                         }
@@ -118,17 +129,42 @@ fun QuranScreen(
                             // TODO: Add Loading State
                         }
                         is Resource.Success -> {
-                            LazyColumn(
-                                modifier = Modifier.padding(horizontal = 24.dp),
-                            ) {
+                            LazyColumn {
                                 (juzState.value as Resource.Success<List<Juz>>).data?.let { juzList ->
+                                    item {
+                                        QuranCard(
+                                            modifier = Modifier
+                                                .padding(horizontal = 18.dp, vertical = 8.dp),
+                                            lastAyah = lastAyah,
+                                            lastSurah = lastSurah
+                                        )
+                                    }
+                                    stickyHeader {
+                                        TabComponent(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(Color.White)
+                                                .padding(horizontal = 18.dp),
+                                            tabTitle = tabTitle,
+                                            selectedTab = selectedTab,
+                                            onSelectedTab = {
+                                                selectedTab = it
+                                                onSelectedTab(it)
+                                            }
+                                        )
+                                    }
                                     juzList.forEachIndexed { index, juz ->
                                         item {
-                                            ItemHeader(juz = juz)
+                                            ItemHeader(
+                                                modifier = Modifier
+                                                    .padding(horizontal = 24.dp),
+                                                juz = juz
+                                            )
                                         }
 
                                         itemsIndexed(items = juz.surah) {i, juzData ->
                                             SurahItem(
+                                                modifier = Modifier.padding(horizontal = 24.dp),
                                                 onItemClicked = { _, _ ->
                                                     var pos = juz.surah[0].end-juz.surah[0].start+1
                                                     when (i) {
@@ -332,10 +368,11 @@ fun Number(
 
 @Composable
 fun ItemHeader(
+    modifier: Modifier = Modifier,
     juz: Juz
 ) {
     Row(
-        modifier = Modifier.padding(top = 4.dp),
+        modifier = modifier.padding(top = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

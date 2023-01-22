@@ -3,17 +3,35 @@ package com.acun.quranicplus.ui.compose
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,15 +46,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acun.quranicplus.R
+import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.data.remote.response.prayer.getNearestPrayer
-import com.acun.quranicplus.data.remote.response.prayer.getNowPrayer
 import com.acun.quranicplus.data.remote.response.prayer.model.Prayer
 import com.acun.quranicplus.data.remote.response.prayer.model.hour
 import com.acun.quranicplus.data.remote.response.prayer.model.minute
 import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.ui.compose.theme.poppins
 import com.acun.quranicplus.ui.home.HomeViewModel
-import java.util.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @Composable
 fun HomeScreen(
@@ -52,6 +72,7 @@ fun HomeScreen(
         ) {
             val prayer = viewModel.prayer.observeAsState()
             val location = viewModel.location.observeAsState()
+            val isTimerStarted = viewModel.isTimerStarted.observeAsState()
 
             var prayerName by remember { mutableStateOf("") }
             var prayerTime by remember { mutableStateOf("") }
@@ -59,33 +80,40 @@ fun HomeScreen(
             var prayerList by remember { mutableStateOf(listOf<Prayer>()) }
 
             val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            prayer.value?.data?.get(day)?.timings?.let { time ->
-                prayerList = time.toPrayerList()
 
-                val nowPrayerTime = time.getNowPrayer()
-                if (nowPrayerTime != null) {
-                    // TODO: Scroll to now prayer
-//                    binding.rvPrayerTime.scrollToPosition(prayerList.indexOf(nowPrayerTime))
+            when(prayer.value) {
+                is Resource.Loading -> {
+                    // TODO: add loading state
                 }
+                is Resource.Success -> {
+                    prayer.value?.data?.get(day)?.timings?.let { time ->
+                        prayerList = time.toPrayerList()
 
-                val nearestPrayerTime = time.getNearestPrayer()
-                prayerName = stringResource(R.string.next_prayer, nearestPrayerTime?.name ?: "")
-                prayerTime = nearestPrayerTime?.time ?: ""
+                        val nearestPrayerTime = time.getNearestPrayer()
+                        prayerName = stringResource(R.string.next_prayer, nearestPrayerTime?.name ?: "")
+                        prayerTime = nearestPrayerTime?.time ?: ""
 
-                val now = Calendar.getInstance().time.time
-                val nearest = Calendar.getInstance().apply {
-                    if (get(Calendar.HOUR_OF_DAY) >= prayerList.last().hour()) {
-                        add(Calendar.DATE, 1)
+                        val now = Calendar.getInstance().time.time
+                        val nearest = Calendar.getInstance().apply {
+                            if (get(Calendar.HOUR_OF_DAY) >= prayerList.last().hour()) {
+                                add(Calendar.DATE, 1)
+                            }
+                            nearestPrayerTime?.let {
+                                set(Calendar.HOUR_OF_DAY, it.hour())
+                                set(Calendar.MINUTE, it.minute())
+                            }
+                        }.time.time
+
+                        if (isTimerStarted.value == false) {
+                            viewModel.setInitialTime(nearest-now)
+                            viewModel.startTimer()
+                        }
                     }
-                    nearestPrayerTime?.let {
-                        set(Calendar.HOUR_OF_DAY, it.hour())
-                        set(Calendar.MINUTE, it.minute())
-                    }
-                }.time.time
-
-                val diff = nearest-now
-                viewModel.setInitialTime(diff)
-                viewModel.startTimer()
+                }
+                is Resource.Failed -> {
+                    // TODO: add failed state
+                }
+                else -> Unit
             }
 
             val time = viewModel.timeString.observeAsState()
@@ -130,6 +158,15 @@ fun HomeCard(
     nextPrayerTime: String,
     nextPrayerCounter: String
 ) {
+
+    val background = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+        in 19 .. 24, in 1 .. 5 -> painterResource(id = R.drawable.malam)
+        in 5..7 -> painterResource(id = R.drawable.pagi)
+        in 7..15 -> painterResource(id = R.drawable.siang)
+        in 15 .. 19 -> painterResource(id = R.drawable.sore)
+        else -> painterResource(id = R.drawable.pagi)
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -140,7 +177,7 @@ fun HomeCard(
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.malam),
+            painter = background,
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -224,6 +261,8 @@ fun PrayerItem(
 fun PrayerTimesComponent(
     prayerList: List<Prayer>
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val prayerListState = rememberLazyListState()
     Box(
         modifier = Modifier
             .background(Color(0xFFFBFCFF))
@@ -241,13 +280,19 @@ fun PrayerTimesComponent(
                 textAlign = TextAlign.Center
             )
             Divider(thickness = 8.dp, color = Color.Transparent)
-            LazyRow {
+            LazyRow(state = prayerListState) {
                 itemsIndexed(items = prayerList) { index, item ->
                     if (index == 0) {
                         Spacer(modifier = Modifier.width(14.dp))
                     }
                     PrayerItem(item)
                     Spacer(modifier = Modifier.width(14.dp))
+                }
+            }
+            prayerList.firstOrNull { it.isNowPrayer }?.let {
+                coroutineScope.launch {
+                    delay(100)
+                    prayerListState.animateScrollToItem(prayerList.indexOf(it))
                 }
             }
         }

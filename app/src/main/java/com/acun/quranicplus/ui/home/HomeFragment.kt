@@ -8,34 +8,24 @@ import android.hardware.SensorManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.TextView
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.acun.quranicplus.R
-import com.acun.quranicplus.data.remote.response.Resource
-import com.acun.quranicplus.data.remote.response.prayer.getNearestPrayer
-import com.acun.quranicplus.data.remote.response.prayer.getNowPrayer
-import com.acun.quranicplus.data.remote.response.prayer.model.hour
-import com.acun.quranicplus.data.remote.response.prayer.model.minute
-import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.databinding.FragmentHomeBinding
 import com.acun.quranicplus.ui.compose.HomeScreen
-import com.acun.quranicplus.util.toGone
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import java.util.Calendar
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -81,7 +71,6 @@ class HomeFragment : Fragment(), SensorEventListener2 {
         }
 
         observeLocation()
-        observePrayer()
 
         binding.composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -94,50 +83,14 @@ class HomeFragment : Fragment(), SensorEventListener2 {
     }
 
     private fun getLocationName(lat: Double, long: Double): String {
-        val addresses = Geocoder(requireContext()).getFromLocation(lat, long, 1)?.firstOrNull()
+        val addresses = try {
+            Geocoder(requireContext()).getFromLocation(lat, long, 1)?.firstOrNull()
+        } catch (e: Exception) {
+            null
+        }
         return addresses?.locality ?: requireContext().getString(R.string.error_location_not_found)
     }
 
-    private fun observePrayer() {
-        val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        viewModel.prayer.observe(viewLifecycleOwner) { resources ->
-            when (resources) {
-                is Resource.Loading -> Unit
-                is Resource.Success -> {
-                    binding.shimmerContainer.toGone()
-                    resources.data?.get(day)?.timings?.let { time ->
-                        val prayerList = time.toPrayerList()
-
-                        binding.rvPrayerTime.setHasFixedSize(true)
-                        binding.rvPrayerTime.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                        binding.rvPrayerTime.adapter = PrayerTimeAdapter(prayerList)
-
-                        val nowPrayerTime = time.getNowPrayer()
-                        if (nowPrayerTime != null) binding.rvPrayerTime.scrollToPosition(prayerList.indexOf(nowPrayerTime))
-
-                        val nearestPrayerTime = time.getNearestPrayer()
-                        binding.textViewNextPrayerName.text = getString(R.string.next_prayer, nearestPrayerTime?.name)
-                        binding.textViewNextPrayerTime.text = nearestPrayerTime?.time
-
-                        val now = Calendar.getInstance().time.time
-                        val nearest = Calendar.getInstance().apply {
-                                if (get(Calendar.HOUR_OF_DAY) >= prayerList.last().hour()) {
-                                    add(Calendar.DATE, 1)
-                                }
-                                nearestPrayerTime?.let {
-                                    set(Calendar.HOUR_OF_DAY, it.hour())
-                                    set(Calendar.MINUTE, it.minute())
-                                }
-                            }.time.time
-
-                        val diff = nearest-now
-                        binding.textViewNextPrayerCounter.prayerTimeCounter(diff)
-                    }
-                }
-                is Resource.Failed -> Unit
-            }
-        }
-    }
 
     private fun observeLocation() {
         viewModel.location.observe(viewLifecycleOwner) {
@@ -145,26 +98,6 @@ class HomeFragment : Fragment(), SensorEventListener2 {
             binding.textViewCurrentLocation.text = getLocationName(it.latitude, it.longitude)
             viewModel.getPrayer(lat = it.latitude, long = it.longitude)
         }
-    }
-
-    fun TextView.prayerTimeCounter(diff: Long) {
-        object : CountDownTimer(diff, 1000) {
-            override fun onTick(timeInMiles: Long) {
-                val hour = timeInMiles / (1000 * 60 * 60)
-                val minute = timeInMiles / (1000 * 60) % 60
-                val second = (timeInMiles / 1000) % 60
-                fun timeFormat(time: Long) = String.format("%02d", time)
-                this@prayerTimeCounter.text = getString(R.string.prayer_time_counter, timeFormat(hour), timeFormat(minute), timeFormat(second))
-            }
-
-            override fun onFinish() {
-                fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-                    if (it != null) {
-                        viewModel.setLocation(it)
-                    }
-                }
-            }
-        }.start()
     }
 
     override fun onResume() {
