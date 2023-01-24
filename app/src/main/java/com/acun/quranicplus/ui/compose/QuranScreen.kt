@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -68,132 +69,132 @@ fun QuranScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             val lastSurah = lastRead.value?.surah ?: ""
             val lastAyah = if (lastRead.value?.numberInSurah != 0) "Ayah no ${lastRead.value?.numberInSurah}" else "you haven't read anything"
             val surahState = viewModel.surahList.observeAsState()
+            val surahList = mutableListOf<Surah>()
             val juzState = viewModel.juzList.observeAsState()
-            when (selectedTab) {
-                0 -> {
-                    when (surahState.value) {
-                        is Resource.Loading -> {
-                            // TODO: Add Loading State
-                        }
-                        is Resource.Success -> {
-                            LazyColumn {
-                                item {
-                                    QuranCard(
-                                        modifier = Modifier
-                                            .padding(horizontal = 18.dp, vertical = 8.dp),
-                                        lastAyah = lastAyah,
-                                        lastSurah = lastSurah
-                                    )
-                                }
-                                stickyHeader {
-                                    TabComponent(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(Color.White)
-                                            .padding(horizontal = 18.dp),
-                                        tabTitle = tabTitle,
-                                        selectedTab = selectedTab,
-                                        onSelectedTab = {
-                                            selectedTab = it
-                                            onSelectedTab(it)
-                                        }
-                                    )
-                                }
-                                (surahState.value as Resource.Success<List<Surah>>).data?.let { surahList ->
-                                    itemsIndexed(items = surahList) { index, surah ->
-                                        SurahItem(
-                                            modifier = Modifier.padding(horizontal = 24.dp),
-                                            surah = surah,
-                                            isDividerEnabled = (index == surahList.lastIndex)
-                                        ) { surahData, _ ->
-                                            surahData?.let(onSurahDetailClicked)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        is Resource.Failed -> {
-                            // TODO: Add Error State
-                        }
-                        else -> { }
-                    }
-                }
-                1 -> {
-                    when (juzState.value) {
-                        is Resource.Loading -> {
-                            // TODO: Add Loading State
-                        }
-                        is Resource.Success -> {
-                            LazyColumn {
-                                (juzState.value as Resource.Success<List<Juz>>).data?.let { juzList ->
-                                    item {
-                                        QuranCard(
-                                            modifier = Modifier
-                                                .padding(horizontal = 18.dp, vertical = 8.dp),
-                                            lastAyah = lastAyah,
-                                            lastSurah = lastSurah
-                                        )
-                                    }
-                                    stickyHeader {
-                                        TabComponent(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(Color.White)
-                                                .padding(horizontal = 18.dp),
-                                            tabTitle = tabTitle,
-                                            selectedTab = selectedTab,
-                                            onSelectedTab = {
-                                                selectedTab = it
-                                                onSelectedTab(it)
-                                            }
-                                        )
-                                    }
-                                    juzList.forEachIndexed { index, juz ->
-                                        item {
-                                            ItemHeader(
-                                                modifier = Modifier
-                                                    .padding(horizontal = 24.dp),
-                                                juz = juz
-                                            )
-                                        }
+            val juzList = mutableListOf<Juz>()
 
-                                        itemsIndexed(items = juz.surah) {i, juzData ->
-                                            SurahItem(
-                                                modifier = Modifier.padding(horizontal = 24.dp),
-                                                onItemClicked = { _, _ ->
-                                                    var pos = juz.surah[0].end-juz.surah[0].start+1
-                                                    when (i) {
-                                                        0 -> {
-                                                            onJuzDetailClicked(juz, 0)
-                                                        }
-                                                        1 -> {
-                                                            onJuzDetailClicked(juz, pos)
-                                                        }
-                                                        else -> {
-                                                            for (j in 1 until i) {
-                                                                pos+=juz.surah[i].end
-                                                            }
-                                                            onJuzDetailClicked(juz, pos)
-                                                        }
-                                                    }
-                                                },
-                                                isDividerEnabled = !(index == juzList.lastIndex && i == juz.surah.lastIndex),
-                                                juz = juzData
-                                            )
-                                        }
-                                    }
+            var isSurahLoading by remember { mutableStateOf(true) }
+            var isJuzLoading by remember { mutableStateOf(true) }
+
+            when (surahState.value) {
+                is Resource.Loading -> isSurahLoading = true
+                is Resource.Success -> {
+                    isSurahLoading = false
+                    surahState.value?.data?.let { surahList.addAll(it) }
+                }
+                is Resource.Failed -> {
+                    isSurahLoading = false
+                    // TODO: Add Error State
+                }
+                else -> { }
+            }
+            when (juzState.value) {
+                is Resource.Loading -> isJuzLoading = true
+                is Resource.Success -> {
+                    isJuzLoading = false
+                    juzState.value?.data?.let { juzList.addAll(it) }
+                }
+                is Resource.Failed -> {
+                    isJuzLoading = false
+                    // TODO: Add Error State
+                }
+                else -> { }
+            }
+
+            LazyColumn {
+                item {
+                    QuranCard(
+                        modifier = Modifier
+                            .padding(horizontal = 18.dp, vertical = 8.dp),
+                        lastAyah = lastAyah,
+                        lastSurah = lastSurah
+                    )
+                }
+                stickyHeader {
+                    TabComponent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .padding(horizontal = 18.dp),
+                        tabTitle = tabTitle,
+                        selectedTab = selectedTab,
+                        onSelectedTab = {
+                            selectedTab = it
+                            onSelectedTab(it)
+                        }
+                    )
+                }
+
+                when (selectedTab) {
+                    0 -> {
+                        if (isSurahLoading) {
+                            item {
+                                LoadingComponent(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillParentMaxHeight(.6f)
+                                )
+                            }
+                        } else {
+                            itemsIndexed(items = surahList) { index, surah ->
+                                SurahItem(
+                                    modifier = Modifier.padding(horizontal = 24.dp),
+                                    surah = surah,
+                                    isDividerEnabled = (index == surahList.lastIndex)
+                                ) { surahData, _ ->
+                                    surahData?.let(onSurahDetailClicked)
                                 }
                             }
                         }
-                        is Resource.Failed -> {
-                            // TODO: Add Error State
+                    }
+                    1 -> {
+                        if (isJuzLoading) {
+                            item {
+                                LoadingComponent(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillParentMaxHeight(.6f)
+                                )
+                            }
+                        } else {
+                            juzList.forEachIndexed { index, juz ->
+                                item {
+                                    ItemHeader(
+                                        modifier = Modifier
+                                            .padding(horizontal = 24.dp),
+                                        juz = juz
+                                    )
+                                }
+                                itemsIndexed(items = juz.surah) {i, juzData ->
+                                    SurahItem(
+                                        modifier = Modifier.padding(horizontal = 24.dp),
+                                        onItemClicked = { _, _ ->
+                                            var pos = juz.surah[0].end-juz.surah[0].start+1
+                                            when (i) {
+                                                0 -> {
+                                                    onJuzDetailClicked(juz, 0)
+                                                }
+                                                1 -> {
+                                                    onJuzDetailClicked(juz, pos)
+                                                }
+                                                else -> {
+                                                    for (j in 1 until i) {
+                                                        pos+=juz.surah[i].end
+                                                    }
+                                                    onJuzDetailClicked(juz, pos)
+                                                }
+                                            } },
+                                        isDividerEnabled = !(index == juzList.lastIndex && i == juz.surah.lastIndex),
+                                        juz = juzData
+                                    )
+                                }
+                            }
                         }
-                        else -> { }
                     }
                 }
             }

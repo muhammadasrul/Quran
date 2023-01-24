@@ -24,13 +24,6 @@ class SurahDetailViewModel @Inject constructor(
     private val _surahDetail = MutableLiveData<Resource<SurahDetail>>()
     val surahDetail: LiveData<Resource<SurahDetail>> = _surahDetail
 
-    private val _audioProgress = MutableLiveData(0)
-    val audioProgress: LiveData<Int> = _audioProgress
-
-    fun setAudioProgress(progress: Int) {
-        _audioProgress.postValue(progress)
-    }
-
     fun getSurah(number: Int) {
         viewModelScope.launch {
             repository.getSurah(number).collect {

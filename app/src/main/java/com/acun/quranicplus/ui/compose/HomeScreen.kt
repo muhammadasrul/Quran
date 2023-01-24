@@ -54,6 +54,7 @@ import com.acun.quranicplus.data.remote.response.prayer.model.minute
 import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.ui.compose.theme.poppins
 import com.acun.quranicplus.ui.home.HomeViewModel
+import com.acun.quranicplus.util.shimmer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -76,16 +77,15 @@ fun HomeScreen(
 
             var prayerName by remember { mutableStateOf("") }
             var prayerTime by remember { mutableStateOf("") }
-
             var prayerList by remember { mutableStateOf(listOf<Prayer>()) }
+            var isLoading by remember { mutableStateOf(false) }
 
             val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 
             when(prayer.value) {
-                is Resource.Loading -> {
-                    // TODO: add loading state
-                }
+                is Resource.Loading -> isLoading = true
                 is Resource.Success -> {
+                    isLoading = false
                     prayer.value?.data?.get(day)?.timings?.let { time ->
                         prayerList = time.toPrayerList()
 
@@ -110,9 +110,7 @@ fun HomeScreen(
                         }
                     }
                 }
-                is Resource.Failed -> {
-                    // TODO: add failed state
-                }
+                is Resource.Failed -> isLoading = false
                 else -> Unit
             }
 
@@ -143,7 +141,7 @@ fun HomeScreen(
                 )
             }
             Divider(thickness = 6.dp, color = Color.Transparent)
-            PrayerTimesComponent(prayerList)
+            PrayerTimesComponent(prayerList = prayerList, isLoading = isLoading)
             Divider(thickness = 8.dp, color = Color.Transparent)
             QiblaFinderComponent()
         }
@@ -259,7 +257,8 @@ fun PrayerItem(
 
 @Composable
 fun PrayerTimesComponent(
-    prayerList: List<Prayer>
+    prayerList: List<Prayer>,
+    isLoading: Boolean
 ) {
     val coroutineScope = rememberCoroutineScope()
     val prayerListState = rememberLazyListState()
@@ -281,12 +280,36 @@ fun PrayerTimesComponent(
             )
             Divider(thickness = 8.dp, color = Color.Transparent)
             LazyRow(state = prayerListState) {
-                itemsIndexed(items = prayerList) { index, item ->
-                    if (index == 0) {
+                if (isLoading) {
+                    items(5) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .wrapContentSize()
+                                    .shimmer(colorResource(id = R.color.primary_blue_extra_light))
+                                    .size(70.dp)
+                            )
+                            Divider(color = Color.Transparent, thickness = 8.dp)
+                            Box(modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .width(50.dp)
+                                .height(14.dp)
+                                .shimmer(colorResource(id = R.color.primary_blue_extra_light))
+                            )
+                        }
                         Spacer(modifier = Modifier.width(14.dp))
                     }
-                    PrayerItem(item)
-                    Spacer(modifier = Modifier.width(14.dp))
+                } else {
+                    itemsIndexed(items = prayerList) { index, item ->
+                        if (index == 0) {
+                            Spacer(modifier = Modifier.width(14.dp))
+                        }
+                        PrayerItem(item)
+                        Spacer(modifier = Modifier.width(14.dp))
+                    }
                 }
             }
             prayerList.firstOrNull { it.isNowPrayer }?.let {

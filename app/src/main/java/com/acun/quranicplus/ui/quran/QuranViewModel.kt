@@ -1,7 +1,6 @@
 package com.acun.quranicplus.ui.quran
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -51,9 +50,5 @@ class QuranViewModel @Inject constructor(
                 _surahList.postValue(it)
             }
         }
-    }
-
-    override fun onCleared() {
-        Log.d("QuranViewModel", "onCleared: cleared")
     }
 }
