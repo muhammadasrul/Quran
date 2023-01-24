@@ -55,7 +55,6 @@ import com.acun.quranicplus.ui.quran.QuranViewModel
 @Composable
 fun QuranScreen(
     viewModel: QuranViewModel,
-    onSelectedTab: (Int) -> Unit,
     onSurahDetailClicked: (Surah) -> Unit,
     onJuzDetailClicked: (Juz, Int) -> Unit
 ) {
@@ -125,7 +124,6 @@ fun QuranScreen(
                         selectedTab = selectedTab,
                         onSelectedTab = {
                             selectedTab = it
-                            onSelectedTab(it)
                         }
                     )
                 }

@@ -15,24 +15,21 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.acun.quranicplus.R
-import com.acun.quranicplus.databinding.FragmentHomeBinding
 import com.acun.quranicplus.ui.compose.HomeScreen
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), SensorEventListener2 {
 
-    private var _binding : FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var composeView: ComposeView
 
     private val viewModel: HomeViewModel by viewModels()
     private var currentDegree = 0F
@@ -47,8 +44,9 @@ class HomeFragment : Fragment(), SensorEventListener2 {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,18 +59,9 @@ class HomeFragment : Fragment(), SensorEventListener2 {
             }
         }
 
-        val now = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        binding.bannerBackground.background = when (now) {
-            in 19 .. 24, in 1 .. 5 -> ContextCompat.getDrawable(requireContext(), R.drawable.malam)
-            in 5..7 -> ContextCompat.getDrawable(requireContext(), R.drawable.pagi)
-            in 7..15 -> ContextCompat.getDrawable(requireContext(), R.drawable.siang)
-            in 15 .. 19 -> ContextCompat.getDrawable(requireContext(), R.drawable.sore)
-            else -> ContextCompat.getDrawable(requireContext(), R.drawable.pagi)
-        }
-
         observeLocation()
 
-        binding.composeView.apply {
+        composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
@@ -95,7 +84,7 @@ class HomeFragment : Fragment(), SensorEventListener2 {
     private fun observeLocation() {
         viewModel.location.observe(viewLifecycleOwner) {
             location = it
-            binding.textViewCurrentLocation.text = getLocationName(it.latitude, it.longitude)
+//            binding.textViewCurrentLocation.text = getLocationName(it.latitude, it.longitude)
             viewModel.getPrayer(lat = it.latitude, long = it.longitude)
         }
     }
@@ -136,7 +125,7 @@ class HomeFragment : Fragment(), SensorEventListener2 {
         )
         kaabaRotateAnimation.duration = 210
         kaabaRotateAnimation.fillAfter = true
-        binding.kaabaImage.startAnimation(kaabaRotateAnimation)
+//        binding.kaabaImage.startAnimation(kaabaRotateAnimation)
 
         val compassRotateAnimation = RotateAnimation(
             currentDegree,
@@ -148,7 +137,7 @@ class HomeFragment : Fragment(), SensorEventListener2 {
         )
         compassRotateAnimation.duration = 210
         compassRotateAnimation.fillAfter = true
-        binding.compassImage.startAnimation(compassRotateAnimation)
+//        binding.compassImage.startAnimation(compassRotateAnimation)
 
         currentDegree = -degree.toFloat()
     }

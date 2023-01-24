@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.surahDetailFragment,
                 R.id.juzDetailFragment,
-                R.id.surahFragment,
                 R.id.shareFragment,
                 R.id.splashScreenFragment-> binding.bottomNavigation.toGone()
                 else -> binding.bottomNavigation.toVisible()

@@ -54,7 +54,7 @@ import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.compose.theme.misbah
 import com.acun.quranicplus.ui.compose.theme.poppins
-import com.acun.quranicplus.ui.quran.surah_detail.SurahDetailViewModel
+import com.acun.quranicplus.ui.quran.detail.DetailViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -62,7 +62,7 @@ fun QuranDetailScreen(
     surahNavArgs: Surah? = null,
     juzNavArgs: Juz? = null,
     juzPos: Int = 0,
-    viewModel: SurahDetailViewModel,
+    viewModel: DetailViewModel,
     onBackPressed: () -> Unit,
     onShareClicked: (Verse) -> Unit
 ) {

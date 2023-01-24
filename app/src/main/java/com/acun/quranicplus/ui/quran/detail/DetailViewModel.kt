@@ -1,4 +1,4 @@
-package com.acun.quranicplus.ui.quran.surah_detail
+package com.acun.quranicplus.ui.quran.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SurahDetailViewModel @Inject constructor(
+class DetailViewModel @Inject constructor(
     private val repository: QuranRepository,
     private val dataStore: QuranDataStore
 ): ViewModel() {

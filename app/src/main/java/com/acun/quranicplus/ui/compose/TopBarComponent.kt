@@ -28,7 +28,8 @@ import com.acun.quranicplus.ui.compose.theme.poppins
 @Composable
 fun TopBarComponent(
     title: String,
-    color: Color = colorResource(id = R.color.text_black),
+    foregroundColor: Color = colorResource(id = R.color.text_black),
+    backgroundColor: Color = Color.White,
     rightIcon: Int = 0,
     textAlignment: TextAlign = TextAlign.Start,
     onRightIconClicked: () -> Unit = {}
@@ -36,7 +37,7 @@ fun TopBarComponent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(backgroundColor)
     ) {
         Row(
             modifier = Modifier.padding(vertical = 2.dp),
@@ -48,7 +49,7 @@ fun TopBarComponent(
                     onClick = onRightIconClicked
                 ) {
                     Icon(
-                        tint = color,
+                        tint = foregroundColor,
                         painter = painterResource(id = rightIcon),
                         contentDescription = "Right Icon"
                     )
@@ -60,7 +61,7 @@ fun TopBarComponent(
                     .fillMaxWidth()
                     .padding(start = 14.dp, end = 14.dp, top = 8.dp, bottom = 6.dp),
                 text = title,
-                color = color,
+                color = foregroundColor,
                 fontSize = 20.sp,
                 fontFamily = poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -79,6 +80,6 @@ fun TopBarComponent(
 @Composable
 fun TobBarComponentPreview() {
     MaterialTheme {
-        TopBarComponent(title = "Setting", rightIcon = R.drawable.ic_arrow_left, onRightIconClicked = {}, color = colorResource(id = R.color.black))
+        TopBarComponent(title = "Setting", rightIcon = R.drawable.ic_arrow_left, onRightIconClicked = {}, foregroundColor = colorResource(id = R.color.black))
     }
 }

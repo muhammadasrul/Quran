@@ -5,19 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import com.acun.quranicplus.databinding.FragmentQuranBinding
 import com.acun.quranicplus.ui.compose.QuranScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class QuranFragment : Fragment() {
 
-    private var _binding : FragmentQuranBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var composeView: ComposeView
 
     private val viewModel: QuranViewModel by viewModels()
 
@@ -26,22 +25,19 @@ class QuranFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentQuranBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.composeView.apply {
+        composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
                     QuranScreen(
                         viewModel = viewModel,
-                        onSelectedTab = {
-                            binding.quranViewPager.setCurrentItem(it, true)
-                        },
                         onSurahDetailClicked = {
                             findNavController().navigate(QuranFragmentDirections.actionQuranFragmentToSurahDetailFragment(it))
                         },

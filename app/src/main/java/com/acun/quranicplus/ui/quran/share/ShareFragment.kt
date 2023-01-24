@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -21,7 +22,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.R
-import com.acun.quranicplus.databinding.FragmentShareBinding
 import com.acun.quranicplus.ui.compose.ShareScreen
 import java.io.File
 import java.io.FileOutputStream
@@ -29,8 +29,7 @@ import java.io.OutputStream
 
 class ShareFragment : Fragment() {
 
-    private var _binding: FragmentShareBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var composeView: ComposeView
 
     private val args: ShareFragmentArgs by navArgs()
     private var file: File? = null
@@ -41,8 +40,9 @@ class ShareFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentShareBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).also {
+            composeView = it
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,7 +56,7 @@ class ShareFragment : Fragment() {
             }
         }
 
-        binding.composeView.apply {
+        composeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val colorArray = arrayOf(R.color.primary_blue_extra_light, R.color.primary_blue ,R.color.black ,R.color.white)

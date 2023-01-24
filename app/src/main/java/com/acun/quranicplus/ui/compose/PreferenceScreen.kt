@@ -30,7 +30,7 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
     val textSizeArr = stringArrayResource(id = R.array.text_size)
 
     Scaffold(
-        topBar = { TopBarComponent(title = "Settings", color = colorResource(id = R.color.black)) },
+        topBar = { TopBarComponent(title = "Settings", foregroundColor = colorResource(id = R.color.black)) },
         bottomBar = {
             Text(
                 modifier = Modifier
