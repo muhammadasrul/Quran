@@ -44,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -90,6 +91,9 @@ fun HomeScreen(
             val prayer = viewModel.prayer.observeAsState()
             val location = viewModel.location.observeAsState()
             val isTimerStarted = viewModel.isTimerStarted.observeAsState()
+
+            val compassDegree = viewModel.compassDegree.observeAsState()
+            val kaabaDegree = viewModel.kaabaDegree.observeAsState()
 
             var prayerName by remember { mutableStateOf("") }
             var prayerTime by remember { mutableStateOf("") }
@@ -215,7 +219,10 @@ fun HomeScreen(
             Divider(thickness = 6.dp, color = Color.Transparent)
             PrayerTimesComponent(prayerList = prayerList, isLoading = isLoading)
             Divider(thickness = 8.dp, color = Color.Transparent)
-            QiblaFinderComponent()
+            QiblaFinderComponent(
+                kaabaDegree = kaabaDegree.value ?: 0f,
+                compassDegree = compassDegree.value ?: 0f
+            )
         }
     }
 }
@@ -395,7 +402,10 @@ fun PrayerTimesComponent(
 }
 
 @Composable
-fun QiblaFinderComponent() {
+fun QiblaFinderComponent(
+    kaabaDegree: Float,
+    compassDegree: Float
+) {
     Column {
         Text(
             modifier = Modifier.padding(start = 18.dp),
@@ -411,13 +421,17 @@ fun QiblaFinderComponent() {
             modifier = Modifier.padding(horizontal = 32.dp)
         ) {
             Image(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .rotate(compassDegree),
                 painter = painterResource(id = R.drawable.compass),
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
             Image(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .rotate(kaabaDegree),
                 painter = painterResource(id = R.drawable.kaaba_directioin),
                 contentDescription = null,
                 contentScale = ContentScale.Crop

@@ -19,7 +19,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: QuranRepository
 ): ViewModel() {
-
     private var countDownTimer: CountDownTimer? = null
 
     private var initialTime = MutableLiveData<Long>()
@@ -85,5 +84,19 @@ class HomeViewModel @Inject constructor(
     fun stopTimer() {
         _isTimerStarted.value = false
         countDownTimer?.cancel()
+    }
+
+    private val _compassDegree = MutableLiveData(0f)
+    val compassDegree: LiveData<Float> = _compassDegree
+
+    private val _kaabaDegree = MutableLiveData(0f)
+    val kaabaDegree: LiveData<Float> = _kaabaDegree
+
+    fun setCompassDegree(degree: Float) {
+        _compassDegree.value = degree
+    }
+
+    fun setKaabaDegree(degree: Float) {
+        _kaabaDegree.value = degree
     }
 }

@@ -115,38 +115,17 @@ class HomeFragment : Fragment(), SensorEventListener2 {
         val bearingToKaaba = location.bearingTo(kaabaLocation)
         val direction = bearingToKaaba-degree
 
-        val kaabaRotateAnimation = RotateAnimation(
-            direction,
-            -degree.toFloat(),
-            Animation.RELATIVE_TO_SELF,
-            0.5f,
-            Animation.RELATIVE_TO_SELF,
-            0.5f
-        )
-        kaabaRotateAnimation.duration = 210
-        kaabaRotateAnimation.fillAfter = true
-//        binding.kaabaImage.startAnimation(kaabaRotateAnimation)
-
-        val compassRotateAnimation = RotateAnimation(
-            currentDegree,
-            (-degree).toFloat(),
-            Animation.RELATIVE_TO_SELF,
-            0.5f,
-            Animation.RELATIVE_TO_SELF,
-            0.5f
-        )
-        compassRotateAnimation.duration = 210
-        compassRotateAnimation.fillAfter = true
-//        binding.compassImage.startAnimation(compassRotateAnimation)
+        viewModel.setKaabaDegree(direction)
+        viewModel.setCompassDegree(currentDegree)
 
         currentDegree = -degree.toFloat()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, p1: Int) {
-        Log.d("onAccuracyChanged", "${sensor?.name} $p1")
+
     }
 
     override fun onFlushCompleted(sensor: Sensor?) {
-        Log.d("onFlushCompleted", sensor?.name.toString())
+
     }
 }
