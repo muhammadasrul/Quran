@@ -1,11 +1,5 @@
 package com.acun.quranicplus.ui.compose
 
-import android.Manifest
-import android.app.Activity
-import android.content.ContextWrapper
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,14 +21,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -48,8 +39,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,8 +46,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.data.remote.response.prayer.getNearestPrayer
@@ -69,13 +56,10 @@ import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.ui.compose.theme.poppins
 import com.acun.quranicplus.ui.home.HomeViewModel
 import com.acun.quranicplus.util.shimmer
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel
@@ -89,7 +73,7 @@ fun HomeScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             val prayer = viewModel.prayer.observeAsState()
-            val location = viewModel.location.observeAsState()
+            val location = viewModel.locationString.observeAsState()
             val isTimerStarted = viewModel.isTimerStarted.observeAsState()
 
             val compassDegree = viewModel.compassDegree.observeAsState()
@@ -99,62 +83,6 @@ fun HomeScreen(
             var prayerTime by remember { mutableStateOf("") }
             var prayerList by remember { mutableStateOf(listOf<Prayer>()) }
             var isLoading by remember { mutableStateOf(false) }
-
-            val context = LocalContext.current
-            val lifecycleOwner = LocalLifecycleOwner.current
-
-            val permissionsState = rememberMultiplePermissionsState(
-                permissions = listOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            )
-
-            when {
-                permissionsState.allPermissionsGranted -> {
-
-                }
-                else -> {
-                    AlertDialog(
-                        text = {
-                            Text(text = "Location permission required for this feature to be available. Please grant the permission")
-                        },
-                        onDismissRequest = { /*TODO*/ },
-                        confirmButton = {
-                            Button(onClick = {
-                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
-                                context.startActivity(intent)
-                            }) {
-                                Text(text = "Open Setting")
-                            }
-                        },
-                        dismissButton = {
-                            Button(onClick = {
-                                ((context as ContextWrapper).baseContext as Activity).finishAffinity()
-                            }) {
-                                Text(text = "Close")
-                            }
-                        }
-                    )
-                }
-            }
-
-            DisposableEffect(
-                key1 = lifecycleOwner,
-                effect = {
-                    val observer = LifecycleEventObserver { _, event ->
-                        if (event == Lifecycle.Event.ON_START) {
-                            permissionsState.launchMultiplePermissionRequest()
-                        }
-                    }
-
-                    lifecycleOwner.lifecycle.addObserver(observer)
-
-                    onDispose {
-                        lifecycleOwner.lifecycle.removeObserver(observer)
-                    }
-                }
-            )
 
             val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 
@@ -210,7 +138,7 @@ fun HomeScreen(
                     tint = colorResource(id = R.color.primary_blue)
                 )
                 Text(
-                    text = "Kecamatan Sewon",
+                    text = location.value ?: stringResource(id = R.string.error_location_not_found),
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppins,
                     fontSize = 13.sp

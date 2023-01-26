@@ -38,11 +38,14 @@ class SplashScreenFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
-                    SplashScreen()
+                    SplashScreen(onPermissionGranted = {
+                        navigateToHome()
+                    }, onCloseClicked = {
+                        requireActivity().finishAffinity()
+                    })
                 }
             }
         }
-        navigateToHome()
     }
 
     private fun navigateToHome() {

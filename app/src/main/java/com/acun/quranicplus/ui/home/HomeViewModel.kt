@@ -1,6 +1,5 @@
 package com.acun.quranicplus.ui.home
 
-import android.location.Location
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -52,8 +51,8 @@ class HomeViewModel @Inject constructor(
     private val _prayer = MutableLiveData<Resource<List<PrayerTimeData>>>()
     val prayer: LiveData<Resource<List<PrayerTimeData>>> = _prayer
 
-    private val _location = MutableLiveData<Location>()
-    val location: LiveData<Location> = _location
+    private val _locationString = MutableLiveData<String>()
+    val locationString: LiveData<String> = _locationString
 
     fun getPrayer(lat: Double, long: Double) {
         val cal = Calendar.getInstance()
@@ -72,8 +71,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun setLocation(location: Location) {
-        _location.postValue(location)
+    fun setLocation(location: String) {
+        _locationString.postValue(location)
     }
 
     fun startTimer() {
