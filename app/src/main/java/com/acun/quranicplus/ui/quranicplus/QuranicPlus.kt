@@ -1,7 +1,5 @@
 package com.acun.quranicplus.ui.quranicplus
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -18,20 +16,11 @@ import com.acun.quranicplus.ui.screen.quran.QuranScreen
 import com.acun.quranicplus.ui.screen.quran.QuranViewModel
 
 fun NavGraphBuilder.quranicPlus(
-    onSplashScreenComplete: State<Boolean>,
     navHostController: NavHostController
 ) {
     composable(QuranicPlusTabs.HOME.route) {
-        LaunchedEffect(onSplashScreenComplete) {
-            if (!onSplashScreenComplete.value) {
-                navHostController.navigate(QuranicPlusDestinations.SPLASH_SCREEN_ROUTE)
-            }
-        }
-
-        if (onSplashScreenComplete.value) {
-            val viewModel: HomeViewModel = hiltViewModel()
-            HomeScreen(viewModel = viewModel)
-        }
+        val viewModel: HomeViewModel = hiltViewModel()
+        HomeScreen(viewModel = viewModel)
     }
     composable(QuranicPlusTabs.QURAN.route) {
         val viewModel: QuranViewModel = hiltViewModel()

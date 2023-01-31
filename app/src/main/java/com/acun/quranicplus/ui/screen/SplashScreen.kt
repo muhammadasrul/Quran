@@ -16,6 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -34,6 +35,7 @@ import com.acun.quranicplus.R
 import com.acun.quranicplus.ui.theme.poppins
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -52,7 +54,12 @@ fun SplashScreen(
     )
 
     when {
-        permissionsState.allPermissionsGranted -> onPermissionGranted()
+        permissionsState.allPermissionsGranted -> {
+            LaunchedEffect(key1 = true) {
+                delay(1000)
+                onPermissionGranted()
+            }
+        }
         else -> {
             AlertDialog(
                 text = {

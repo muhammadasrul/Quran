@@ -2,9 +2,6 @@ package com.acun.quranicplus.ui.quranicplus
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -20,8 +17,6 @@ import com.acun.quranicplus.ui.screen.SplashScreen
 import com.acun.quranicplus.ui.screen.quran.detail.DetailViewModel
 import com.acun.quranicplus.ui.screen.quran.detail.QuranDetailScreen
 import com.acun.quranicplus.ui.screen.quran.share.ShareScreen
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 object QuranicPlusDestinations {
     const val SPLASH_SCREEN_ROUTE = "splash_screen"
@@ -35,11 +30,8 @@ fun NavGraph(
     modifier: Modifier = Modifier,
     finishActivity: () -> Unit = {},
     navController: NavHostController = rememberNavController(),
-    startDestination: String = QuranicPlusDestinations.QURANIC_PLUS_ROUTE
+    startDestination: String = QuranicPlusDestinations.SPLASH_SCREEN_ROUTE
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val isPermissionGranted = remember(true) { mutableStateOf(false) }
-
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -52,15 +44,10 @@ fun NavGraph(
 
             SplashScreen(
                 onPermissionGranted = {
-                    coroutineScope.launch {
-                        delay(1000)
-                        isPermissionGranted.value = true
-
-                        val navBuilder = NavOptions.Builder()
-                            .setPopUpTo(QuranicPlusDestinations.QURANIC_PLUS_ROUTE, true)
-                            .build()
-                        navController.navigate(QuranicPlusTabs.HOME.route, navBuilder)
-                    }
+                    val navBuilder = NavOptions.Builder()
+                        .setPopUpTo(QuranicPlusDestinations.SPLASH_SCREEN_ROUTE, true)
+                        .build()
+                    navController.navigate(QuranicPlusTabs.HOME.route, navBuilder)
                 },
                 onCloseClicked = {
                     finishActivity()
@@ -71,10 +58,7 @@ fun NavGraph(
             route = QuranicPlusDestinations.QURANIC_PLUS_ROUTE,
             startDestination = QuranicPlusTabs.HOME.route
         ) {
-            quranicPlus(
-                onSplashScreenComplete = isPermissionGranted,
-                navHostController = navController
-            )
+            quranicPlus(navController)
         }
         composable(
             route = QuranicPlusDestinations.QURAN_DETAIL_ROUTE

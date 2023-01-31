@@ -150,7 +150,7 @@ fun HomeScreen(
         is Resource.Loading -> isLoading = true
         is Resource.Success -> {
             isLoading = false
-            prayer.value?.data?.get(day)?.timings?.let { time ->
+            prayer.value?.data?.get(day-1)?.timings?.let { time ->
                 prayerList = time.toPrayerList()
                 val nearestPrayerTime = time.getNearestPrayer()
                 prayerName = stringResource(R.string.next_prayer, nearestPrayerTime?.name ?: "")
