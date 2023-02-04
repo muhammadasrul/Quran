@@ -38,7 +38,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,8 +54,12 @@ import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.component.LoadingComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
+import com.acun.quranicplus.ui.theme.black
+import com.acun.quranicplus.ui.theme.blue
+import com.acun.quranicplus.ui.theme.blueBackground
 import com.acun.quranicplus.ui.theme.misbah
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.textBlackLight
 import kotlinx.coroutines.launch
 
 @Composable
@@ -254,7 +257,7 @@ fun VerseItem(
                         modifier = Modifier.size(24.dp),
                         painter = painterResource(id = if (isBookmarked) R.drawable.ic_bookmark_active else R.drawable.ic_bookmark),
                         contentDescription = null,
-                        tint = colorResource(id = R.color.primary_blue)
+                        tint = blue
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
@@ -263,7 +266,7 @@ fun VerseItem(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(id = R.drawable.ic_baseline_share_24),
                         contentDescription = null,
-                        tint = colorResource(id = R.color.primary_blue)
+                        tint = blue
                     )
                 }
             }
@@ -276,7 +279,7 @@ fun VerseItem(
             text = verse.text.arab,
             fontFamily = misbah,
             fontSize = arabFontSize,
-            color = colorResource(id = R.color.text_black),
+            color = black,
             textAlign = TextAlign.End
         )
         if (versePreference?.transliteration == true) {
@@ -287,7 +290,7 @@ fun VerseItem(
                 text = verse.text.transliteration.en,
                 fontFamily = poppins,
                 fontSize = fontSize,
-                color = colorResource(id = R.color.text_black_light)
+                color = textBlackLight
             )
         }
         if (versePreference?.translation == true) {
@@ -298,7 +301,7 @@ fun VerseItem(
                 text = verse.translation.en,
                 fontFamily = poppins,
                 fontSize = fontSize,
-                color = colorResource(id = R.color.text_black)
+                color = black
             )
         }
 
@@ -306,7 +309,7 @@ fun VerseItem(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .alpha(.3f),
-            color = if (isDividerVisible) colorResource(id = R.color.text_black_light) else Color.Transparent,
+            color = if (isDividerVisible) textBlackLight else Color.Transparent,
             thickness = 1.dp
         )
     }
@@ -319,7 +322,7 @@ fun CircleNumber(number: String) {
             .size(32.dp)
             .border(
                 width = .5.dp,
-                color = colorResource(id = R.color.primary_blue),
+                color = blue,
                 shape = CircleShape
             ),
         contentAlignment = Alignment.Center
@@ -331,7 +334,7 @@ fun CircleNumber(number: String) {
             fontFamily = poppins,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
-            color = colorResource(id = R.color.primary_blue)
+            color = blue
         )
     }
 }
@@ -347,13 +350,13 @@ fun VerseHeader(
             .padding(18.dp)
             .border(
                 width = .7.dp,
-                color = colorResource(id = R.color.primary_blue),
+                color = blue,
                 shape = RoundedCornerShape(6.dp)
             )
             .clip(RoundedCornerShape(6.dp))
             .fillMaxWidth()
             .height(if (isHeaderOnly) 42.dp else 112.dp)
-            .background(color = colorResource(id = R.color.blue_background))
+            .background(color = blueBackground)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -365,7 +368,7 @@ fun VerseHeader(
                 fontFamily = poppins,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = colorResource(id = R.color.text_black)
+                color = black
             )
             if (!isHeaderOnly) {
                 Text(
@@ -373,14 +376,14 @@ fun VerseHeader(
                     fontFamily = poppins,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = colorResource(id = R.color.text_black)
+                    color = black
                 )
                 Text(
                     text = verse?.numberOfVerse ?: "Number of Verse",
                     fontFamily = poppins,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = colorResource(id = R.color.text_black)
+                    color = black
                 )
             }
         }
@@ -389,7 +392,7 @@ fun VerseHeader(
             contentDescription = null,
             alignment = Alignment.CenterEnd,
             modifier = Modifier.fillMaxWidth(),
-            colorFilter = ColorFilter.tint(color = colorResource(id = R.color.primary_blue))
+            colorFilter = ColorFilter.tint(color = blue)
         )
     }
 }

@@ -11,17 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.acun.quranicplus.R
 import com.acun.quranicplus.ui.quranicplus.QuranicPlusTabs
+import com.acun.quranicplus.ui.theme.blue
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.white
 
 @Composable
 fun BottomNavComponent(
@@ -38,7 +37,7 @@ fun BottomNavComponent(
                 BottomNavigationItem(
                     modifier = Modifier
                         .navigationBarsPadding()
-                        .background(Color.White),
+                        .background(white),
                     selected = currentRoute == tab.route,
                     onClick = {
                         if (tab.route != currentRoute) {
@@ -66,8 +65,8 @@ fun BottomNavComponent(
                         )
                     },
                     alwaysShowLabel = false,
-                    selectedContentColor = colorResource(id = R.color.primary_blue),
-                    unselectedContentColor = colorResource(id = R.color.primary_blue)
+                    selectedContentColor = blue,
+                    unselectedContentColor = blue
                 )
             }
         }
@@ -81,13 +80,13 @@ fun BottomNavPreview() {
         val tabs = QuranicPlusTabs.values()
         tabs.forEach {
             BottomNavigationItem(
-                modifier = Modifier.background(Color.White),
+                modifier = Modifier.background(white),
                 selected = true,
                 onClick = { /*TODO*/ },
                 icon = { Icon(painter = painterResource(id = it.icon), contentDescription = null) },
                 enabled = false,
                 alwaysShowLabel = false,
-                selectedContentColor = colorResource(id = R.color.primary_blue),
+                selectedContentColor = blue,
             )
         }
     }

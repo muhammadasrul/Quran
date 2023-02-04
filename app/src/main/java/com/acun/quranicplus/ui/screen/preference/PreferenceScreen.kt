@@ -8,7 +8,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,7 +19,9 @@ import com.acun.quranicplus.data.local.datastore.VersePreference
 import com.acun.quranicplus.ui.component.DropdownPrefComponent
 import com.acun.quranicplus.ui.component.SwitchPrefComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
+import com.acun.quranicplus.ui.theme.black
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.textBlackLight
 
 @Composable
 fun PreferenceScreen(viewModel: PreferenceViewModel) {
@@ -32,7 +33,7 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
     val textSizeArr = stringArrayResource(id = R.array.text_size)
 
     Scaffold(
-        topBar = { TopBarComponent(title = "Settings", foregroundColor = colorResource(id = R.color.black)) },
+        topBar = { TopBarComponent(title = "Settings", foregroundColor = black) },
         bottomBar = {
             Text(
                 modifier = Modifier
@@ -40,7 +41,7 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
                     .padding(bottom = 18.dp),
                 text = BuildConfig.VERSION_NAME,
                 fontSize = 14.sp,
-                color = colorResource(id = R.color.text_black_light),
+                color = textBlackLight,
                 textAlign = TextAlign.Center
             )
         }
@@ -54,7 +55,7 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
                 fontFamily = poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                color = colorResource(id = R.color.text_black_light)
+                color = textBlackLight
             )
             SwitchPrefComponent(title = "Transliteration", isChecked = transliterationState) {
                 transliterationState = it

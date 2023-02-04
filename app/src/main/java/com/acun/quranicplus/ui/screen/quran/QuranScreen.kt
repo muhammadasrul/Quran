@@ -45,7 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -59,8 +58,13 @@ import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.component.LoadingComponent
 import com.acun.quranicplus.ui.component.TabComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
+import com.acun.quranicplus.ui.theme.black
+import com.acun.quranicplus.ui.theme.blue
+import com.acun.quranicplus.ui.theme.blueLight
 import com.acun.quranicplus.ui.theme.misbah
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.textBlackLight
+import com.acun.quranicplus.ui.theme.white
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -247,10 +251,7 @@ fun QuranCard(
             .clip(RoundedCornerShape(24.dp))
             .background(
                 brush = Brush.linearGradient(
-                    listOf(
-                        colorResource(id = R.color.primary_blue),
-                        colorResource(id = R.color.primary_blue_light)
-                    )
+                    listOf(blue, blueLight)
                 )
             )
             .height(164.dp),
@@ -273,7 +274,7 @@ fun QuranCard(
                     fontFamily = poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp,
-                    color = colorResource(id = R.color.white)
+                    color = white
                 )
             }
             Column {
@@ -282,14 +283,14 @@ fun QuranCard(
                     fontFamily = poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp,
-                    color = colorResource(id = R.color.white)
+                    color = white
                 )
                 Text(
                     text = lastAyah,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp,
-                    color = colorResource(id = R.color.white)
+                    color = white
                 )
             }
         }
@@ -350,7 +351,7 @@ fun SurahItem(
                         fontFamily = poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 15.sp,
-                        color = colorResource(id = R.color.text_black)
+                        color = black
                     )
                     Text(
                         modifier = Modifier
@@ -359,7 +360,7 @@ fun SurahItem(
                         fontFamily = poppins,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp,
-                        color = colorResource(id = R.color.text_black_light)
+                        color = textBlackLight
                     )
                 }
             }
@@ -369,14 +370,14 @@ fun SurahItem(
                 text = surah?.name?.short ?: juz?.name_arab ?: "",
                 fontFamily = misbah,
                 fontSize = 22.sp,
-                color = colorResource(id = R.color.text_black)
+                color = black
             )
         }
         if (isDividerEnabled) {
             Divider(
                 modifier = Modifier.alpha(0.15f),
                 thickness = 1.dp,
-                color = colorResource(id = R.color.text_black_light)
+                color = textBlackLight
             )
         }
     }
@@ -402,7 +403,7 @@ fun Number(
             fontFamily = poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
-            color = colorResource(id = R.color.primary_blue)
+            color = blue
         )
     }
 }
@@ -422,7 +423,7 @@ fun ItemHeader(
             fontFamily = poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
-            color = colorResource(id = R.color.text_black)
+            color = black
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
@@ -430,7 +431,7 @@ fun ItemHeader(
             fontFamily = poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
-            color = colorResource(id = R.color.primary_blue)
+            color = blue
         )
     }
 }

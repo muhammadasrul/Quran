@@ -17,13 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acun.quranicplus.R
+import com.acun.quranicplus.ui.theme.blue
+import com.acun.quranicplus.ui.theme.blueLight
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.white
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -42,7 +43,7 @@ fun TabComponent(
             .clip(RoundedCornerShape(16.dp))
         ,
         indicator = { Box{} },
-        backgroundColor = colorResource(id = R.color.white),
+        backgroundColor = white,
         selectedTabIndex = pagerState.currentPage,
         divider = { Box {} }
     ) {
@@ -63,19 +64,9 @@ fun TabComponent(
                         .padding(4.dp)
                         .background(
                             if (isSelected) {
-                                Brush.linearGradient(
-                                    listOf(
-                                        colorResource(id = R.color.primary_blue),
-                                        colorResource(id = R.color.primary_blue_light)
-                                    )
-                                )
+                                Brush.linearGradient(listOf(blue, blueLight))
                             } else {
-                                Brush.linearGradient(
-                                    listOf(
-                                        colorResource(id = R.color.white),
-                                        colorResource(id = R.color.white)
-                                    )
-                                )
+                                Brush.linearGradient(listOf(white, white))
                             },
                             RoundedCornerShape(14.dp)
                         )
@@ -84,9 +75,7 @@ fun TabComponent(
                     fontFamily = poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
-                    color = colorResource(
-                        if (isSelected) R.color.white else R.color.primary_blue
-                    ),
+                    color = if (isSelected) white else blue,
                     textAlign = TextAlign.Center
                 )
             }

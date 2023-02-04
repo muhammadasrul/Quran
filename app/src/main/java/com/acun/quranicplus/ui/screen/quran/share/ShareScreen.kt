@@ -37,9 +37,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,15 +48,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.component.TopBarComponent
+import com.acun.quranicplus.ui.theme.black
 import com.acun.quranicplus.ui.theme.misbah
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.shareBackgroundList
+import com.acun.quranicplus.ui.theme.textBlack
+import com.acun.quranicplus.ui.theme.white
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
@@ -79,24 +82,27 @@ fun ShareScreen(
     val coroutineScope = rememberCoroutineScope()
     var roundedCornerSize by remember { mutableStateOf(18.dp) }
 
-    val colorArray = arrayOf(
-        R.color.primary_blue_extra_light,
-        R.color.primary_blue,
-        R.color.black,
-        R.color.white
-    )
-    var primaryColor by remember { mutableStateOf(R.color.white) }
-    var secondaryColor by remember { mutableStateOf(R.color.black) }
+//    val colorArray = arrayOf(
+//        R.color.primary_blue_extra_light,
+//        R.color.primary_blue,
+//        R.color.black,
+//        R.color.white
+//    )
+//    var primaryColor by remember { mutableStateOf(R.color.white) }
+//    var secondaryColor by remember { mutableStateOf(R.color.black) }
+
+    var primaryColor by remember { mutableStateOf(white) }
+    var secondaryColor by remember { mutableStateOf(black) }
 
     val file: File = File.createTempFile("share", ".jpg", context.cacheDir)
 
-    fun getInverseBWColor(color: Int): Int {
-        val red = android.graphics.Color.red(ContextCompat.getColor(context, color))
-        val blue = android.graphics.Color.blue(ContextCompat.getColor(context, color))
-        val green = android.graphics.Color.green(ContextCompat.getColor(context, color))
+    fun getInverseBWColor(color: Int): Color {
+        val red = android.graphics.Color.red(color)
+        val blue = android.graphics.Color.blue(color)
+        val green = android.graphics.Color.green(color)
 
         val luminance = (red * 0.299) + (green * 0.7152) + (blue * 0.0722)
-        return if (luminance < 140) R.color.white else R.color.black
+        return if (luminance < 140) white else black
     }
 
     fun shareImage(bitmap: Bitmap) {
@@ -137,7 +143,7 @@ fun ShareScreen(
                 title = "Share",
                 rightIcon = R.drawable.ic_arrow_left,
                 onRightIconClicked = onBackPressed,
-                foregroundColor = colorResource(id = secondaryColor),
+                foregroundColor = secondaryColor,
                 backgroundColor = Color.Transparent,
                 textAlignment = TextAlign.Center
             )
@@ -150,8 +156,8 @@ fun ShareScreen(
                     .wrapContentWidth(),
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(id = secondaryColor),
-                    contentColor = colorResource(id = primaryColor)
+                    backgroundColor = secondaryColor,
+                    contentColor = primaryColor
                 ),
                 onClick = {
                     roundedCornerSize = 0.dp
@@ -168,11 +174,11 @@ fun ShareScreen(
                     text = "Share",
                     fontFamily = poppins,
                     fontSize = 15.sp,
-                    color = colorResource(id = primaryColor)
+                    color = primaryColor
                 )
             }
         },
-        backgroundColor = colorResource(id = if (primaryColor == R.color.black) R.color.text_black else primaryColor)
+        backgroundColor = if (primaryColor == black) textBlack else primaryColor
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -187,7 +193,7 @@ fun ShareScreen(
                 fontFamily = poppins,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
-                color = colorResource(id = secondaryColor)
+                color = secondaryColor
             )
             Divider(
                 color = Color.Transparent,
@@ -206,8 +212,8 @@ fun ShareScreen(
                     }
                 }
             ) {
-                val color = colorResource(id = primaryColor)
-                systemUiController.setStatusBarColor(color)
+//                val color = colorResource(id = primaryColor)
+                systemUiController.setStatusBarColor(primaryColor)
                 ShareCard(
                     title = buildString {
                         append("QS. ")
@@ -221,11 +227,11 @@ fun ShareScreen(
                     secondaryColor = secondaryColor,
                     roundedCornerSize = roundedCornerSize,
                     onCardClicked = {
-                        val currentIndex = colorArray.indexOfFirst { it == primaryColor }
+                        val currentIndex = shareBackgroundList.indexOfFirst { it == primaryColor }
                         val index =
-                            if (currentIndex == colorArray.lastIndex) 0 else currentIndex + 1
-                        primaryColor = colorArray[index]
-                        secondaryColor = getInverseBWColor(colorArray[index])
+                            if (currentIndex == shareBackgroundList.lastIndex) 0 else currentIndex + 1
+                        primaryColor = shareBackgroundList[index]
+                        secondaryColor = getInverseBWColor(shareBackgroundList[index].toArgb())
 
                         paddingSize = 42.dp
                         coroutineScope.launch {
@@ -244,8 +250,8 @@ fun ShareCard(
     title: String,
     arabText: String,
     text: String,
-    primaryColor: Int,
-    secondaryColor: Int,
+    primaryColor: Color,
+    secondaryColor: Color,
     roundedCornerSize: Dp,
     onCardClicked: () -> Unit,
 ) {
@@ -255,11 +261,11 @@ fun ShareCard(
             .wrapContentHeight()
             .shadow(
                 elevation = 18.dp,
-                ambientColor = colorResource(id = secondaryColor),
+                ambientColor = secondaryColor,
                 shape = RoundedCornerShape(roundedCornerSize)
             )
             .clip(RoundedCornerShape(roundedCornerSize))
-            .background(color = colorResource(id = primaryColor))
+            .background(color = primaryColor)
             .clickable { onCardClicked() }
             .padding(20.dp)
     ) {
@@ -270,7 +276,7 @@ fun ShareCard(
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
-            color = colorResource(id = secondaryColor)
+            color = secondaryColor
         )
         Text(
             modifier = Modifier
@@ -279,14 +285,14 @@ fun ShareCard(
             text = arabText,
             fontFamily = misbah,
             fontSize = 20.sp,
-            color = colorResource(id = secondaryColor),
+            color = secondaryColor,
             textAlign = TextAlign.Right
         )
         Text(
             text = text,
             fontFamily = poppins,
             fontSize = 13.sp,
-            color = colorResource(id = secondaryColor)
+            color = secondaryColor
         )
         Row(
             modifier = Modifier
@@ -299,7 +305,7 @@ fun ShareCard(
                 modifier = Modifier.size(16.dp),
                 painter = painterResource(id = R.drawable.ic_quran_active),
                 contentDescription = stringResource(id = R.string.app_name),
-                colorFilter = ColorFilter.tint(colorResource(id = secondaryColor)),
+                colorFilter = ColorFilter.tint(secondaryColor),
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
@@ -308,7 +314,7 @@ fun ShareCard(
                 fontFamily = poppins,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
-                color = colorResource(id = secondaryColor)
+                color = secondaryColor
             )
         }
     }
@@ -321,8 +327,8 @@ fun ShareCardPreview() {
         title = "Al-Fathiha",
         arabText = "'asdkfangabdkgekbefbcwjkeoifhbvb",
         text = "bfdkjbvkbkkbksjdnf",
-        R.color.white,
-        R.color.black,
+        white,
+        black,
         12.dp
     ) {}
 }

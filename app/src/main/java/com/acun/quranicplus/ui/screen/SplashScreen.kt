@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.acun.quranicplus.R
+import com.acun.quranicplus.ui.theme.blue
 import com.acun.quranicplus.ui.theme.poppins
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -127,7 +127,7 @@ fun SplashScreen(
                 Text(
                     modifier = Modifier.padding(top = 12.dp),
                     text = stringResource(id = R.string.app_name),
-                    color = colorResource(id = R.color.primary_blue),
+                    color = blue,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = poppins,
                     fontSize = 22.sp

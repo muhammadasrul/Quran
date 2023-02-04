@@ -50,7 +50,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,7 +65,13 @@ import com.acun.quranicplus.data.remote.response.prayer.model.hour
 import com.acun.quranicplus.data.remote.response.prayer.model.minute
 import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.ui.component.TopBarComponent
+import com.acun.quranicplus.ui.theme.black
+import com.acun.quranicplus.ui.theme.blue
+import com.acun.quranicplus.ui.theme.blueExtraLight
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.textBlackLight
+import com.acun.quranicplus.ui.theme.textWhite
+import com.acun.quranicplus.ui.theme.white
 import com.acun.quranicplus.util.shimmer
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.delay
@@ -199,7 +204,7 @@ fun HomeScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.location),
                     contentDescription = null,
-                    tint = colorResource(id = R.color.primary_blue)
+                    tint = blue
                 )
                 Text(
                     text = location.value ?: stringResource(id = R.string.error_location_not_found),
@@ -261,21 +266,21 @@ fun HomeCard(
                 fontFamily = poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 13.sp,
-                color = colorResource(id = R.color.white)
+                color = white
             )
             Text(
                 text = nextPrayerTime,
                 fontFamily = poppins,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                color = colorResource(id = R.color.white)
+                color = white
             )
             Text(
                 text = nextPrayerCounter,
                 fontFamily = poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 13.sp,
-                color = colorResource(id = R.color.white)
+                color = white
             )
         }
     }
@@ -292,10 +297,10 @@ fun PrayerItem(
             modifier = Modifier
                 .clip(CircleShape)
                 .wrapContentSize()
-                .background(Color(0xFFF2F5FE))
+                .background(textWhite)
                 .border(
                     width = if (prayer.isNowPrayer) 1.5.dp else 0.dp,
-                    color = colorResource(id = R.color.primary_blue),
+                    color = blue,
                     shape = CircleShape
                 )
                 .size(70.dp),
@@ -309,7 +314,7 @@ fun PrayerItem(
                 fontFamily = poppins,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                color = colorResource(id = R.color.text_black),
+                color = black,
                 textAlign = TextAlign.Center
             )
         }
@@ -320,7 +325,7 @@ fun PrayerItem(
             fontFamily = poppins,
             fontWeight = FontWeight.Normal,
             fontSize = 12.sp,
-            color = colorResource(id = R.color.text_black_light),
+            color = textBlackLight,
             textAlign = TextAlign.Center
         )
     }
@@ -346,7 +351,7 @@ fun PrayerTimesComponent(
                 fontFamily = poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
-                color = colorResource(id = R.color.text_black),
+                color = black,
                 textAlign = TextAlign.Center
             )
             Divider(thickness = 8.dp, color = Color.Transparent)
@@ -360,7 +365,7 @@ fun PrayerTimesComponent(
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .wrapContentSize()
-                                    .shimmer(colorResource(id = R.color.primary_blue_extra_light))
+                                    .shimmer(blueExtraLight)
                                     .size(70.dp)
                             )
                             Divider(color = Color.Transparent, thickness = 8.dp)
@@ -368,7 +373,7 @@ fun PrayerTimesComponent(
                                 .clip(RoundedCornerShape(4.dp))
                                 .width(50.dp)
                                 .height(14.dp)
-                                .shimmer(colorResource(id = R.color.primary_blue_extra_light))
+                                .shimmer(blueExtraLight)
                             )
                         }
                         Spacer(modifier = Modifier.width(14.dp))
@@ -405,7 +410,7 @@ fun QiblaFinderComponent(
             fontFamily = poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
-            color = colorResource(id = R.color.text_black),
+            color = black,
             textAlign = TextAlign.Center
         )
         Divider(thickness = 8.dp, color = Color.Transparent)

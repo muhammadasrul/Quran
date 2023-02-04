@@ -10,13 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acun.quranicplus.R
+import com.acun.quranicplus.ui.theme.blue
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.textBlack
 
 @Composable
 fun SwitchPrefComponent(
@@ -36,13 +36,13 @@ fun SwitchPrefComponent(
             fontFamily = poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
-            color = colorResource(id = R.color.text_black)
+            color = textBlack
         )
         Switch(
             checked = isChecked,
             onCheckedChange = onCheckChange,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = colorResource(id = R.color.primary_blue)
+                checkedThumbColor = blue
             )
         )
     }
