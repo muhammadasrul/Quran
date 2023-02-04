@@ -27,11 +27,13 @@ fun NavGraphBuilder.quranicPlus(
         QuranScreen(
             viewModel = viewModel,
             onSurahDetailClicked = {
+                navHostController.currentBackStackEntry?.savedStateHandle?.set("juz", null)
                 navHostController.currentBackStackEntry?.savedStateHandle?.set("surah", it)
                 navHostController.navigate(QuranicPlusDestinations.QURAN_DETAIL_ROUTE)
             },
             onJuzDetailClicked = { juz, pos ->
                 navHostController.currentBackStackEntry?.savedStateHandle?.set("juz", juz)
+                navHostController.currentBackStackEntry?.savedStateHandle?.set("surah", null)
                 navHostController.currentBackStackEntry?.savedStateHandle?.set("pos", pos)
                 navHostController.navigate(QuranicPlusDestinations.QURAN_DETAIL_ROUTE)
             }

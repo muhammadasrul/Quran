@@ -64,11 +64,9 @@ fun NavGraph(
             route = QuranicPlusDestinations.QURAN_DETAIL_ROUTE
         ) {
             val viewModel: DetailViewModel = hiltViewModel()
-            val surahNavArgs =
-                navController.previousBackStackEntry?.savedStateHandle?.get<Surah>("surah")
+            val surahNavArgs = navController.previousBackStackEntry?.savedStateHandle?.get<Surah>("surah")
             val juzNavArgs = navController.previousBackStackEntry?.savedStateHandle?.get<Juz>("juz")
-            val juzPos =
-                navController.previousBackStackEntry?.savedStateHandle?.get<Int>("pos") ?: 0
+            val juzPos = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("pos") ?: 0
             QuranDetailScreen(
                 viewModel = viewModel,
                 onBackPressed = { navController.navigateUp() },

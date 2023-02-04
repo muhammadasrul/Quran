@@ -179,7 +179,7 @@ fun QuranDetailScreen(
 
                     if (isHeaderVisible) {
                         VerseHeader(
-                            verse = verseList.firstOrNull(),
+                            verse = if (juzNavArgs != null) verse else verseList.firstOrNull(),
                             isHeaderOnly = juzNavArgs != null
                         )
                         Divider(color = Color.Transparent, thickness = 12.dp)
