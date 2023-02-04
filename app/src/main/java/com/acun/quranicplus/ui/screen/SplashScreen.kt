@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.acun.quranicplus.R
 import com.acun.quranicplus.ui.theme.blue
 import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.white
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.delay
@@ -67,18 +69,33 @@ fun SplashScreen(
                 },
                 onDismissRequest = { /*TODO*/ },
                 confirmButton = {
-                    Button(onClick = {
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
-                        context.startActivity(intent)
-                    }) {
-                        Text(text = "Open Setting")
+                    Button(
+                        onClick = {
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
+                            context.startActivity(intent)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = blue
+                        )
+                    ) {
+                        Text(
+                            text = "Open Setting",
+                            color = white
+                        )
                     }
                 },
                 dismissButton = {
                     Button(onClick = {
-                        onCloseClicked()
-                    }) {
-                        Text(text = "Close")
+                            onCloseClicked()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = blue
+                        )
+                    ) {
+                        Text(
+                            text = "Close",
+                            color = white
+                        )
                     }
                 }
             )
