@@ -98,9 +98,9 @@ fun QuranDetailScreen(
         is Resource.Success -> {
             isLoading = false
             surahVerseState.value?.data?.let { surah ->
-                verseList = surah.verses
+                verseList = surah.verses.map { it.copy(surahName = surahNavArgs?.name?.transliteration?.en ?: "") }
                 if (verseList.isNotEmpty()) {
-                    verseList[0].surahName = surahNavArgs?.name?.transliteration?.en ?: ""
+                    verseList[0].headerName = surahNavArgs?.name?.transliteration?.en ?: ""
                     verseList[0].surahNameTranslation = stringResource(R.string.surah_detail_verse_name, surah.name.translation.en)
                     verseList[0].numberOfVerse = stringResource(R.string.number_of_verses, surah.numberOfVerses)
                 }
@@ -174,7 +174,7 @@ fun QuranDetailScreen(
                     val isHeaderVisible = juzNavArgs?.let {
                         verse.headerName.isNotEmpty()
                     } ?: surahNavArgs?.let {
-                        verse.surahName.isNotEmpty()
+                        verse.headerName.isNotEmpty()
                     } ?: false
 
                     if (isHeaderVisible) {

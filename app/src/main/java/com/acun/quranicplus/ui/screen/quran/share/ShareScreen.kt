@@ -52,7 +52,6 @@ import androidx.core.content.FileProvider
 import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.remote.response.surah.Verse
-import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.component.TopBarComponent
 import com.acun.quranicplus.ui.theme.black
 import com.acun.quranicplus.ui.theme.misbah
@@ -72,7 +71,6 @@ import java.io.OutputStream
 @Composable
 fun ShareScreen(
     verse: Verse?,
-    surah: Surah?,
     onBackPressed: () -> Unit
 ) {
     val context = LocalContext.current
@@ -81,15 +79,6 @@ fun ShareScreen(
     val captureController = rememberCaptureController()
     val coroutineScope = rememberCoroutineScope()
     var roundedCornerSize by remember { mutableStateOf(18.dp) }
-
-//    val colorArray = arrayOf(
-//        R.color.primary_blue_extra_light,
-//        R.color.primary_blue,
-//        R.color.black,
-//        R.color.white
-//    )
-//    var primaryColor by remember { mutableStateOf(R.color.white) }
-//    var secondaryColor by remember { mutableStateOf(R.color.black) }
 
     var primaryColor by remember { mutableStateOf(white) }
     var secondaryColor by remember { mutableStateOf(black) }
@@ -212,12 +201,11 @@ fun ShareScreen(
                     }
                 }
             ) {
-//                val color = colorResource(id = primaryColor)
                 systemUiController.setStatusBarColor(primaryColor)
                 ShareCard(
                     title = buildString {
                         append("QS. ")
-                        append(surah?.name?.transliteration?.en ?: verse?.surahName)
+                        append(verse?.surahName)
                         append(": ")
                         append(verse?.number?.inSurah)
                     },

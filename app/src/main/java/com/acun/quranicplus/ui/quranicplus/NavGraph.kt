@@ -71,9 +71,7 @@ fun NavGraph(
                 viewModel = viewModel,
                 onBackPressed = { navController.navigateUp() },
                 onShareClicked = {
-                    navController.currentBackStackEntry?.savedStateHandle?.set("verse", it)
-                    navController.currentBackStackEntry?.savedStateHandle?.set("surah", surahNavArgs)
-
+                    navController.currentBackStackEntry?.savedStateHandle?.set("verse", it.copy())
                     navController.navigate(QuranicPlusDestinations.SHARE_ROUTE)
                 },
                 surahNavArgs = surahNavArgs,
@@ -85,11 +83,8 @@ fun NavGraph(
             route = QuranicPlusDestinations.SHARE_ROUTE
         ) {
             val verse = navController.previousBackStackEntry?.savedStateHandle?.get<Verse>("verse")
-            val surah = navController.previousBackStackEntry?.savedStateHandle?.get<Surah>("surah")
-
             ShareScreen(
                 verse = verse,
-                surah = surah,
                 onBackPressed = { navController.navigateUp() }
             )
         }
