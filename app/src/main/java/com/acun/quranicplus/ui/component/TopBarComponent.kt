@@ -18,21 +18,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acun.quranicplus.R
-import com.acun.quranicplus.ui.theme.black
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.textBlack
-import com.acun.quranicplus.ui.theme.textBlackLight
-import com.acun.quranicplus.ui.theme.white
+import com.acun.quranicplus.ui.theme.Poppins
+import com.acun.quranicplus.ui.theme.WildBlueYonder
 
 @Composable
 fun TopBarComponent(
     title: String,
-    foregroundColor: Color = textBlack,
-    backgroundColor: Color = white,
+    foregroundColor: Color = MaterialTheme.colors.onSurface,
+    backgroundColor: Color = MaterialTheme.colors.surface,
     rightIcon: Int = 0,
     textAlignment: TextAlign = TextAlign.Start,
     onRightIconClicked: () -> Unit = {}
@@ -66,7 +61,7 @@ fun TopBarComponent(
                 text = title,
                 color = foregroundColor,
                 fontSize = 20.sp,
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = textAlignment
             )
@@ -74,15 +69,7 @@ fun TopBarComponent(
         Divider(
             modifier = Modifier.alpha(.15f),
             thickness = .6.dp,
-            color = textBlackLight,
+            color = WildBlueYonder,
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TobBarComponentPreview() {
-    MaterialTheme {
-        TopBarComponent(title = "Setting", rightIcon = R.drawable.ic_arrow_left, onRightIconClicked = {}, foregroundColor = black)
     }
 }

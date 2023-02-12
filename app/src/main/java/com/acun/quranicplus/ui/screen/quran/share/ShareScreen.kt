@@ -6,6 +6,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,12 +53,11 @@ import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.ui.component.TopBarComponent
-import com.acun.quranicplus.ui.theme.black
-import com.acun.quranicplus.ui.theme.misbah
-import com.acun.quranicplus.ui.theme.poppins
+import com.acun.quranicplus.ui.theme.BigStone
+import com.acun.quranicplus.ui.theme.Dune
+import com.acun.quranicplus.ui.theme.Misbah
+import com.acun.quranicplus.ui.theme.Poppins
 import com.acun.quranicplus.ui.theme.shareBackgroundList
-import com.acun.quranicplus.ui.theme.textBlack
-import com.acun.quranicplus.ui.theme.white
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
@@ -80,8 +79,10 @@ fun ShareScreen(
     val coroutineScope = rememberCoroutineScope()
     var roundedCornerSize by remember { mutableStateOf(18.dp) }
 
-    var primaryColor by remember { mutableStateOf(white) }
-    var secondaryColor by remember { mutableStateOf(black) }
+    var primaryColor by remember { mutableStateOf(Color.White) }
+    var secondaryColor by remember { mutableStateOf(Color.Black) }
+
+    var isDarkTheme by remember { mutableStateOf(false) }
 
     val file: File = File.createTempFile("share", ".jpg", context.cacheDir)
 
@@ -91,7 +92,7 @@ fun ShareScreen(
         val green = android.graphics.Color.green(color)
 
         val luminance = (red * 0.299) + (green * 0.7152) + (blue * 0.0722)
-        return if (luminance < 140) white else black
+        return if (luminance < 140) Color.White else Color.Black
     }
 
     fun shareImage(bitmap: Bitmap) {
@@ -121,7 +122,11 @@ fun ShareScreen(
         key1 = lifecycleOwner,
         effect = {
             onDispose {
-                systemUiController.setStatusBarColor(Color.White)
+                if (isDarkTheme) {
+                    systemUiController.setStatusBarColor(BigStone)
+                } else {
+                    systemUiController.setStatusBarColor(Color.White)
+                }
             }
         }
     )
@@ -161,14 +166,15 @@ fun ShareScreen(
                         .padding(horizontal = 12.dp),
                     textAlign = TextAlign.Center,
                     text = "Share",
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontSize = 15.sp,
                     color = primaryColor
                 )
             }
         },
-        backgroundColor = if (primaryColor == black) textBlack else primaryColor
+        backgroundColor = if (primaryColor == Color.Black) Dune else primaryColor
     ) { paddingValues ->
+        isDarkTheme = isSystemInDarkTheme()
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -179,7 +185,7 @@ fun ShareScreen(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 text = "Tap for more",
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
                 color = secondaryColor
@@ -260,7 +266,7 @@ fun ShareCard(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = title,
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
@@ -271,14 +277,14 @@ fun ShareCard(
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
             text = arabText,
-            fontFamily = misbah,
+            fontFamily = Misbah,
             fontSize = 20.sp,
             color = secondaryColor,
             textAlign = TextAlign.Right
         )
         Text(
             text = text,
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontSize = 13.sp,
             color = secondaryColor
         )
@@ -299,24 +305,11 @@ fun ShareCard(
             Text(
                 modifier = Modifier.padding(top = 1.dp),
                 text = stringResource(id = R.string.app_name),
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
                 color = secondaryColor
             )
         }
     }
-}
-
-@Preview(showBackground = true, heightDp = 500, widthDp = 300)
-@Composable
-fun ShareCardPreview() {
-    ShareCard(
-        title = "Al-Fathiha",
-        arabText = "'asdkfangabdkgekbefbcwjkeoifhbvb",
-        text = "bfdkjbvkbkkbksjdnf",
-        white,
-        black,
-        12.dp
-    ) {}
 }

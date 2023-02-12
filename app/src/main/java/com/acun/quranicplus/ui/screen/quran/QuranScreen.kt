@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -26,6 +27,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +43,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -58,13 +59,11 @@ import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.component.LoadingComponent
 import com.acun.quranicplus.ui.component.TabComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
-import com.acun.quranicplus.ui.theme.black
-import com.acun.quranicplus.ui.theme.blue
-import com.acun.quranicplus.ui.theme.blueLight
-import com.acun.quranicplus.ui.theme.misbah
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.textBlackLight
-import com.acun.quranicplus.ui.theme.white
+import com.acun.quranicplus.ui.theme.AliceBlue
+import com.acun.quranicplus.ui.theme.HavelockBlue
+import com.acun.quranicplus.ui.theme.Mariner
+import com.acun.quranicplus.ui.theme.Misbah
+import com.acun.quranicplus.ui.theme.Poppins
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -111,7 +110,8 @@ fun QuranScreen(
     }
 
     Scaffold(
-        topBar = { TopBarComponent(title = "Quran") }
+        topBar = { TopBarComponent(title = "Quran") },
+        backgroundColor = MaterialTheme.colors.surface
     ) {paddingValues ->
         BoxWithConstraints {
             val screenHeight = maxHeight
@@ -137,7 +137,7 @@ fun QuranScreen(
                     TabComponent(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.White)
+                            .background(MaterialTheme.colors.surface)
                             .padding(horizontal = 18.dp),
                         tabTitle = tabTitle,
                         pagerState = pagerState
@@ -177,7 +177,7 @@ fun QuranScreen(
                                             SurahItem(
                                                 modifier = Modifier.padding(horizontal = 24.dp),
                                                 surah = surah,
-                                                isDividerEnabled = (index == surahList.lastIndex)
+                                                isDividerEnabled = (index != surahList.lastIndex)
                                             ) { surahData, _ ->
                                                 surahData?.let(onSurahDetailClicked)
                                             }
@@ -251,7 +251,11 @@ fun QuranCard(
             .clip(RoundedCornerShape(24.dp))
             .background(
                 brush = Brush.linearGradient(
-                    listOf(blue, blueLight)
+                    if (isSystemInDarkTheme()) {
+                        listOf(Mariner.copy(.9f), HavelockBlue.copy(.9f))
+                    } else {
+                        listOf(Mariner, HavelockBlue)
+                    }
                 )
             )
             .height(164.dp),
@@ -271,26 +275,26 @@ fun QuranCard(
                 Text(
                     modifier = Modifier.padding(top = 1.dp, start = 8.dp),
                     text = "Last Read",
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp,
-                    color = white
+                    color = AliceBlue
                 )
             }
             Column {
                 Text(
                     text = lastSurah,
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp,
-                    color = white
+                    color = AliceBlue
                 )
                 Text(
                     text = lastAyah,
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp,
-                    color = white
+                    color = AliceBlue
                 )
             }
         }
@@ -348,19 +352,19 @@ fun SurahItem(
                         modifier = Modifier
                             .padding(horizontal = 12.dp),
                         text = surah?.name?.transliteration?.en ?: juz?.name ?: "",
-                        fontFamily = poppins,
+                        fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 15.sp,
-                        color = black
+                        color = MaterialTheme.colors.onSurface
                     )
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 12.dp),
                         text = surah?.numberOfVerses?.let { stringResource(id = R.string.number_of_verses, it) } ?: "${juz?.start} - ${juz?.end}",
-                        fontFamily = poppins,
+                        fontFamily = Poppins,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp,
-                        color = textBlackLight
+                        color = MaterialTheme.colors.onSecondary
                     )
                 }
             }
@@ -368,16 +372,16 @@ fun SurahItem(
                 modifier = Modifier
                     .padding(horizontal = 8.dp),
                 text = surah?.name?.short ?: juz?.name_arab ?: "",
-                fontFamily = misbah,
+                fontFamily = Misbah,
                 fontSize = 22.sp,
-                color = black
+                color = MaterialTheme.colors.onSurface
             )
         }
         if (isDividerEnabled) {
             Divider(
                 modifier = Modifier.alpha(0.15f),
                 thickness = 1.dp,
-                color = textBlackLight
+                color = MaterialTheme.colors.onSecondary
             )
         }
     }
@@ -400,10 +404,10 @@ fun Number(
         Text(
             modifier = Modifier.padding(top = 1.dp),
             text = number,
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
-            color = blue
+            color = Mariner
         )
     }
 }
@@ -420,18 +424,18 @@ fun ItemHeader(
         Text(
             modifier = Modifier.padding(top = 1.dp),
             text = stringResource(id = R.string.juz, juz.juz),
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
-            color = black
+            color = MaterialTheme.colors.onSurface
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = stringResource(id = R.string.juz_number_of_verses, juz.totalVerses),
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
-            color = blue
+            color = Mariner
         )
     }
 }

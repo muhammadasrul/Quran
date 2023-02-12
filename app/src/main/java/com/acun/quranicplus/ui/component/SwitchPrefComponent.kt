@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
@@ -14,9 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acun.quranicplus.ui.theme.blue
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.textBlack
+import com.acun.quranicplus.ui.theme.Mariner
+import com.acun.quranicplus.ui.theme.Poppins
 
 @Composable
 fun SwitchPrefComponent(
@@ -33,16 +33,16 @@ fun SwitchPrefComponent(
     ) {
         Text(
             text = title,
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
-            color = textBlack
+            color = MaterialTheme.colors.onSurface
         )
         Switch(
             checked = isChecked,
             onCheckedChange = onCheckChange,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = blue
+                checkedThumbColor = Mariner
             )
         )
     }

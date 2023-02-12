@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
@@ -21,10 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acun.quranicplus.ui.theme.blue
-import com.acun.quranicplus.ui.theme.blueLight
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.white
+import com.acun.quranicplus.ui.theme.AliceBlue
+import com.acun.quranicplus.ui.theme.Poppins
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -43,7 +42,7 @@ fun TabComponent(
             .clip(RoundedCornerShape(16.dp))
         ,
         indicator = { Box{} },
-        backgroundColor = white,
+        backgroundColor = MaterialTheme.colors.background,
         selectedTabIndex = pagerState.currentPage,
         divider = { Box {} }
     ) {
@@ -64,18 +63,22 @@ fun TabComponent(
                         .padding(4.dp)
                         .background(
                             if (isSelected) {
-                                Brush.linearGradient(listOf(blue, blueLight))
+                                Brush.linearGradient(listOf(
+                                    MaterialTheme.colors.primary,
+                                    MaterialTheme.colors.primaryVariant))
                             } else {
-                                Brush.linearGradient(listOf(white, white))
+                                Brush.linearGradient(listOf(
+                                    MaterialTheme.colors.background,
+                                    MaterialTheme.colors.background))
                             },
                             RoundedCornerShape(14.dp)
                         )
                         .padding(vertical = 8.dp),
                     text = title,
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
-                    color = if (isSelected) white else blue,
+                    color = if (isSelected) AliceBlue else MaterialTheme.colors.onPrimary,
                     textAlign = TextAlign.Center
                 )
             }

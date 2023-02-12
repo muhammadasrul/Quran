@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,9 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.acun.quranicplus.R
-import com.acun.quranicplus.ui.theme.blue
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.white
+import com.acun.quranicplus.ui.theme.Mariner
+import com.acun.quranicplus.ui.theme.Poppins
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.delay
@@ -64,6 +64,7 @@ fun SplashScreen(
         }
         else -> {
             AlertDialog(
+                backgroundColor = MaterialTheme.colors.surface,
                 text = {
                     Text(text = "Location permission required for this feature to be available. Please grant the permission")
                 },
@@ -75,12 +76,12 @@ fun SplashScreen(
                             context.startActivity(intent)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = blue
+                            backgroundColor = Mariner
                         )
                     ) {
                         Text(
                             text = "Open Setting",
-                            color = white
+                            color = MaterialTheme.colors.onSurface
                         )
                     }
                 },
@@ -89,12 +90,12 @@ fun SplashScreen(
                             onCloseClicked()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = blue
+                            backgroundColor = Mariner
                         )
                     ) {
                         Text(
                             text = "Close",
-                            color = white
+                            color = MaterialTheme.colors.onSurface
                         )
                     }
                 }
@@ -119,7 +120,9 @@ fun SplashScreen(
         }
     )
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        backgroundColor = MaterialTheme.colors.surface
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .padding(paddingValues)
@@ -144,9 +147,9 @@ fun SplashScreen(
                 Text(
                     modifier = Modifier.padding(top = 12.dp),
                     text = stringResource(id = R.string.app_name),
-                    color = blue,
+                    color = Mariner,
                     fontWeight = FontWeight.SemiBold,
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontSize = 22.sp
                 )
             }

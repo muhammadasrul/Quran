@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -54,12 +55,9 @@ import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.component.LoadingComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
-import com.acun.quranicplus.ui.theme.black
-import com.acun.quranicplus.ui.theme.blue
-import com.acun.quranicplus.ui.theme.blueBackground
-import com.acun.quranicplus.ui.theme.misbah
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.textBlackLight
+import com.acun.quranicplus.ui.theme.Mariner
+import com.acun.quranicplus.ui.theme.Misbah
+import com.acun.quranicplus.ui.theme.Poppins
 import kotlinx.coroutines.launch
 
 @Composable
@@ -159,7 +157,8 @@ fun QuranDetailScreen(
                 rightIcon = R.drawable.ic_arrow_left,
                 onRightIconClicked = { onBackPressed() }
             )
-        }
+        },
+        backgroundColor = MaterialTheme.colors.surface
     ) { paddingValues ->
         if (isLoading) {
             LoadingComponent(
@@ -257,7 +256,7 @@ fun VerseItem(
                         modifier = Modifier.size(24.dp),
                         painter = painterResource(id = if (isBookmarked) R.drawable.ic_bookmark_active else R.drawable.ic_bookmark),
                         contentDescription = null,
-                        tint = blue
+                        tint = Mariner
                     )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
@@ -266,7 +265,7 @@ fun VerseItem(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(id = R.drawable.ic_baseline_share_24),
                         contentDescription = null,
-                        tint = blue
+                        tint = Mariner
                     )
                 }
             }
@@ -277,9 +276,9 @@ fun VerseItem(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
             text = verse.text.arab,
-            fontFamily = misbah,
+            fontFamily = Misbah,
             fontSize = arabFontSize,
-            color = black,
+            color = MaterialTheme.colors.onSurface,
             textAlign = TextAlign.End
         )
         if (versePreference?.transliteration == true) {
@@ -288,9 +287,9 @@ fun VerseItem(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
                 text = verse.text.transliteration.en,
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontSize = fontSize,
-                color = textBlackLight
+                color = MaterialTheme.colors.onSecondary
             )
         }
         if (versePreference?.translation == true) {
@@ -299,9 +298,9 @@ fun VerseItem(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
                 text = verse.translation.en,
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontSize = fontSize,
-                color = black
+                color = MaterialTheme.colors.onSurface
             )
         }
 
@@ -309,7 +308,7 @@ fun VerseItem(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .alpha(.3f),
-            color = if (isDividerVisible) textBlackLight else Color.Transparent,
+            color = if (isDividerVisible) MaterialTheme.colors.onSecondary else Color.Transparent,
             thickness = 1.dp
         )
     }
@@ -322,7 +321,7 @@ fun CircleNumber(number: String) {
             .size(32.dp)
             .border(
                 width = .5.dp,
-                color = blue,
+                color = Mariner,
                 shape = CircleShape
             ),
         contentAlignment = Alignment.Center
@@ -331,10 +330,10 @@ fun CircleNumber(number: String) {
             modifier = Modifier.padding(top = 2.dp),
             text = number,
             textAlign = TextAlign.Center,
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,
-            color = blue
+            color = Mariner
         )
     }
 }
@@ -350,13 +349,13 @@ fun VerseHeader(
             .padding(18.dp)
             .border(
                 width = .7.dp,
-                color = blue,
+                color = Mariner,
                 shape = RoundedCornerShape(6.dp)
             )
             .clip(RoundedCornerShape(6.dp))
             .fillMaxWidth()
             .height(if (isHeaderOnly) 42.dp else 112.dp)
-            .background(color = blueBackground)
+            .background(color = MaterialTheme.colors.onBackground)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -365,25 +364,25 @@ fun VerseHeader(
         ) {
             Text(
                 text = verse?.surahName ?: "Surah Name",
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = black
+                color = MaterialTheme.colors.onSurface
             )
             if (!isHeaderOnly) {
                 Text(
                     text = verse?.surahNameTranslation ?: "Surah Name Translation",
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = black
+                    color = MaterialTheme.colors.onSurface
                 )
                 Text(
                     text = verse?.numberOfVerse ?: "Number of Verse",
-                    fontFamily = poppins,
+                    fontFamily = Poppins,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = black
+                    color = MaterialTheme.colors.onSurface
                 )
             }
         }
@@ -392,7 +391,7 @@ fun VerseHeader(
             contentDescription = null,
             alignment = Alignment.CenterEnd,
             modifier = Modifier.fillMaxWidth(),
-            colorFilter = ColorFilter.tint(color = blue)
+            colorFilter = ColorFilter.tint(color = Mariner)
         )
     }
 }

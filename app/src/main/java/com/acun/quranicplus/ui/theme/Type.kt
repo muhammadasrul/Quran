@@ -5,7 +5,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.acun.quranicplus.R
 
-val poppins = FontFamily(
+val Poppins = FontFamily(
     Font(R.font.poppins, FontWeight.Normal),
     Font(R.font.poppins_light, FontWeight.Light),
     Font(R.font.poppins_medium, FontWeight.Medium),
@@ -13,4 +13,4 @@ val poppins = FontFamily(
     Font(R.font.poppins_bold, FontWeight.Bold)
 )
 
-val misbah = FontFamily(Font(R.font.lpmq_isep_misbah))
+val Misbah = FontFamily(Font(R.font.lpmq_isep_misbah))

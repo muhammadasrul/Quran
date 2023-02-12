@@ -3,6 +3,7 @@ package com.acun.quranicplus.ui.screen.preference
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +20,7 @@ import com.acun.quranicplus.data.local.datastore.VersePreference
 import com.acun.quranicplus.ui.component.DropdownPrefComponent
 import com.acun.quranicplus.ui.component.SwitchPrefComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
-import com.acun.quranicplus.ui.theme.black
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.textBlackLight
+import com.acun.quranicplus.ui.theme.Poppins
 
 @Composable
 fun PreferenceScreen(viewModel: PreferenceViewModel) {
@@ -33,7 +32,8 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
     val textSizeArr = stringArrayResource(id = R.array.text_size)
 
     Scaffold(
-        topBar = { TopBarComponent(title = "Settings", foregroundColor = black) },
+        topBar = { TopBarComponent(title = "Settings") },
+        backgroundColor = MaterialTheme.colors.surface,
         bottomBar = {
             Text(
                 modifier = Modifier
@@ -41,7 +41,7 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
                     .padding(bottom = 18.dp),
                 text = BuildConfig.VERSION_NAME,
                 fontSize = 14.sp,
-                color = textBlackLight,
+                color = MaterialTheme.colors.onSecondary,
                 textAlign = TextAlign.Center
             )
         }
@@ -52,10 +52,10 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
             Text(
                 modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 12.dp),
                 text = "Verse Preference",
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                color = textBlackLight
+                color = MaterialTheme.colors.onSecondary
             )
             SwitchPrefComponent(title = "Transliteration", isChecked = transliterationState) {
                 transliterationState = it

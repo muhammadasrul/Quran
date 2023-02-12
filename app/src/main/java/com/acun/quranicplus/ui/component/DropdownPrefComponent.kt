@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -23,9 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.acun.quranicplus.ui.theme.blue
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.textBlack
+import com.acun.quranicplus.ui.theme.Mariner
+import com.acun.quranicplus.ui.theme.Poppins
 
 @Composable
 fun DropdownPrefComponent(
@@ -46,10 +46,10 @@ fun DropdownPrefComponent(
     ) {
         Text(
             text = title,
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
-            color = textBlack
+            color = MaterialTheme.colors.onSurface
         )
 
         Box {
@@ -59,15 +59,15 @@ fun DropdownPrefComponent(
                 Row {
                     Text(
                         text = value,
-                        fontFamily = poppins,
+                        fontFamily = Poppins,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
-                        color = textBlack
+                        color = MaterialTheme.colors.onSurface
                     )
                     Icon(
                         imageVector = Icons.Filled.ArrowDropDown,
                         contentDescription = "DropDown",
-                        tint = blue
+                        tint = Mariner
                     )
                 }
             }
@@ -86,7 +86,7 @@ fun DropdownPrefComponent(
                     }) {
                         Text(
                             text = s,
-                            fontFamily = poppins,
+                            fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         )

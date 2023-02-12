@@ -12,6 +12,7 @@ import android.location.Location
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -65,13 +67,11 @@ import com.acun.quranicplus.data.remote.response.prayer.model.hour
 import com.acun.quranicplus.data.remote.response.prayer.model.minute
 import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.ui.component.TopBarComponent
-import com.acun.quranicplus.ui.theme.black
-import com.acun.quranicplus.ui.theme.blue
-import com.acun.quranicplus.ui.theme.blueExtraLight
-import com.acun.quranicplus.ui.theme.poppins
-import com.acun.quranicplus.ui.theme.textBlackLight
-import com.acun.quranicplus.ui.theme.textWhite
-import com.acun.quranicplus.ui.theme.white
+import com.acun.quranicplus.ui.theme.AliceBlue
+import com.acun.quranicplus.ui.theme.HavelockBlue
+import com.acun.quranicplus.ui.theme.Mariner
+import com.acun.quranicplus.ui.theme.Poppins
+import com.acun.quranicplus.ui.theme.TropicalBlue
 import com.acun.quranicplus.util.shimmer
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.delay
@@ -183,12 +183,12 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopBarComponent(title = "Home")
-        }
+        },
+        backgroundColor = MaterialTheme.colors.surface
     ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
-
             HomeCard(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                 nextPrayerName = prayerName,
@@ -204,13 +204,14 @@ fun HomeScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.location),
                     contentDescription = null,
-                    tint = blue
+                    tint = Mariner
                 )
                 Text(
                     text = location.value ?: stringResource(id = R.string.error_location_not_found),
                     fontWeight = FontWeight.SemiBold,
-                    fontFamily = poppins,
-                    fontSize = 13.sp
+                    fontFamily = Poppins,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colors.onSurface
                 )
             }
             Divider(thickness = 6.dp, color = Color.Transparent)
@@ -233,12 +234,22 @@ fun HomeCard(
     nextPrayerCounter: String
 ) {
 
-    val background = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-        in 19 .. 24, in 1 .. 5 -> painterResource(id = R.drawable.malam)
-        in 5..7 -> painterResource(id = R.drawable.pagi)
-        in 7..15 -> painterResource(id = R.drawable.siang)
-        in 15 .. 19 -> painterResource(id = R.drawable.sore)
-        else -> painterResource(id = R.drawable.pagi)
+    val background = if (isSystemInDarkTheme()) {
+        when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+            in 19 .. 24, in 1 .. 5 -> painterResource(id = R.drawable.pagi_dark_mode)
+            in 5..7 -> painterResource(id = R.drawable.pagi_dark_mode)
+            in 7..15 -> painterResource(id = R.drawable.pagi_dark_mode)
+            in 15 .. 19 -> painterResource(id = R.drawable.pagi_dark_mode)
+            else -> painterResource(id = R.drawable.pagi_dark_mode)
+        }
+    } else {
+        when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+            in 19 .. 24, in 1 .. 5 -> painterResource(id = R.drawable.malam)
+            in 5..7 -> painterResource(id = R.drawable.pagi)
+            in 7..15 -> painterResource(id = R.drawable.siang)
+            in 15 .. 19 -> painterResource(id = R.drawable.sore)
+            else -> painterResource(id = R.drawable.pagi)
+        }
     }
 
     Box(
@@ -263,24 +274,24 @@ fun HomeCard(
         ) {
             Text(
                 text = nextPrayerName,
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 13.sp,
-                color = white
+                color = AliceBlue
             )
             Text(
                 text = nextPrayerTime,
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                color = white
+                color = AliceBlue
             )
             Text(
                 text = nextPrayerCounter,
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 13.sp,
-                color = white
+                color = AliceBlue
             )
         }
     }
@@ -297,10 +308,10 @@ fun PrayerItem(
             modifier = Modifier
                 .clip(CircleShape)
                 .wrapContentSize()
-                .background(textWhite)
+                .background(MaterialTheme.colors.onBackground)
                 .border(
                     width = if (prayer.isNowPrayer) 1.5.dp else 0.dp,
-                    color = blue,
+                    color = HavelockBlue,
                     shape = CircleShape
                 )
                 .size(70.dp),
@@ -311,10 +322,10 @@ fun PrayerItem(
                 text = prayer.time
                     .replace("[()]".toRegex(), "")
                     .replace(" ", "\n"),
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
-                color = black,
+                color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.Center
             )
         }
@@ -322,10 +333,10 @@ fun PrayerItem(
             modifier = Modifier
                 .padding(top = 4.dp),
             text = prayer.name,
-            fontFamily = poppins,
+            fontFamily = Poppins,
             fontWeight = FontWeight.Normal,
             fontSize = 12.sp,
-            color = textBlackLight,
+            color = MaterialTheme.colors.onSecondary,
             textAlign = TextAlign.Center
         )
     }
@@ -340,7 +351,7 @@ fun PrayerTimesComponent(
     val prayerListState = rememberLazyListState()
     Box(
         modifier = Modifier
-            .background(Color(0xFFFBFCFF))
+            .background(MaterialTheme.colors.background)
             .fillMaxWidth()
             .padding(vertical = 12.dp)
     ) {
@@ -348,10 +359,10 @@ fun PrayerTimesComponent(
             Text(
                 modifier = Modifier.padding(start = 18.dp),
                 text = "Prayer Times",
-                fontFamily = poppins,
+                fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
-                color = black,
+                color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.Center
             )
             Divider(thickness = 8.dp, color = Color.Transparent)
@@ -365,7 +376,7 @@ fun PrayerTimesComponent(
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .wrapContentSize()
-                                    .shimmer(blueExtraLight)
+                                    .shimmer(TropicalBlue)
                                     .size(70.dp)
                             )
                             Divider(color = Color.Transparent, thickness = 8.dp)
@@ -373,7 +384,7 @@ fun PrayerTimesComponent(
                                 .clip(RoundedCornerShape(4.dp))
                                 .width(50.dp)
                                 .height(14.dp)
-                                .shimmer(blueExtraLight)
+                                .shimmer(TropicalBlue)
                             )
                         }
                         Spacer(modifier = Modifier.width(14.dp))
@@ -406,11 +417,11 @@ fun QiblaFinderComponent(
     Column {
         Text(
             modifier = Modifier.padding(start = 18.dp),
-            text = "Prayer Times",
-            fontFamily = poppins,
+            text = "Qibla Finder",
+            fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
-            color = black,
+            color = MaterialTheme.colors.onSurface,
             textAlign = TextAlign.Center
         )
         Divider(thickness = 8.dp, color = Color.Transparent)
