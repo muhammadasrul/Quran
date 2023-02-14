@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.sp
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.VersePreference
-import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.data.remote.response.juz_list.Juz
 import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
@@ -74,6 +73,11 @@ fun QuranDetailScreen(
     val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
 
+    val versePreference = viewModel.versePreference.observeAsState()
+    val lastReadVerseState = viewModel.lastRead.observeAsState()
+    val surahVerseState = viewModel.surahDetail.observeAsState()
+    val juzVerseState = viewModel.juzDetail.observeAsState()
+
     surahNavArgs?.number?.let {
         LaunchedEffect(key1 = true) {
             viewModel.getSurah(it)
@@ -85,69 +89,47 @@ fun QuranDetailScreen(
         }
     }
 
-    val lastReadVerseState = viewModel.lastRead.observeAsState()
-    val surahVerseState = viewModel.surahDetail.observeAsState()
-    val juzVerseState = viewModel.juzDetail.observeAsState()
-    val versePreference = viewModel.versePreference.observeAsState()
-
     // surah verse
-    when (surahVerseState.value) {
-        is Resource.Loading -> isLoading = true
-        is Resource.Success -> {
-            isLoading = false
-            surahVerseState.value?.data?.let { surah ->
-                verseList = surah.verses.map { it.copy(surahName = surahNavArgs?.name?.transliteration?.en ?: "") }
-                if (verseList.isNotEmpty()) {
-                    verseList[0].headerName = surahNavArgs?.name?.transliteration?.en ?: ""
-                    verseList[0].surahNameTranslation = stringResource(R.string.surah_detail_verse_name, surah.name.translation.en)
-                    verseList[0].numberOfVerse = stringResource(R.string.number_of_verses, surah.numberOfVerses)
-                }
-                verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran }?.isBookmark = true
-            }
+    surahVerseState.value?.surahDetail?.let { surah ->
+        verseList =
+            surah.verses.map { it.copy(surahName = surahNavArgs?.name?.transliteration?.en ?: "") }
+        if (verseList.isNotEmpty()) {
+            verseList[0].headerName = surahNavArgs?.name?.transliteration?.en ?: ""
+            verseList[0].surahNameTranslation =
+                stringResource(R.string.surah_detail_verse_name, surah.name.translation.en)
+            verseList[0].numberOfVerse =
+                stringResource(R.string.number_of_verses, surah.numberOfVerses)
         }
-        is Resource.Failed -> {
-            isLoading = false
-            // TODO: Add Error State
-        }
-        else -> { }
+        verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran }?.isBookmark =
+            true
     }
 
     // juz verse
-    when (juzVerseState.value) {
-        is Resource.Loading -> isLoading = true
-        is Resource.Success -> {
-            isLoading = false
-            juzVerseState.value?.data?.let { juz ->
-                verseList = juz.verses
-                val pos = mutableListOf<Int>()
-                juz.verses.forEachIndexed { i, verse ->
-                    if ((verse.number.inSurah != 1 && i == 0) || verse.number.inSurah == 1) {
-                        pos.add(pos.size)
-                        verseList[i].headerName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
-                        verseList[i].numberOfVerse = ""
-                        verseList[i].surahNameTranslation = ""
-                        verseList[i].surahName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
-                    } else {
-                        verseList[i].headerName = ""
-                        verseList[i].numberOfVerse = ""
-                        verseList[i].surahNameTranslation = ""
-                        verseList[i].surahName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
-                    }
-                }
-
-                verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran}?.isBookmark = true
-
-                coroutineScope.launch {
-                    verseListState.scrollToItem(juzPos)
-                }
+    juzVerseState.value?.juzDetail?.let { juz ->
+        verseList = juz.verses
+        val pos = mutableListOf<Int>()
+        juz.verses.forEachIndexed { i, verse ->
+            if ((verse.number.inSurah != 1 && i == 0) || verse.number.inSurah == 1) {
+                pos.add(pos.size)
+                verseList[i].headerName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
+                verseList[i].numberOfVerse = ""
+                verseList[i].surahNameTranslation = ""
+                verseList[i].surahName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
+            } else {
+                verseList[i].headerName = ""
+                verseList[i].numberOfVerse = ""
+                verseList[i].surahNameTranslation = ""
+                verseList[i].surahName = juzNavArgs?.surah?.get(pos.lastIndex)?.name ?: ""
             }
         }
-        is Resource.Failed -> {
-            isLoading = false
-            // TODO: Add Error State
+
+        verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran }?.isBookmark = true
+
+        coroutineScope.launch {
+            verseListState.scrollToItem(juzPos)
         }
-        else -> { }
     }
+    isLoading = surahVerseState.value?.isLoading == true || juzVerseState.value?.isLoading == true
 
     Scaffold(
         topBar = {
@@ -169,7 +151,7 @@ fun QuranDetailScreen(
                 modifier = Modifier
                     .padding(paddingValues)
             ) {
-                itemsIndexed(items = verseList) {index, verse ->
+                itemsIndexed(items = verseList) { index, verse ->
                     val isHeaderVisible = juzNavArgs?.let {
                         verse.headerName.isNotEmpty()
                     } ?: surahNavArgs?.let {
@@ -191,11 +173,13 @@ fun QuranDetailScreen(
                         onBookmarkClicked = { v ->
                             val s = verseList.firstOrNull { it.surahName.isNotEmpty() }?.surahName ?: ""
                             val temp = lastReadVerseState.value
-                            viewModel.setLastRead(LastReadVerse(
-                                surah = s,
-                                numberInSurah = v.number.inSurah,
-                                numberInQuran = v.number.inQuran
-                            ))
+                            viewModel.setLastRead(
+                                LastReadVerse(
+                                    surah = s,
+                                    numberInSurah = v.number.inSurah,
+                                    numberInQuran = v.number.inQuran
+                                )
+                            )
 
                             val itemInList = verseList.firstOrNull { it.number.inQuran == v.number.inQuran }
                             val lastInList = verseList.firstOrNull { it.number.inQuran == temp?.numberInQuran }
@@ -223,7 +207,6 @@ fun VerseItem(
     onBookmarkClicked: (Verse) -> Unit,
     onShareClicked: (Verse) -> Unit
 ) {
-
     val arabFontSize = when (versePreference?.textSizePos) {
         0 -> 18.sp
         1 -> 22.sp

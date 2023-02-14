@@ -31,11 +31,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -52,7 +49,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acun.quranicplus.R
-import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.data.remote.response.juz_list.Juz
 import com.acun.quranicplus.data.remote.response.juz_list.JuzSurah
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
@@ -81,33 +77,9 @@ fun QuranScreen(
     val surahList = mutableListOf<Surah>()
     val juzState = viewModel.juzList.observeAsState()
     val juzList = mutableListOf<Juz>()
-    var isSurahLoading by remember { mutableStateOf(true) }
-    var isJuzLoading by remember { mutableStateOf(true) }
 
-    when (surahState.value) {
-        is Resource.Loading -> isSurahLoading = true
-        is Resource.Success -> {
-            isSurahLoading = false
-            surahState.value?.data?.let { surahList.addAll(it) }
-        }
-        is Resource.Failed -> {
-            isSurahLoading = false
-        // TODO: Add Error State
-        }
-        else -> { }
-    }
-    when (juzState.value) {
-        is Resource.Loading -> isJuzLoading = true
-        is Resource.Success -> {
-            isJuzLoading = false
-            juzState.value?.data?.let { juzList.addAll(it) }
-        }
-        is Resource.Failed -> {
-            isJuzLoading = false
-        // TODO: Add Error State
-        }
-        else -> { }
-    }
+    surahState.value?.surahList?.let { surahList.addAll(it) }
+    juzState.value?.juzList?.let { juzList.addAll(it) }
 
     Scaffold(
         topBar = { TopBarComponent(title = "Quran") },
@@ -165,7 +137,7 @@ fun QuranScreen(
                     ) { page ->
                         when (page) {
                             0 -> {
-                                if (isSurahLoading) {
+                                if (surahState.value?.isLoading == true) {
                                     LoadingComponent(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -186,7 +158,7 @@ fun QuranScreen(
                                 }
                             }
                             1 -> {
-                                if (isJuzLoading) {
+                                if (juzState.value?.isLoading == true) {
                                     LoadingComponent(
                                         modifier = Modifier
                                             .fillMaxWidth()

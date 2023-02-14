@@ -31,11 +31,10 @@ import com.acun.quranicplus.ui.theme.Poppins
 fun DropdownPrefComponent(
     title: String,
     values: Array<String>,
-    initValue: String,
+    selected: String,
     onItemClicked: (Int) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var value by remember { mutableStateOf(initValue) }
 
     Row(
         modifier = Modifier
@@ -58,7 +57,7 @@ fun DropdownPrefComponent(
             }) {
                 Row {
                     Text(
-                        text = value,
+                        text = selected,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
@@ -80,7 +79,6 @@ fun DropdownPrefComponent(
             ) {
                 values.forEachIndexed { index, s ->
                     DropdownMenuItem(onClick = {
-                        value = s
                         expanded = !expanded
                         onItemClicked(index)
                     }) {
@@ -100,5 +98,5 @@ fun DropdownPrefComponent(
 @Preview(showBackground = true, widthDp = 300, heightDp = 300)
 @Composable
 fun DropdownPrefComponentPreview() {
-    DropdownPrefComponent(title = "Text Size", values = arrayOf("Medium"), initValue = "Medium") {}
+    DropdownPrefComponent(title = "Text Size", values = arrayOf("Medium"), selected = "Medium") {}
 }

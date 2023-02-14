@@ -8,8 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.response.Resource
-import com.acun.quranicplus.data.remote.response.juz.JuzDetail
-import com.acun.quranicplus.data.remote.response.surah.SurahDetail
 import com.acun.quranicplus.repository.QuranRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,33 +19,73 @@ class DetailViewModel @Inject constructor(
     private val dataStore: QuranDataStore
 ): ViewModel() {
 
-    private val _surahDetail = MutableLiveData<Resource<SurahDetail>>()
-    val surahDetail: LiveData<Resource<SurahDetail>> = _surahDetail
+    private val _surahDetail = MutableLiveData<SurahDetailState>()
+    val surahDetail: LiveData<SurahDetailState> = _surahDetail
 
     fun getSurah(number: Int) {
         viewModelScope.launch {
             repository.getSurah(number).collect {
-                val verses = it.data?.verses?.map { verse ->
+                it.data?.verses = it.data?.verses?.map { verse ->
                     verse.copy(
                         headerName = "",
                         surahName = "",
                         numberOfVerse = "",
                         surahNameTranslation = ""
                     )
+                } ?: emptyList()
+
+                when (it) {
+                    is Resource.Success -> {
+                        _surahDetail.postValue(SurahDetailState(
+                            surahDetail = it.data,
+                            isLoading = false,
+                            isError = false
+                        ))
+                    }
+                    is Resource.Failed -> {
+                        _surahDetail.postValue(SurahDetailState(
+                            isLoading = false,
+                            isError = true
+                        ))
+                    }
+                    is Resource.Loading -> {
+                        _surahDetail.postValue(SurahDetailState(
+                            isLoading = true,
+                            isError = false
+                        ))
+                    }
                 }
-                it.data?.verses = verses ?: listOf()
-                _surahDetail.postValue(it)
             }
         }
     }
 
-    private val _juzDetail = MutableLiveData<Resource<JuzDetail>>()
-    val juzDetail: LiveData<Resource<JuzDetail>> = _juzDetail
+    private val _juzDetail = MutableLiveData<JuzDetailState>()
+    val juzDetail: LiveData<JuzDetailState> = _juzDetail
 
     fun getJuzDetail(number: Int) {
         viewModelScope.launch {
             repository.getJuz(number).collect {
-                _juzDetail.postValue(it)
+                when (it) {
+                    is Resource.Success -> {
+                        _juzDetail.postValue(JuzDetailState(
+                            juzDetail = it.data,
+                            isLoading = false,
+                            isError = false
+                        ))
+                    }
+                    is Resource.Failed -> {
+                        _juzDetail.postValue(JuzDetailState(
+                            isLoading = false,
+                            isError = true
+                        ))
+                    }
+                    is Resource.Loading -> {
+                        _juzDetail.postValue(JuzDetailState(
+                            isLoading = true,
+                            isError = false
+                        ))
+                    }
+                }
             }
         }
     }

@@ -68,7 +68,7 @@ fun PreferenceScreen(viewModel: PreferenceViewModel) {
             DropdownPrefComponent(
                 title = "Text Size",
                 values = textSizeArr,
-                initValue = textSizeArr[textSizeState],
+                selected = textSizeArr[textSizeState],
                 onItemClicked = {
                     viewModel.setVersePreference(
                         VersePreference(

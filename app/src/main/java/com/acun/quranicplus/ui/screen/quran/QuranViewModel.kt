@@ -9,9 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.response.Resource
-import com.acun.quranicplus.data.remote.response.juz_list.Juz
-import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.repository.QuranRepository
+import com.acun.quranicplus.ui.screen.quran.share.JuzState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
@@ -25,11 +24,11 @@ class QuranViewModel @Inject constructor(
 ): ViewModel() {
     val lastRead:LiveData<LastReadVerse> = dataStore.lastRead.asLiveData()
 
-    private val _surahList: MutableLiveData<Resource<List<Surah>>> = MutableLiveData()
-    val surahList: LiveData<Resource<List<Surah>>> = _surahList
+    private val _surahList: MutableLiveData<SurahState> = MutableLiveData()
+    val surahList: LiveData<SurahState> = _surahList
 
-    private val _juzList = MutableLiveData<Resource<List<Juz>>>()
-    val juzList: LiveData<Resource<List<Juz>>> = _juzList
+    private val _juzList = MutableLiveData<JuzState>()
+    val juzList: LiveData<JuzState> = _juzList
 
     init {
         getSurahList()
@@ -39,7 +38,27 @@ class QuranViewModel @Inject constructor(
     private fun getJuzList() {
         viewModelScope.launch {
             repository.getAllJuz(context).collect {
-                _juzList.postValue(it)
+                when (it) {
+                    is Resource.Loading -> {
+                        _juzList.postValue(JuzState(
+                            isLoading = true,
+                            isError = false
+                        ))
+                    }
+                    is Resource.Failed -> {
+                        _juzList.postValue(JuzState(
+                            isLoading = false,
+                            isError = true
+                        ))
+                    }
+                    is Resource.Success -> {
+                        _juzList.postValue(JuzState(
+                            juzList = it.data ?: emptyList(),
+                            isLoading = false,
+                            isError = false
+                        ))
+                    }
+                }
             }
         }
     }
@@ -47,7 +66,27 @@ class QuranViewModel @Inject constructor(
     private fun getSurahList() {
         viewModelScope.launch {
             repository.getAllSurah().collect {
-                _surahList.postValue(it)
+                when (it) {
+                    is Resource.Loading -> {
+                        _surahList.postValue(SurahState(
+                            isLoading = true,
+                            isError = false
+                        ))
+                    }
+                    is Resource.Failed -> {
+                        _surahList.postValue(SurahState(
+                            isLoading = false,
+                            isError = true
+                        ))
+                    }
+                    is Resource.Success -> {
+                        _surahList.postValue(SurahState(
+                            surahList = it.data ?: emptyList(),
+                            isLoading = false,
+                            isError = false
+                        ))
+                    }
+                }
             }
         }
     }

@@ -222,8 +222,7 @@ fun ShareScreen(
                     roundedCornerSize = roundedCornerSize,
                     onCardClicked = {
                         val currentIndex = shareBackgroundList.indexOfFirst { it == primaryColor }
-                        val index =
-                            if (currentIndex == shareBackgroundList.lastIndex) 0 else currentIndex + 1
+                        val index = if (currentIndex == shareBackgroundList.lastIndex) 0 else currentIndex + 1
                         primaryColor = shareBackgroundList[index]
                         secondaryColor = getInverseBWColor(shareBackgroundList[index].toArgb())
 
