@@ -7,18 +7,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -27,6 +26,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.Player
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.VersePreference
@@ -77,6 +78,10 @@ fun QuranDetailScreen(
     val lastReadVerseState = viewModel.lastRead.observeAsState()
     val surahVerseState = viewModel.surahDetail.observeAsState()
     val juzVerseState = viewModel.juzDetail.observeAsState()
+
+    val indexOfCurrentPlay = viewModel.currentPlayIndex.observeAsState()
+    val isPlay = viewModel.isPlay.observeAsState()
+    val playbackState = viewModel.playbackState.observeAsState()
 
     surahNavArgs?.number?.let {
         LaunchedEffect(key1 = true) {
@@ -142,6 +147,14 @@ fun QuranDetailScreen(
         },
         backgroundColor = MaterialTheme.colors.surface
     ) { paddingValues ->
+        LaunchedEffect(key1 = indexOfCurrentPlay.value) {
+            coroutineScope.launch {
+                if (verseListState.canScrollForward) {
+                    indexOfCurrentPlay.value?.let { verseListState.animateScrollToItem(it) }
+                }
+            }
+        }
+
         if (isLoading) {
             LoadingComponent(
                 modifier = Modifier.fillMaxSize()
@@ -149,7 +162,8 @@ fun QuranDetailScreen(
         } else {
             LazyColumn(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(paddingValues),
+                state = verseListState
             ) {
                 itemsIndexed(items = verseList) { index, verse ->
                     val isHeaderVisible = juzNavArgs?.let {
@@ -169,7 +183,15 @@ fun QuranDetailScreen(
                         versePreference = versePreference.value,
                         verse = verse,
                         isDividerVisible = index != verseList.lastIndex,
-                        isBookmarked = verse.isBookmark,
+                        isPlay = index == indexOfCurrentPlay.value && isPlay.value == true,
+                        playbackState = playbackState,
+                        onPlayClicked = {
+                            if (isPlay.value == true && index == indexOfCurrentPlay.value) {
+                                viewModel.stop()
+                            } else {
+                                viewModel.play(it.audio.primary)
+                            }
+                        },
                         onBookmarkClicked = { v ->
                             val s = verseList.firstOrNull { it.surahName.isNotEmpty() }?.surahName ?: ""
                             val temp = lastReadVerseState.value
@@ -203,7 +225,9 @@ fun VerseItem(
     verse: Verse,
     versePreference: VersePreference?,
     isDividerVisible: Boolean,
-    isBookmarked: Boolean,
+    isPlay: Boolean,
+    playbackState: State<Int?>,
+    onPlayClicked: (Verse) -> Unit,
     onBookmarkClicked: (Verse) -> Unit,
     onShareClicked: (Verse) -> Unit
 ) {
@@ -223,6 +247,10 @@ fun VerseItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(
+                if (isPlay) MaterialTheme.colors.onBackground
+                else Color.Transparent
+            )
             .padding(vertical = 6.dp, horizontal = 18.dp)
     ) {
         Row(
@@ -236,16 +264,29 @@ fun VerseItem(
             ) {
                 IconButton(onClick = { onBookmarkClicked(verse) }) {
                     Icon(
-                        modifier = Modifier.size(24.dp),
-                        painter = painterResource(id = if (isBookmarked) R.drawable.ic_bookmark_active else R.drawable.ic_bookmark),
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(id = if (verse.isBookmark) R.drawable.ic_bookmark_active else R.drawable.ic_bookmark),
                         contentDescription = null,
                         tint = Mariner
                     )
                 }
-                Spacer(modifier = Modifier.width(4.dp))
-                IconButton(onClick = { onShareClicked(verse) }) {
+                IconButton(onClick = { onPlayClicked(verse) }) {
+                    if (isPlay && playbackState.value == Player.STATE_BUFFERING) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colors.primary,
+                            strokeWidth = 2.dp
+                        )
+                    }
                     Icon(
                         modifier = Modifier.size(20.dp),
+                        painter = painterResource(id = if (isPlay) R.drawable.ic_pause else R.drawable.ic_play),
+                        contentDescription = null,
+                        tint = Mariner
+                    )
+                }
+                IconButton(onClick = { onShareClicked(verse) }) {
+                    Icon(
+                        modifier = Modifier.size(18.dp),
                         painter = painterResource(id = R.drawable.ic_baseline_share_24),
                         contentDescription = null,
                         tint = Mariner

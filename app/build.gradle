@@ -18,6 +18,9 @@ android {
         versionName "v1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "QURAN_BASE_URL", QURAN_BASE_URL)
+        buildConfigField("String", "PRAYER_BASE_URL", PRAYER_BASE_URL)
     }
 
     buildTypes {
@@ -47,7 +50,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     testImplementation 'junit:junit:4.13.2'
@@ -81,4 +84,6 @@ dependencies {
 
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+
+    implementation "androidx.media3:media3-exoplayer:1.0.0-beta03"
 }

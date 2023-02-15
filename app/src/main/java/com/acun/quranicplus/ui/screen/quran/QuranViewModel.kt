@@ -1,6 +1,5 @@
 package com.acun.quranicplus.ui.screen.quran
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,13 +11,11 @@ import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.repository.QuranRepository
 import com.acun.quranicplus.ui.screen.quran.share.JuzState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class QuranViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     val repository: QuranRepository,
     dataStore: QuranDataStore
 ): ViewModel() {
@@ -37,7 +34,7 @@ class QuranViewModel @Inject constructor(
 
     private fun getJuzList() {
         viewModelScope.launch {
-            repository.getAllJuz(context).collect {
+            repository.getAllJuz().collect {
                 when (it) {
                     is Resource.Loading -> {
                         _juzList.postValue(JuzState(

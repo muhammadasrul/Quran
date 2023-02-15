@@ -1,10 +1,13 @@
 package com.acun.quranicplus.ui.screen.quran.detail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.response.Resource
@@ -16,8 +19,48 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repository: QuranRepository,
-    private val dataStore: QuranDataStore
+    private val dataStore: QuranDataStore,
+    private val player: Player
 ): ViewModel() {
+    private val mediaUris = MutableLiveData<List<String>>()
+    private val nextUri = MutableLiveData<String>()
+    private val _currentPlayIndex = MutableLiveData<Int>()
+    val currentPlayIndex: LiveData<Int> = _currentPlayIndex
+    private val _isPlay = MutableLiveData<Boolean>()
+    val isPlay = _isPlay
+    private val _playbackState = MutableLiveData<Int>()
+    val playbackState: LiveData<Int> = _playbackState
+
+    init {
+        player.prepare()
+        player.addListener(object: Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                super.onPlaybackStateChanged(playbackState)
+                _playbackState.value = playbackState
+                when (playbackState) {
+                    Player.STATE_BUFFERING -> {
+                        Log.d("waduh", "playbackState: buffering $playbackState")
+                    }
+
+                    Player.STATE_ENDED -> {
+                        if (mediaUris.value?.lastIndex == currentPlayIndex.value) {
+                            _currentPlayIndex.value = -1
+                            return
+                        }
+                        nextUri.value?.let { play(it) }
+                    }
+
+                    Player.STATE_IDLE -> {
+                        Log.d("waduh", "playbackState: idle $playbackState")
+                    }
+
+                    Player.STATE_READY -> {
+                        Log.d("waduh", "playbackState: ready $playbackState")
+                    }
+                }
+            }
+        })
+    }
 
     private val _surahDetail = MutableLiveData<SurahDetailState>()
     val surahDetail: LiveData<SurahDetailState> = _surahDetail
@@ -33,6 +76,14 @@ class DetailViewModel @Inject constructor(
                         surahNameTranslation = ""
                     )
                 } ?: emptyList()
+
+                mediaUris.value = emptyList()
+                val list = mutableListOf<String>()
+                it.data?.verses?.forEach {  verse ->
+                    list.add(verse.audio.primary)
+//                    player.addMediaItem(MediaItem.fromUri(verse.audio.primary))
+                }
+                mediaUris.value = list
 
                 when (it) {
                     is Resource.Success -> {
@@ -67,6 +118,14 @@ class DetailViewModel @Inject constructor(
             repository.getJuz(number).collect {
                 when (it) {
                     is Resource.Success -> {
+                        mediaUris.value = emptyList()
+                        val list = mutableListOf<String>()
+                        it.data?.verses?.forEach {  verse ->
+                            list.add(verse.audio.primary)
+                            player.addMediaItem(MediaItem.fromUri(verse.audio.primary))
+                        }
+                        mediaUris.value = list
+
                         _juzDetail.postValue(JuzDetailState(
                             juzDetail = it.data,
                             isLoading = false,
@@ -98,4 +157,31 @@ class DetailViewModel @Inject constructor(
 
     val lastRead = dataStore.lastRead.asLiveData()
     val versePreference = dataStore.versePreference.asLiveData()
+
+    fun play(stringUri: String) {
+        _isPlay.value = true
+        mediaUris.value?.let { list ->
+            val current = list.firstOrNull { it == stringUri }
+            val indexOfCurrent = list.indexOf(current)
+            _currentPlayIndex.value = indexOfCurrent
+            if (indexOfCurrent != list.lastIndex) {
+                nextUri.value = list[indexOfCurrent+1]
+            }
+
+            current?.let { uri ->
+                player.setMediaItem(MediaItem.fromUri(uri))
+                player.play()
+            }
+        }
+    }
+
+    fun stop() {
+        _isPlay.value = false
+        player.pause()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        player.release()
+    }
 }

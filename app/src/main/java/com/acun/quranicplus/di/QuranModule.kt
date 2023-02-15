@@ -1,6 +1,7 @@
 package com.acun.quranicplus.di
 
-import android.content.Context
+import android.app.Application
+import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.PrayerApi
 import com.acun.quranicplus.data.remote.QuranApi
@@ -9,7 +10,6 @@ import com.acun.quranicplus.repository.QuranRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,7 +33,7 @@ object QuranModule {
     @Singleton
     fun provideQuranApiService(client: OkHttpClient): QuranApi {
         return Retrofit.Builder()
-            .baseUrl(QURAN_BASE_URL)
+            .baseUrl(BuildConfig.QURAN_BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -44,7 +44,7 @@ object QuranModule {
     @Singleton
     fun providePrayerApiService(client: OkHttpClient): PrayerApi {
         return Retrofit.Builder()
-            .baseUrl(PRAYER_BASE_URL)
+            .baseUrl(BuildConfig.PRAYER_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
@@ -53,16 +53,13 @@ object QuranModule {
 
     @Provides
     @Singleton
-    fun provideRepository(quranApi: QuranApi, prayerApi: PrayerApi): QuranRepository {
-        return QuranRepositoryImpl(quranApi, prayerApi)
+    fun provideRepository(app: Application ,quranApi: QuranApi, prayerApi: PrayerApi): QuranRepository {
+        return QuranRepositoryImpl(app, quranApi, prayerApi)
     }
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context): QuranDataStore {
-        return QuranDataStore(context)
+    fun provideDataStore(app: Application): QuranDataStore {
+        return QuranDataStore(app)
     }
-
-    private const val QURAN_BASE_URL = "https://api.quran.gading.dev/"
-    private const val PRAYER_BASE_URL = "http://api.aladhan.com/v1/"
 }

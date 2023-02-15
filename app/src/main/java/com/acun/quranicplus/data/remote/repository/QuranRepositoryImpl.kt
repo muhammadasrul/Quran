@@ -1,6 +1,6 @@
 package com.acun.quranicplus.data.remote.repository
 
-import android.content.Context
+import android.app.Application
 import com.acun.quranicplus.R
 import com.acun.quranicplus.data.remote.PrayerApi
 import com.acun.quranicplus.data.remote.QuranApi
@@ -21,6 +21,7 @@ import java.io.InputStreamReader
 import javax.inject.Inject
 
 class QuranRepositoryImpl @Inject constructor(
+    private val application: Application,
     private val quranApi: QuranApi,
     private val prayerApi: PrayerApi
 ): QuranRepository {
@@ -58,11 +59,11 @@ class QuranRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllJuz(ctx: Context): Flow<Resource<List<Juz>>> = flow {
+    override suspend fun getAllJuz(): Flow<Resource<List<Juz>>> = flow {
         emit(Resource.Loading())
 
         try {
-            val json = InputStreamReader(ctx.resources.openRawResource(R.raw.juz))
+            val json = InputStreamReader(application.applicationContext.resources.openRawResource(R.raw.juz))
             val juz = Gson().fromJson(json, JuzListResponse::class.java)
             emit(Resource.Success(data = juz.data, message = juz.message))
         } catch (e: IOException) {
