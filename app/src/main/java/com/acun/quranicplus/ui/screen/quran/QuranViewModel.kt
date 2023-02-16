@@ -9,7 +9,6 @@ import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.repository.QuranRepository
-import com.acun.quranicplus.ui.screen.quran.share.JuzState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,6 +18,7 @@ class QuranViewModel @Inject constructor(
     val repository: QuranRepository,
     dataStore: QuranDataStore
 ): ViewModel() {
+    val preference = dataStore.versePreference.asLiveData()
     val lastRead:LiveData<LastReadVerse> = dataStore.lastRead.asLiveData()
 
     private val _surahList: MutableLiveData<SurahState> = MutableLiveData()
@@ -37,23 +37,29 @@ class QuranViewModel @Inject constructor(
             repository.getAllJuz().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _juzList.postValue(JuzState(
+                        _juzList.postValue(
+                            JuzState(
                             isLoading = true,
                             isError = false
-                        ))
+                        )
+                        )
                     }
                     is Resource.Failed -> {
-                        _juzList.postValue(JuzState(
+                        _juzList.postValue(
+                            JuzState(
                             isLoading = false,
                             isError = true
-                        ))
+                        )
+                        )
                     }
                     is Resource.Success -> {
-                        _juzList.postValue(JuzState(
+                        _juzList.postValue(
+                            JuzState(
                             juzList = it.data ?: emptyList(),
                             isLoading = false,
                             isError = false
-                        ))
+                        )
+                        )
                     }
                 }
             }

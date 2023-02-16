@@ -77,6 +77,9 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Calendar.HOUR
+import java.util.Calendar.MINUTE
+import java.util.Calendar.SECOND
 import kotlin.math.roundToInt
 
 @Composable
@@ -142,7 +145,10 @@ fun HomeScreen(
     val prayer = viewModel.prayer.observeAsState()
     val location = viewModel.locationString.observeAsState()
     val isTimerStarted = viewModel.isTimerStarted.observeAsState()
-    val timeString = viewModel.timeString.observeAsState()
+    val timeMap = viewModel.timeMap.observeAsState()
+    val hour = timeMap.value?.get(HOUR) ?: "0"
+    val minute = timeMap.value?.get(MINUTE) ?: "0"
+    val second = timeMap.value?.get(SECOND) ?: "0"
 
     var prayerName by remember { mutableStateOf("") }
     var prayerTime by remember { mutableStateOf("") }
@@ -167,7 +173,7 @@ fun HomeScreen(
                     }
                     nearestPrayerTime?.let {
                         set(Calendar.HOUR_OF_DAY, it.hour())
-                        set(Calendar.MINUTE, it.minute())
+                        set(MINUTE, it.minute())
                     }
                 }.time.time
                 if (isTimerStarted.value == false) {
@@ -193,7 +199,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                 nextPrayerName = prayerName,
                 nextPrayerTime = prayerTime,
-                nextPrayerCounter = timeString.value ?: ""
+                nextPrayerCounter = stringResource(R.string.prayer_time_counter, hour, minute, second)
             )
             Row(
                 modifier = Modifier
@@ -358,7 +364,7 @@ fun PrayerTimesComponent(
         Column {
             Text(
                 modifier = Modifier.padding(start = 18.dp),
-                text = "Prayer Times",
+                text = stringResource(id = R.string.prayer_times),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
@@ -417,7 +423,7 @@ fun QiblaFinderComponent(
     Column {
         Text(
             modifier = Modifier.padding(start = 18.dp),
-            text = "Qibla Finder",
+            text = stringResource(id = R.string.qibla_finder),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,

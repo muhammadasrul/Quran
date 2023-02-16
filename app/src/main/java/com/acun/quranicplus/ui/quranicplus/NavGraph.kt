@@ -17,6 +17,7 @@ import com.acun.quranicplus.ui.screen.SplashScreen
 import com.acun.quranicplus.ui.screen.quran.detail.DetailViewModel
 import com.acun.quranicplus.ui.screen.quran.detail.QuranDetailScreen
 import com.acun.quranicplus.ui.screen.quran.share.ShareScreen
+import com.acun.quranicplus.ui.screen.quran.share.ShareViewModel
 
 object QuranicPlusDestinations {
     const val SPLASH_SCREEN_ROUTE = "splash_screen"
@@ -83,7 +84,9 @@ fun NavGraph(
             route = QuranicPlusDestinations.SHARE_ROUTE
         ) {
             val verse = navController.previousBackStackEntry?.savedStateHandle?.get<Verse>("verse")
+            val viewModel: ShareViewModel = hiltViewModel()
             ShareScreen(
+                viewModel = viewModel,
                 verse = verse,
                 onBackPressed = { navController.navigateUp() }
             )

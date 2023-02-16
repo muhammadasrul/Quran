@@ -34,7 +34,8 @@ class QuranDataStore @Inject constructor(private val context: Context) {
         VersePreference(
             it[TRANSLITERATION] ?: true,
             it[TRANSLATION] ?: true,
-            it[TEXT_SIZE] ?: 1
+            it[TEXT_SIZE] ?: 1,
+            it[LANGUAGE] ?: 0
         )
     }
 
@@ -43,6 +44,7 @@ class QuranDataStore @Inject constructor(private val context: Context) {
             it[TRANSLITERATION] = versePreference.transliteration
             it[TRANSLATION] = versePreference.translation
             it[TEXT_SIZE] = versePreference.textSizePos
+            it[LANGUAGE] = versePreference.languagePos
         }
     }
 
@@ -54,5 +56,6 @@ class QuranDataStore @Inject constructor(private val context: Context) {
         val TRANSLITERATION = booleanPreferencesKey("transliteration")
         val TRANSLATION = booleanPreferencesKey("translation")
         val TEXT_SIZE = intPreferencesKey("text_size")
+        val LANGUAGE = intPreferencesKey("language")
     }
 }

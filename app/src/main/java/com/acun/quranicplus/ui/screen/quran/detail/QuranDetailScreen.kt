@@ -58,6 +58,7 @@ import com.acun.quranicplus.ui.component.TopBarComponent
 import com.acun.quranicplus.ui.theme.Mariner
 import com.acun.quranicplus.ui.theme.Misbah
 import com.acun.quranicplus.ui.theme.Poppins
+import com.acun.quranicplus.util.Language.ENG
 import kotlinx.coroutines.launch
 
 @Composable
@@ -243,6 +244,7 @@ fun VerseItem(
         2 -> 15.sp
         else -> 12.sp
     }
+    val isEng = versePreference?.languagePos == ENG
 
     Column(
         modifier = Modifier
@@ -321,7 +323,7 @@ fun VerseItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
-                text = verse.translation.en,
+                text = if (isEng) verse.translation.en else verse.translation.id,
                 fontFamily = Poppins,
                 fontSize = fontSize,
                 color = MaterialTheme.colors.onSurface

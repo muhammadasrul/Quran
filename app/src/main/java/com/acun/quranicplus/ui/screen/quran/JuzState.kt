@@ -1,4 +1,4 @@
-package com.acun.quranicplus.ui.screen.quran.share
+package com.acun.quranicplus.ui.screen.quran
 
 import com.acun.quranicplus.data.remote.response.juz_list.Juz
 

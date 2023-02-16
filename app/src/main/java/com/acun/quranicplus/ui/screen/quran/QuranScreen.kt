@@ -31,6 +31,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.acun.quranicplus.R
+import com.acun.quranicplus.data.local.datastore.VersePreference
 import com.acun.quranicplus.data.remote.response.juz_list.Juz
 import com.acun.quranicplus.data.remote.response.juz_list.JuzSurah
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
@@ -60,6 +62,7 @@ import com.acun.quranicplus.ui.theme.HavelockBlue
 import com.acun.quranicplus.ui.theme.Mariner
 import com.acun.quranicplus.ui.theme.Misbah
 import com.acun.quranicplus.ui.theme.Poppins
+import com.acun.quranicplus.util.Language
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -68,11 +71,11 @@ fun QuranScreen(
     onSurahDetailClicked: (Surah) -> Unit,
     onJuzDetailClicked: (Juz, Int) -> Unit
 ) {
-    val tabTitle = arrayOf("Surah", "Juz")
+    val tabTitle = arrayOf(stringResource(id = R.string.surah_title), stringResource(id = R.string.juz_title))
     val lastRead = viewModel.lastRead.observeAsState()
+    val preference = viewModel.preference.observeAsState()
 
     val lastSurah = lastRead.value?.surah ?: ""
-    val lastAyah = if (lastRead.value?.numberInSurah != 0) "Ayah no ${lastRead.value?.numberInSurah}" else "you haven't read anything"
     val surahState = viewModel.surahList.observeAsState()
     val surahList = mutableListOf<Surah>()
     val juzState = viewModel.juzList.observeAsState()
@@ -95,6 +98,10 @@ fun QuranScreen(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
             ) {
+                val lastAyah = if (lastRead.value?.numberInSurah != 0) {
+                    stringResource(R.string.last_read_value, lastRead.value?.numberInSurah ?: 0 )
+                } else "You haven't read anything, yet."
+
                 QuranCard(
                     modifier = Modifier
                         .padding(horizontal = 18.dp, vertical = 8.dp),
@@ -149,6 +156,7 @@ fun QuranScreen(
                                             SurahItem(
                                                 modifier = Modifier.padding(horizontal = 24.dp),
                                                 surah = surah,
+                                                preference = preference,
                                                 isDividerEnabled = (index != surahList.lastIndex)
                                             ) { surahData, _ ->
                                                 surahData?.let(onSurahDetailClicked)
@@ -194,7 +202,8 @@ fun QuranScreen(
                                                             }
                                                         } },
                                                     isDividerEnabled = !(index == juzList.lastIndex && i == juz.surah.lastIndex),
-                                                    juz = juzData
+                                                    juz = juzData,
+                                                    preference = preference
                                                 )
                                             }
                                         }
@@ -246,7 +255,7 @@ fun QuranCard(
                 )
                 Text(
                     modifier = Modifier.padding(top = 1.dp, start = 8.dp),
-                    text = "Last Read",
+                    text = stringResource(id = R.string.last_read),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp,
@@ -296,9 +305,11 @@ fun SurahItem(
     modifier: Modifier = Modifier,
     surah: Surah? = null,
     juz: JuzSurah? = null,
+    preference: State<VersePreference?>,
     isDividerEnabled: Boolean = true,
     onItemClicked: (Surah?, JuzSurah?) -> Unit
 ) {
+    val isEng = preference.value?.languagePos == Language.ENG
     Column(
         modifier = modifier.clickable {
             onItemClicked(surah, juz)
@@ -323,7 +334,7 @@ fun SurahItem(
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 12.dp),
-                        text = surah?.name?.transliteration?.en ?: juz?.name ?: "",
+                        text = (if (isEng) surah?.name?.transliteration?.en else surah?.name?.transliteration?.id) ?: juz?.name ?: "",
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 15.sp,

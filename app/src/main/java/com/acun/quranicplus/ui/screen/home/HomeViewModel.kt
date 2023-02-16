@@ -3,7 +3,6 @@ package com.acun.quranicplus.ui.screen.home
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acun.quranicplus.data.remote.response.Resource
@@ -21,25 +20,26 @@ class HomeViewModel @Inject constructor(
     private var countDownTimer: CountDownTimer? = null
 
     private var initialTime = MutableLiveData<Long>()
-    private var currentTime = MutableLiveData<Long>()
     private var _isTimerStarted = MutableLiveData(false)
     val isTimerStarted = _isTimerStarted
 
-    val timeString = Transformations.map(currentTime) {
-        val hour = it / (1000 * 60 * 60)
-        val minute = it / (1000 * 60) % 60
-        val second = (it / 1000) % 60
-        fun timeFormat(time: Long) = String.format("%02d", time)
-
-        "in ${timeFormat(hour)}h ${timeFormat(minute)}m ${timeFormat(second)}s"
-    }
+    private val _timeMap = MutableLiveData<Map<Int, String>>()
+    val timeMap: LiveData<Map<Int, String>> = _timeMap
 
     fun setInitialTime(time: Long) {
         initialTime.value = time
-        currentTime.value = time
         countDownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(timeInMiles: Long) {
-                currentTime.value = timeInMiles
+                val hour = timeInMiles / (1000 * 60 * 60)
+                val minute = timeInMiles / (1000 * 60) % 60
+                val second = (timeInMiles / 1000) % 60
+                fun timeFormat(time: Long) = String.format("%02d", time)
+
+                _timeMap.value = mapOf(
+                    Calendar.HOUR to timeFormat(hour),
+                    Calendar.MINUTE to timeFormat(minute),
+                    Calendar.SECOND to timeFormat(second)
+                )
             }
 
             override fun onFinish() {

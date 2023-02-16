@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -58,6 +59,7 @@ import com.acun.quranicplus.ui.theme.Dune
 import com.acun.quranicplus.ui.theme.Misbah
 import com.acun.quranicplus.ui.theme.Poppins
 import com.acun.quranicplus.ui.theme.shareBackgroundList
+import com.acun.quranicplus.util.Language.ENG
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.shreyaspatil.capturable.Capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
@@ -69,6 +71,7 @@ import java.io.OutputStream
 
 @Composable
 fun ShareScreen(
+    viewModel: ShareViewModel,
     verse: Verse?,
     onBackPressed: () -> Unit
 ) {
@@ -78,13 +81,12 @@ fun ShareScreen(
     val captureController = rememberCaptureController()
     val coroutineScope = rememberCoroutineScope()
     var roundedCornerSize by remember { mutableStateOf(18.dp) }
-
     var primaryColor by remember { mutableStateOf(Color.White) }
     var secondaryColor by remember { mutableStateOf(Color.Black) }
-
     var isDarkTheme by remember { mutableStateOf(false) }
-
     val file: File = File.createTempFile("share", ".jpg", context.cacheDir)
+    val pref = viewModel.pref.observeAsState()
+    val isEng = pref.value?.languagePos == ENG
 
     fun getInverseBWColor(color: Int): Color {
         val red = android.graphics.Color.red(color)
@@ -216,7 +218,7 @@ fun ShareScreen(
                         append(verse?.number?.inSurah)
                     },
                     arabText = verse?.text?.arab ?: "",
-                    text = verse?.translation?.en ?: "",
+                    text = (if (isEng) verse?.translation?.en else verse?.translation?.id) ?: "",
                     primaryColor = primaryColor,
                     secondaryColor = secondaryColor,
                     roundedCornerSize = roundedCornerSize,
