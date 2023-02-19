@@ -15,9 +15,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +35,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -42,7 +45,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,10 +58,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import com.acun.quranicplus.R
+import com.acun.quranicplus.alarm_shceduler.AdzanAlarmScheduler
 import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.data.remote.response.prayer.getNearestPrayer
 import com.acun.quranicplus.data.remote.response.prayer.model.Prayer
@@ -71,11 +75,10 @@ import com.acun.quranicplus.ui.theme.AliceBlue
 import com.acun.quranicplus.ui.theme.HavelockBlue
 import com.acun.quranicplus.ui.theme.Mariner
 import com.acun.quranicplus.ui.theme.Poppins
+import com.acun.quranicplus.ui.theme.QuranicPlusTheme
 import com.acun.quranicplus.ui.theme.TropicalBlue
 import com.acun.quranicplus.util.shimmer
 import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Calendar.HOUR
 import java.util.Calendar.MINUTE
@@ -112,23 +115,23 @@ fun HomeScreen(
 
     }
 
-    sensorManager.registerListener(
-        sensorListener,
-        sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-        SensorManager.SENSOR_DELAY_GAME
-    )
-
-    val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-    if (ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) { return }
-
     LaunchedEffect(key1 = true) {
+        sensorManager.registerListener(
+            sensorListener,
+            sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+            SensorManager.SENSOR_DELAY_GAME
+        )
+
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) { return@LaunchedEffect }
+
         fusedLocationProviderClient.lastLocation.addOnSuccessListener {
             locationState = it
             val addresses = try {
@@ -305,35 +308,73 @@ fun HomeCard(
 
 @Composable
 fun PrayerItem(
-    prayer: Prayer
+    prayer: Prayer,
+    onSoundIconClicked : (Boolean) -> Unit
 ) {
+    val adzanScheduler = AdzanAlarmScheduler(LocalContext.current)
+    var isNotificationOn by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .clip(CircleShape)
-                .wrapContentSize()
-                .background(MaterialTheme.colors.onBackground)
-                .border(
-                    width = if (prayer.isNowPrayer) 1.5.dp else 0.dp,
-                    color = HavelockBlue,
-                    shape = CircleShape
+        BoxWithConstraints {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .wrapContentSize()
+                    .background(MaterialTheme.colors.onBackground)
+                    .border(
+                        width = if (prayer.isNowPrayer) 1.5.dp else 0.dp,
+                        color = HavelockBlue,
+                        shape = CircleShape
+                    )
+                    .size(70.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 2.dp),
+                    text = prayer.time
+                        .replace("[()]".toRegex(), "")
+                        .replace(" ", "\n"),
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colors.onSurface,
+                    textAlign = TextAlign.Center
                 )
-                .size(70.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                modifier = Modifier.padding(top = 2.dp),
-                text = prayer.time
-                    .replace("[()]".toRegex(), "")
-                    .replace(" ", "\n"),
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                color = MaterialTheme.colors.onSurface,
-                textAlign = TextAlign.Center
-            )
+            }
+
+            // hide icon button
+            if (false) {
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .absoluteOffset(12.dp, 12.dp),
+                    onClick = {
+                        isNotificationOn = !isNotificationOn
+                        onSoundIconClicked(isNotificationOn)
+                        if (isNotificationOn) {
+                            adzanScheduler.scheduler(prayer)
+                        } else {
+                            adzanScheduler.cancel(prayer)
+                        }
+                    }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color(0xFFF1E0FC))
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                if (isNotificationOn) R.drawable.ic_volume_on
+                                else R.drawable.ic_volume_off
+                            ),
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            }
         }
         Text(
             modifier = Modifier
@@ -353,7 +394,6 @@ fun PrayerTimesComponent(
     prayerList: List<Prayer>,
     isLoading: Boolean
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val prayerListState = rememberLazyListState()
     Box(
         modifier = Modifier
@@ -400,14 +440,14 @@ fun PrayerTimesComponent(
                         if (index == 0) {
                             Spacer(modifier = Modifier.width(14.dp))
                         }
-                        PrayerItem(item)
+                        PrayerItem(item) {}
                         Spacer(modifier = Modifier.width(14.dp))
                     }
                 }
             }
             prayerList.firstOrNull { it.isNowPrayer }?.let {
-                coroutineScope.launch {
-                    delay(100)
+                LaunchedEffect(key1 = true) {
+//                    delay(100)
                     prayerListState.animateScrollToItem(prayerList.indexOf(it))
                 }
             }
@@ -451,5 +491,13 @@ fun QiblaFinderComponent(
                 contentScale = ContentScale.Crop
             )
         }
+    }
+}
+
+@Preview()
+@Composable
+fun PrayerItemPreview() {
+    QuranicPlusTheme {
+        PrayerItem(prayer = Prayer(name = "Isha", time = "66.66 WIB", isNowPrayer = false, isNearestPrayer = false)) {}
     }
 }

@@ -4,7 +4,8 @@ data class Prayer(
     val name: String,
     val time: String,
     var isNowPrayer: Boolean,
-    var isNearestPrayer: Boolean
+    var isNearestPrayer: Boolean,
+    var isNotificationOn: Boolean = false
 )
 
 fun Prayer.hour(): Int {
