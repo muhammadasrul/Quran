@@ -21,8 +21,8 @@ class AdzanAlarmScheduler(
     override fun scheduler(item: Prayer) {
 
         val time = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, item.hour().plus(1))
-            set(Calendar.MINUTE, item.minute().plus(8))
+            set(Calendar.HOUR_OF_DAY, item.hour())
+            set(Calendar.MINUTE, item.minute())
         }.time.time
 
         Log.d("waduh", "time: $time")

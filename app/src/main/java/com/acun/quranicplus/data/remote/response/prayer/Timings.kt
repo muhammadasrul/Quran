@@ -29,11 +29,11 @@ data class Timings(
 
 fun Timings.toPrayerList(): List<Prayer> {
     val prayerList = listOf(
-        Prayer(name = "Fajr", time = fajr, isNowPrayer = false, isNearestPrayer = false),
-        Prayer(name = "Dhuhr", time = dhuhr, isNowPrayer = false, isNearestPrayer = false),
-        Prayer(name = "Asr", time = asr, isNowPrayer = false, isNearestPrayer = false),
-        Prayer(name = "Maghrib", time = maghrib, isNowPrayer = false, isNearestPrayer = false),
-        Prayer(name = "Isha", time = isha, isNowPrayer = false, isNearestPrayer = false))
+        Prayer(id = 1, name = "Fajr", time = fajr, isNowPrayer = false, isNearestPrayer = false),
+        Prayer(id = 2, name = "Dhuhr", time = dhuhr, isNowPrayer = false, isNearestPrayer = false),
+        Prayer(id = 3, name = "Asr", time = asr, isNowPrayer = false, isNearestPrayer = false),
+        Prayer(id = 4, name = "Maghrib", time = maghrib, isNowPrayer = false, isNearestPrayer = false),
+        Prayer(id = 5, name = "Isha", time = isha, isNowPrayer = false, isNearestPrayer = false))
 
     val cal = Calendar.getInstance()
     run breaking@ {
@@ -59,12 +59,4 @@ fun Timings.toPrayerList(): List<Prayer> {
         }
     }
     return prayerList
-}
-
-fun Timings.getNowPrayer(): Prayer? {
-    return toPrayerList().firstOrNull { it.isNowPrayer }
-}
-
-fun Timings.getNearestPrayer(): Prayer? {
-    return toPrayerList().firstOrNull { it.isNearestPrayer }
 }

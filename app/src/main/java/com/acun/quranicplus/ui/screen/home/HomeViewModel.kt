@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acun.quranicplus.data.remote.response.Resource
-import com.acun.quranicplus.data.remote.response.prayer.PrayerTimeData
+import com.acun.quranicplus.data.remote.response.prayer.model.Prayer
 import com.acun.quranicplus.repository.QuranRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -48,8 +48,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val _prayer = MutableLiveData<Resource<List<PrayerTimeData>>>()
-    val prayer: LiveData<Resource<List<PrayerTimeData>>> = _prayer
+//    private val _prayer = MutableLiveData<Resource<List<Prayer>>>()
+//    val prayer: LiveData<Resource<List<Prayer>>> = _prayer
+
+    private val _prayerList = MutableLiveData<PrayerState>()
+    val prayerList: LiveData<PrayerState> = _prayerList
 
     private val _locationString = MutableLiveData<String>()
     val locationString: LiveData<String> = _locationString
@@ -65,8 +68,20 @@ class HomeViewModel @Inject constructor(
                 methode = 2,
                 month = month,
                 year = year
-            ).collect { resource ->
-                _prayer.postValue(resource)
+            ).collect {
+                _prayerList.postValue(PrayerState(isLoading = true))
+
+                when (it) {
+                    is Resource.Loading -> _prayerList.postValue(
+                        PrayerState(isLoading = true)
+                    )
+                    is Resource.Failed -> _prayerList.postValue(
+                        PrayerState(isLoading = false, isError = true)
+                    )
+                    is Resource.Success -> {
+                        _prayerList.postValue(PrayerState(isLoading = false, isError = false, prayerList = it.data ?: emptyList()))
+                    }
+                }
             }
         }
     }
@@ -83,5 +98,11 @@ class HomeViewModel @Inject constructor(
     fun stopTimer() {
         _isTimerStarted.value = false
         countDownTimer?.cancel()
+    }
+
+    fun updatePrayer(prayer: Prayer) {
+        viewModelScope.launch {
+            repository.updateLocalPrayer(prayer)
+        }
     }
 }

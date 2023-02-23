@@ -1,6 +1,7 @@
 package com.acun.quranicplus.data.remote.response.prayer.model
 
 data class Prayer(
+    val id: Int,
     val name: String,
     val time: String,
     var isNowPrayer: Boolean,

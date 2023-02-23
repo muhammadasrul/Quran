@@ -1,8 +1,10 @@
 package com.acun.quranicplus.di
 
 import android.app.Application
+import androidx.room.Room
 import com.acun.quranicplus.BuildConfig
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
+import com.acun.quranicplus.data.local.room.QuranicPlusDatabase
 import com.acun.quranicplus.data.remote.PrayerApi
 import com.acun.quranicplus.data.remote.QuranApi
 import com.acun.quranicplus.data.remote.repository.QuranRepositoryImpl
@@ -53,8 +55,18 @@ object QuranModule {
 
     @Provides
     @Singleton
-    fun provideRepository(app: Application ,quranApi: QuranApi, prayerApi: PrayerApi): QuranRepository {
-        return QuranRepositoryImpl(app, quranApi, prayerApi)
+    fun provideRoomDatabase(app: Application): QuranicPlusDatabase {
+        return Room.databaseBuilder(
+            app,
+            QuranicPlusDatabase::class.java,
+            "quranic_plus"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepository(app: Application ,quranApi: QuranApi, prayerApi: PrayerApi, db: QuranicPlusDatabase): QuranRepository {
+        return QuranRepositoryImpl(app, quranApi, prayerApi, db)
     }
 
     @Provides

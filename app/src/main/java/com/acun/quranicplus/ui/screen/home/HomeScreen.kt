@@ -58,24 +58,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import com.acun.quranicplus.R
 import com.acun.quranicplus.alarm_shceduler.AdzanAlarmScheduler
-import com.acun.quranicplus.data.remote.response.Resource
-import com.acun.quranicplus.data.remote.response.prayer.getNearestPrayer
 import com.acun.quranicplus.data.remote.response.prayer.model.Prayer
 import com.acun.quranicplus.data.remote.response.prayer.model.hour
 import com.acun.quranicplus.data.remote.response.prayer.model.minute
-import com.acun.quranicplus.data.remote.response.prayer.toPrayerList
 import com.acun.quranicplus.ui.component.TopBarComponent
 import com.acun.quranicplus.ui.theme.AliceBlue
 import com.acun.quranicplus.ui.theme.HavelockBlue
 import com.acun.quranicplus.ui.theme.Mariner
 import com.acun.quranicplus.ui.theme.Poppins
-import com.acun.quranicplus.ui.theme.QuranicPlusTheme
 import com.acun.quranicplus.ui.theme.TropicalBlue
 import com.acun.quranicplus.util.shimmer
 import com.google.android.gms.location.LocationServices
@@ -145,48 +140,39 @@ fun HomeScreen(
         }
     }
 
-    val prayer = viewModel.prayer.observeAsState()
+    val prayer = viewModel.prayerList.observeAsState()
     val location = viewModel.locationString.observeAsState()
     val isTimerStarted = viewModel.isTimerStarted.observeAsState()
     val timeMap = viewModel.timeMap.observeAsState()
-    val hour = timeMap.value?.get(HOUR) ?: "0"
-    val minute = timeMap.value?.get(MINUTE) ?: "0"
-    val second = timeMap.value?.get(SECOND) ?: "0"
+    val hour = timeMap.value?.get(HOUR) ?: ""
+    val minute = timeMap.value?.get(MINUTE) ?: ""
+    val second = timeMap.value?.get(SECOND) ?: ""
 
     var prayerName by remember { mutableStateOf("") }
     var prayerTime by remember { mutableStateOf("") }
     var prayerList by remember { mutableStateOf(listOf<Prayer>()) }
-    var isLoading by remember { mutableStateOf(false) }
 
-    val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-
-    when(prayer.value) {
-        is Resource.Loading -> isLoading = true
-        is Resource.Success -> {
-            isLoading = false
-            prayer.value?.data?.get(day-1)?.timings?.let { time ->
-                prayerList = time.toPrayerList()
-                val nearestPrayerTime = time.getNearestPrayer()
-                prayerName = stringResource(R.string.next_prayer, nearestPrayerTime?.name ?: "")
-                prayerTime = nearestPrayerTime?.time ?: ""
-                val now = Calendar.getInstance().time.time
-                val nearest = Calendar.getInstance().apply {
-                    if (get(Calendar.HOUR_OF_DAY) >= prayerList.last().hour()) {
-                        add(Calendar.DATE, 1)
-                    }
-                    nearestPrayerTime?.let {
-                        set(Calendar.HOUR_OF_DAY, it.hour())
-                        set(MINUTE, it.minute())
-                    }
-                }.time.time
-                if (isTimerStarted.value == false) {
-                    viewModel.setInitialTime(nearest-now)
-                    viewModel.startTimer()
+    val now = Calendar.getInstance().time.time
+    prayer.value?.prayerList?.let { list ->
+        prayerList = list
+        val nearestPrayerTime = list.firstOrNull { it.isNearestPrayer }
+        prayerName = stringResource(R.string.next_prayer, nearestPrayerTime?.name ?: "")
+        prayerTime = nearestPrayerTime?.time ?: ""
+        if (prayerList.isNotEmpty()) {
+            val nearest = Calendar.getInstance().apply {
+                if (get(Calendar.HOUR_OF_DAY) >= prayerList.last().hour()) {
+                    add(Calendar.DATE, 1)
                 }
+                nearestPrayerTime?.let {
+                    set(Calendar.HOUR_OF_DAY, it.hour())
+                    set(MINUTE, it.minute())
+                }
+            }.time.time
+            if (isTimerStarted.value == false) {
+                viewModel.setInitialTime(nearest-now)
+                viewModel.startTimer()
             }
         }
-        is Resource.Failed -> isLoading = false
-        else -> Unit
     }
 
     Scaffold(
@@ -224,7 +210,9 @@ fun HomeScreen(
                 )
             }
             Divider(thickness = 6.dp, color = Color.Transparent)
-            PrayerTimesComponent(prayerList = prayerList, isLoading = isLoading)
+            PrayerTimesComponent(prayerList = prayerList, isLoading = prayer.value?.isLoading == true) {
+                viewModel.updatePrayer(it)
+            }
             Divider(thickness = 8.dp, color = Color.Transparent)
             QiblaFinderComponent(
                 kaabaDegree = kaabaDegreeState,
@@ -309,10 +297,9 @@ fun HomeCard(
 @Composable
 fun PrayerItem(
     prayer: Prayer,
-    onSoundIconClicked : (Boolean) -> Unit
+    onSoundIconClicked : (Prayer) -> Unit
 ) {
     val adzanScheduler = AdzanAlarmScheduler(LocalContext.current)
-    var isNotificationOn by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -343,36 +330,33 @@ fun PrayerItem(
                 )
             }
 
-            // hide icon button
-            if (false) {
-                IconButton(
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .absoluteOffset(12.dp, 12.dp),
+                onClick = {
+                    if (!prayer.isNotificationOn) {
+                        adzanScheduler.scheduler(prayer)
+                    } else {
+                        adzanScheduler.cancel(prayer)
+                    }
+                    prayer.isNotificationOn = !prayer.isNotificationOn
+                    onSoundIconClicked(prayer)
+                }
+            ) {
+                Box(
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .absoluteOffset(12.dp, 12.dp),
-                    onClick = {
-                        isNotificationOn = !isNotificationOn
-                        onSoundIconClicked(isNotificationOn)
-                        if (isNotificationOn) {
-                            adzanScheduler.scheduler(prayer)
-                        } else {
-                            adzanScheduler.cancel(prayer)
-                        }
-                    }
+                        .clip(CircleShape)
+                        .background(Color(0xFFF1E0FC))
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color(0xFFF1E0FC))
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                if (isNotificationOn) R.drawable.ic_volume_on
-                                else R.drawable.ic_volume_off
-                            ),
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(
+                            if (prayer.isNotificationOn) R.drawable.ic_volume_on
+                            else R.drawable.ic_volume_off
+                        ),
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.primary
+                    )
                 }
             }
         }
@@ -392,7 +376,8 @@ fun PrayerItem(
 @Composable
 fun PrayerTimesComponent(
     prayerList: List<Prayer>,
-    isLoading: Boolean
+    isLoading: Boolean,
+    onSoundIconClicked: (Prayer) -> Unit
 ) {
     val prayerListState = rememberLazyListState()
     Box(
@@ -440,7 +425,9 @@ fun PrayerTimesComponent(
                         if (index == 0) {
                             Spacer(modifier = Modifier.width(14.dp))
                         }
-                        PrayerItem(item) {}
+                        PrayerItem(item) {
+                            onSoundIconClicked(it.copy())
+                        }
                         Spacer(modifier = Modifier.width(14.dp))
                     }
                 }
@@ -491,13 +478,5 @@ fun QiblaFinderComponent(
                 contentScale = ContentScale.Crop
             )
         }
-    }
-}
-
-@Preview()
-@Composable
-fun PrayerItemPreview() {
-    QuranicPlusTheme {
-        PrayerItem(prayer = Prayer(name = "Isha", time = "66.66 WIB", isNowPrayer = false, isNearestPrayer = false)) {}
     }
 }
