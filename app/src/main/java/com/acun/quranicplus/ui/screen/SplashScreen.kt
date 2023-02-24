@@ -81,7 +81,7 @@ fun SplashScreen(
                     ) {
                         Text(
                             text = "Open Setting",
-                            color = MaterialTheme.colors.onSurface
+                            color = MaterialTheme.colors.onBackground
                         )
                     }
                 },
@@ -95,7 +95,7 @@ fun SplashScreen(
                     ) {
                         Text(
                             text = "Close",
-                            color = MaterialTheme.colors.onSurface
+                            color = MaterialTheme.colors.onBackground
                         )
                     }
                 }
