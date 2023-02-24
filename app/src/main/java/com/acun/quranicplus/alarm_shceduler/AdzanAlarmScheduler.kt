@@ -23,6 +23,9 @@ class AdzanAlarmScheduler(
         val time = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, item.hour())
             set(Calendar.MINUTE, item.minute())
+            if (Calendar.getInstance().after(this)) {
+                add(Calendar.DATE, 1)
+            }
         }.time.time
 
         Log.d("waduh", "time: $time")

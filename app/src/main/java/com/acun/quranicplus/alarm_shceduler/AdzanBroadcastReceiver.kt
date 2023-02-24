@@ -25,7 +25,7 @@ class AdzanBroadcastReceiver: BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.icon)
             .setContentTitle("Prayer Reminder")
-            .setContentText("Now it's time for $name pray")
+            .setContentText("Now it's time for $name prayer")
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
             .setAutoCancel(true)
