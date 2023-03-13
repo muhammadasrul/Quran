@@ -14,6 +14,8 @@ import com.acun.quranicplus.data.remote.response.juz_list.Juz
 import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.ui.screen.SplashScreen
+import com.acun.quranicplus.ui.screen.quran.QuranViewModel
+import com.acun.quranicplus.ui.screen.quran.SearchScreen
 import com.acun.quranicplus.ui.screen.quran.detail.DetailViewModel
 import com.acun.quranicplus.ui.screen.quran.detail.QuranDetailScreen
 import com.acun.quranicplus.ui.screen.quran.share.ShareScreen
@@ -24,6 +26,7 @@ object QuranicPlusDestinations {
     const val QURANIC_PLUS_ROUTE = "quranicplus"
     const val QURAN_DETAIL_ROUTE = "quran_detail"
     const val SHARE_ROUTE = "quran_detail/share"
+    const val QURAN_SEARCH = "quran_search"
 }
 
 @Composable
@@ -89,6 +92,19 @@ fun NavGraph(
                 viewModel = viewModel,
                 verse = verse,
                 onBackPressed = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = QuranicPlusDestinations.QURAN_SEARCH
+        ) {
+            val viewModel: QuranViewModel = hiltViewModel()
+            SearchScreen(
+                viewModel = viewModel,
+                onSurahDetailClicked = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("juz", null)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("surah", it)
+                    navController.navigate(QuranicPlusDestinations.QURAN_DETAIL_ROUTE)
+                }
             )
         }
     }

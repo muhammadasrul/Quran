@@ -142,8 +142,8 @@ fun QuranDetailScreen(
             val title = surahNavArgs?.name?.transliteration?.en ?: juzNavArgs?.juz?.let {stringResource(id = R.string.juz,  it) } ?: ""
             TopBarComponent(
                 title = title,
-                rightIcon = R.drawable.ic_arrow_left,
-                onRightIconClicked = { onBackPressed() }
+                leftIcon = R.drawable.ic_arrow_left,
+                onLeftIconClicked = { onBackPressed() }
             )
         },
         backgroundColor = MaterialTheme.colors.surface

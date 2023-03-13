@@ -137,8 +137,8 @@ fun ShareScreen(
         topBar = {
             TopBarComponent(
                 title = "Share",
-                rightIcon = R.drawable.ic_arrow_left,
-                onRightIconClicked = onBackPressed,
+                leftIcon = R.drawable.ic_arrow_left,
+                onLeftIconClicked = onBackPressed,
                 foregroundColor = secondaryColor,
                 backgroundColor = Color.Transparent,
                 textAlignment = TextAlign.Center

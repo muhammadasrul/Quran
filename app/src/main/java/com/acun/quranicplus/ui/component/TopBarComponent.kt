@@ -28,9 +28,9 @@ fun TopBarComponent(
     title: String,
     foregroundColor: Color = MaterialTheme.colors.onSurface,
     backgroundColor: Color = MaterialTheme.colors.surface,
-    rightIcon: Int = 0,
+    leftIcon: Int = 0,
     textAlignment: TextAlign = TextAlign.Start,
-    onRightIconClicked: () -> Unit = {}
+    onLeftIconClicked: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -41,21 +41,21 @@ fun TopBarComponent(
             modifier = Modifier.padding(vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (rightIcon != 0) {
+            if (leftIcon != 0) {
                 IconButton(
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    onClick = onRightIconClicked
+                    onClick = onLeftIconClicked
                 ) {
                     Icon(
                         tint = foregroundColor,
-                        painter = painterResource(id = rightIcon),
+                        painter = painterResource(id = leftIcon),
                         contentDescription = "Right Icon"
                     )
                 }
             }
             Text(
                 modifier = Modifier
-                    .padding(end = if (rightIcon != 0) 56.dp else 0.dp)
+                    .padding(end = if (leftIcon != 0) 56.dp else 0.dp)
                     .fillMaxWidth()
                     .padding(start = 14.dp, end = 14.dp, top = 8.dp, bottom = 6.dp),
                 text = title,

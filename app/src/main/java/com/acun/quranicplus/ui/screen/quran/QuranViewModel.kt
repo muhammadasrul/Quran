@@ -9,6 +9,7 @@ import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.repository.QuranRepository
+import com.acun.quranicplus.util.Language
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,29 +38,23 @@ class QuranViewModel @Inject constructor(
             repository.getAllJuz().collect {
                 when (it) {
                     is Resource.Loading -> {
-                        _juzList.postValue(
-                            JuzState(
+                        _juzList.postValue(JuzState(
                             isLoading = true,
                             isError = false
-                        )
-                        )
+                        ))
                     }
                     is Resource.Failed -> {
-                        _juzList.postValue(
-                            JuzState(
+                        _juzList.postValue(JuzState(
                             isLoading = false,
                             isError = true
-                        )
-                        )
+                        ))
                     }
                     is Resource.Success -> {
-                        _juzList.postValue(
-                            JuzState(
+                        _juzList.postValue(JuzState(
                             juzList = it.data ?: emptyList(),
                             isLoading = false,
                             isError = false
-                        )
-                        )
+                        ))
                     }
                 }
             }
@@ -92,5 +87,24 @@ class QuranViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private val _filteredSurahList: MutableLiveData<SurahState> = MutableLiveData()
+    val filteredSurahList: LiveData<SurahState> = _filteredSurahList
+
+    fun updateQuery(query: String) {
+        val filtered = _surahList.value?.surahList?.filter {
+            if (preference.value?.languagePos == Language.ID) {
+                it.name.transliteration.id.replace("-", "").lowercase().contains(query.replace("-", "").lowercase())
+            } else {
+                it.name.transliteration.en.replace("-", "").lowercase().contains(query.replace("-", "").lowercase())
+            }
+        } ?: emptyList()
+
+        _filteredSurahList.postValue(SurahState(
+            surahList = if (query.isNotEmpty()) filtered else emptyList(),
+            isLoading = false,
+            isError = false
+        ))
     }
 }

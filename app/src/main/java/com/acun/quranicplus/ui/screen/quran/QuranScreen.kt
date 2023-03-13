@@ -27,6 +27,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -69,7 +71,8 @@ import com.acun.quranicplus.util.Language
 fun QuranScreen(
     viewModel: QuranViewModel,
     onSurahDetailClicked: (Surah) -> Unit,
-    onJuzDetailClicked: (Juz, Int) -> Unit
+    onJuzDetailClicked: (Juz, Int) -> Unit,
+    onSearchClicked: () -> Unit
 ) {
     val tabTitle = arrayOf(stringResource(id = R.string.surah_title), stringResource(id = R.string.juz_title))
     val lastRead = viewModel.lastRead.observeAsState()
@@ -87,7 +90,7 @@ fun QuranScreen(
     Scaffold(
         topBar = { TopBarComponent(title = "Quran") },
         backgroundColor = MaterialTheme.colors.surface
-    ) {paddingValues ->
+    ) { paddingValues ->
         BoxWithConstraints {
             val screenHeight = maxHeight
             val scrollState = rememberScrollState()
@@ -213,6 +216,22 @@ fun QuranScreen(
                         }
                     }
                 }
+            }
+
+            FloatingActionButton(
+                modifier = Modifier
+                    .padding(18.dp)
+                    .align(Alignment.BottomEnd),
+                backgroundColor = MaterialTheme.colors.surface,
+                onClick = {
+                    onSearchClicked()
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    tint = MaterialTheme.colors.primary,
+                    contentDescription = null
+                )
             }
         }
     }
