@@ -55,7 +55,12 @@ import com.acun.quranicplus.R
 import com.acun.quranicplus.data.local.datastore.VersePreference
 import com.acun.quranicplus.data.remote.response.juz_list.Juz
 import com.acun.quranicplus.data.remote.response.juz_list.JuzSurah
+import com.acun.quranicplus.data.remote.response.surah_list.Name
+import com.acun.quranicplus.data.remote.response.surah_list.Revelation
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
+import com.acun.quranicplus.data.remote.response.surah_list.Tafsir
+import com.acun.quranicplus.data.remote.response.surah_list.Translation
+import com.acun.quranicplus.data.remote.response.surah_list.Transliteration
 import com.acun.quranicplus.ui.component.LoadingComponent
 import com.acun.quranicplus.ui.component.TabComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
@@ -72,7 +77,8 @@ fun QuranScreen(
     viewModel: QuranViewModel,
     onSurahDetailClicked: (Surah) -> Unit,
     onJuzDetailClicked: (Juz, Int) -> Unit,
-    onSearchClicked: () -> Unit
+    onSearchClicked: () -> Unit,
+    onLastReadClicked: (Surah, Int) -> Unit
 ) {
     val tabTitle = arrayOf(stringResource(id = R.string.surah_title), stringResource(id = R.string.juz_title))
     val lastRead = viewModel.lastRead.observeAsState()
@@ -107,7 +113,35 @@ fun QuranScreen(
 
                 QuranCard(
                     modifier = Modifier
-                        .padding(horizontal = 18.dp, vertical = 8.dp),
+                        .padding(horizontal = 18.dp, vertical = 8.dp)
+                        .clickable {
+                            onLastReadClicked(
+                                Surah(
+                                    name = Name(
+                                        long = "",
+                                        short = "",
+                                        translation = Translation(
+                                            en = "",
+                                            id = ""
+                                        ),
+                                        transliteration = Transliteration(
+                                            en = "",
+                                            id = ""
+                                        )
+                                    ),
+                                    number = lastRead.value?.number ?: 0,
+                                    numberOfVerses = 0,
+                                    revelation = Revelation(
+                                        arab = "",
+                                        en = "",
+                                        id = ""
+                                    ),
+                                    sequence = 0,
+                                    tafsir = Tafsir(id = "")
+                                ),
+                                lastRead.value?.numberInSurah ?: 0
+                            )
+                        },
                     lastAyah = lastAyah,
                     lastSurah = lastSurah
                 )

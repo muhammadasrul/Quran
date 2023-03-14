@@ -108,6 +108,10 @@ fun QuranDetailScreen(
         }
         verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran }?.isBookmark =
             true
+
+        LaunchedEffect(true) {
+            verseListState.scrollToItem(juzPos)
+        }
     }
 
     // juz verse
@@ -131,7 +135,7 @@ fun QuranDetailScreen(
 
         verseList.firstOrNull { it.number.inQuran == lastReadVerseState.value?.numberInQuran }?.isBookmark = true
 
-        coroutineScope.launch {
+        LaunchedEffect(true) {
             verseListState.scrollToItem(juzPos)
         }
     }
@@ -200,7 +204,8 @@ fun QuranDetailScreen(
                                 LastReadVerse(
                                     surah = s,
                                     numberInSurah = v.number.inSurah,
-                                    numberInQuran = v.number.inQuran
+                                    numberInQuran = v.number.inQuran,
+                                    number = surahNavArgs?.number ?: 0
                                 )
                             )
 

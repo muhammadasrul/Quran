@@ -71,6 +71,8 @@ fun NavGraph(
             val surahNavArgs = navController.previousBackStackEntry?.savedStateHandle?.get<Surah>("surah")
             val juzNavArgs = navController.previousBackStackEntry?.savedStateHandle?.get<Juz>("juz")
             val juzPos = navController.previousBackStackEntry?.savedStateHandle?.get<Int>("pos") ?: 0
+            val pos = if (juzPos > 0) juzPos-1 else juzPos
+
             QuranDetailScreen(
                 viewModel = viewModel,
                 onBackPressed = { navController.navigateUp() },
@@ -80,7 +82,7 @@ fun NavGraph(
                 },
                 surahNavArgs = surahNavArgs,
                 juzNavArgs = juzNavArgs,
-                juzPos = juzPos
+                juzPos = pos
             )
         }
         composable(

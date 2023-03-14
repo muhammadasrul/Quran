@@ -18,7 +18,8 @@ class QuranDataStore @Inject constructor(private val context: Context) {
         LastReadVerse(
             surah = it[SURAH] ?: "",
             numberInSurah = it[NUMBER_IN_SURAH] ?: 0,
-            numberInQuran = it[NUMBER_IN_QURAN] ?: 0
+            numberInQuran = it[NUMBER_IN_QURAN] ?: 0,
+            number = it[NUMBER] ?: 0
         )
     }
 
@@ -27,6 +28,7 @@ class QuranDataStore @Inject constructor(private val context: Context) {
             it[SURAH] = lastRead.surah
             it[NUMBER_IN_SURAH] = lastRead.numberInSurah
             it[NUMBER_IN_QURAN] = lastRead.numberInQuran
+            it[NUMBER] = lastRead.number
         }
     }
 
@@ -51,7 +53,8 @@ class QuranDataStore @Inject constructor(private val context: Context) {
     companion object {
         val SURAH = stringPreferencesKey("surah")
         val NUMBER_IN_SURAH = intPreferencesKey("number_in_surah")
-        val NUMBER_IN_QURAN = intPreferencesKey("number")
+        val NUMBER_IN_QURAN = intPreferencesKey("number_in_quran")
+        val NUMBER = intPreferencesKey("number")
 
         val TRANSLITERATION = booleanPreferencesKey("transliteration")
         val TRANSLATION = booleanPreferencesKey("translation")

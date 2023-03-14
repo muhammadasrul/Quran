@@ -39,6 +39,11 @@ fun NavGraphBuilder.quranicPlus(
             },
             onSearchClicked = {
                 navHostController.navigate(QuranicPlusDestinations.QURAN_SEARCH)
+            },
+            onLastReadClicked = { surah, pos ->
+                navHostController.currentBackStackEntry?.savedStateHandle?.set("surah", surah)
+                navHostController.currentBackStackEntry?.savedStateHandle?.set("pos", pos)
+                navHostController.navigate(QuranicPlusDestinations.QURAN_DETAIL_ROUTE)
             }
         )
     }
