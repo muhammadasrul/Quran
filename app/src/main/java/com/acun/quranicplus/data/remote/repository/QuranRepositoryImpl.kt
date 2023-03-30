@@ -115,7 +115,7 @@ class QuranRepositoryImpl @Inject constructor(
             )
             if (prayer.code == 200) {
                 val date = Calendar.getInstance().get(Calendar.DATE)
-                var prayerList = prayer.data[date].timings.toPrayerList()
+                var prayerList = prayer.data[date-1].timings.toPrayerList()
 
                 if (prayerReminder.isEmpty()) db.prayerDao().insertAllPrayer(prayerList.map {
                     PrayerEntity(it.id, it.isNotificationOn)
