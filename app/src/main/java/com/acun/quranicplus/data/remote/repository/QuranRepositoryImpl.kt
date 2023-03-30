@@ -30,7 +30,9 @@ class QuranRepositoryImpl @Inject constructor(
     private val prayerApi: PrayerApi,
     private val db: QuranicPlusDatabase
 ) : QuranRepository {
-    override suspend fun getAllSurah(): Flow<Resource<List<Surah>>> = flow {
+    private val unexpectedError = "An unexpected error occurred."
+
+    override fun getAllSurah(): Flow<Resource<List<Surah>>> = flow {
         emit(Resource.Loading())
 
         try {
@@ -41,13 +43,13 @@ class QuranRepositoryImpl @Inject constructor(
                 emit(Resource.Failed(message = surah.message))
             }
         } catch (e: HttpException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         } catch (e: IOException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         }
     }
 
-    override suspend fun getSurah(number: Int): Flow<Resource<SurahDetail>> = flow {
+    override fun getSurah(number: Int): Flow<Resource<SurahDetail>> = flow {
         emit(Resource.Loading())
 
         try {
@@ -58,13 +60,13 @@ class QuranRepositoryImpl @Inject constructor(
                 emit(Resource.Failed(message = surah.message))
             }
         } catch (e: HttpException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         } catch (e: IOException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         }
     }
 
-    override suspend fun getAllJuz(): Flow<Resource<List<Juz>>> = flow {
+    override fun getAllJuz(): Flow<Resource<List<Juz>>> = flow {
         emit(Resource.Loading())
 
         try {
@@ -73,11 +75,11 @@ class QuranRepositoryImpl @Inject constructor(
             val juz = Gson().fromJson(json, JuzListResponse::class.java)
             emit(Resource.Success(data = juz.data, message = juz.message))
         } catch (e: IOException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         }
     }
 
-    override suspend fun getJuz(number: Int): Flow<Resource<JuzDetail>> = flow {
+    override fun getJuz(number: Int): Flow<Resource<JuzDetail>> = flow {
         emit(Resource.Loading())
 
         try {
@@ -88,13 +90,13 @@ class QuranRepositoryImpl @Inject constructor(
                 emit(Resource.Failed(message = juz.message))
             }
         } catch (e: HttpException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         } catch (e: IOException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         }
     }
 
-    override suspend fun getPrayer(
+    override fun getPrayer(
         latitude: Double,
         longitude: Double,
         methode: Int,
@@ -135,9 +137,9 @@ class QuranRepositoryImpl @Inject constructor(
                 emit(Resource.Failed(message = "Failed"))
             }
         } catch (e: HttpException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         } catch (e: IOException) {
-            emit(Resource.Failed(message = e.localizedMessage ?: "An unexpected error occurred."))
+            emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
         }
     }
 

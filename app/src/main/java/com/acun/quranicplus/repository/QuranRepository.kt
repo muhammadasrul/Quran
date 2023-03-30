@@ -9,12 +9,12 @@ import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import kotlinx.coroutines.flow.Flow
 
 interface QuranRepository {
-    suspend fun getAllSurah(): Flow<Resource<List<Surah>>>
-    suspend fun getSurah(number: Int): Flow<Resource<SurahDetail>>
-    suspend fun getAllJuz(): Flow<Resource<List<Juz>>>
-    suspend fun getJuz(number: Int): Flow<Resource<JuzDetail>>
+    fun getAllSurah(): Flow<Resource<List<Surah>>>
+    fun getSurah(number: Int): Flow<Resource<SurahDetail>>
+    fun getAllJuz(): Flow<Resource<List<Juz>>>
+    fun getJuz(number: Int): Flow<Resource<JuzDetail>>
 
-    suspend fun getPrayer(
+    fun getPrayer(
         latitude: Double,
         longitude: Double,
         methode: Int,
