@@ -131,9 +131,7 @@ fun HomeScreen(
             locationState = it
             val addresses = try {
                 Geocoder(context).getFromLocation(it.latitude, it.longitude, 1)?.firstOrNull()
-            } catch (e: Exception) {
-                null
-            }
+            } catch (_: Exception) { null }
 
             viewModel.getPrayer(lat = it.latitude, long = it.longitude)
             viewModel.setLocation(addresses?.locality ?: context.getString(R.string.error_location_not_found))
@@ -188,7 +186,8 @@ fun HomeScreen(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                 nextPrayerName = prayerName,
                 nextPrayerTime = prayerTime,
-                nextPrayerCounter = stringResource(R.string.prayer_time_counter, hour, minute, second)
+                nextPrayerCounter = stringResource(R.string.prayer_time_counter, hour, minute, second),
+                isLoading = prayer.value?.isLoading ?: false
             )
             Row(
                 modifier = Modifier
@@ -228,7 +227,8 @@ fun HomeCard(
     modifier: Modifier = Modifier,
     nextPrayerName: String,
     nextPrayerTime: String,
-    nextPrayerCounter: String
+    nextPrayerCounter: String,
+    isLoading: Boolean
 ) {
 
     val background = if (isSystemInDarkTheme()) {
@@ -269,27 +269,50 @@ fun HomeCard(
                 .fillMaxHeight()
                 .padding(24.dp)
         ) {
-            Text(
-                text = nextPrayerName,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Normal,
-                fontSize = 13.sp,
-                color = AliceBlue
-            )
-            Text(
-                text = nextPrayerTime,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = AliceBlue
-            )
-            Text(
-                text = nextPrayerCounter,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Normal,
-                fontSize = 13.sp,
-                color = AliceBlue
-            )
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .height(12.dp)
+                        .width(100.dp)
+                        .shimmer(TropicalBlue.copy(alpha = .3f))
+                )
+                Box(
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .height(32.dp)
+                        .width(152.dp)
+                        .shimmer(TropicalBlue.copy(alpha = .3f))
+                )
+                Box(
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .height(12.dp)
+                        .width(100.dp)
+                        .shimmer(TropicalBlue.copy(alpha = .3f))
+                )
+            } else {
+                Text(
+                    text = nextPrayerName,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    color = AliceBlue
+                )
+                Text(
+                    text = nextPrayerTime,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp,
+                    color = AliceBlue
+                )
+                Text(
+                    text = nextPrayerCounter,
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 13.sp,
+                    color = AliceBlue
+                )
+            }
         }
     }
 }

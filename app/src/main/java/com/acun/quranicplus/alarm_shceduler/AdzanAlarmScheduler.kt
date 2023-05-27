@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import com.acun.quranicplus.data.remote.response.prayer.model.Prayer
 import com.acun.quranicplus.data.remote.response.prayer.model.hour
@@ -27,8 +26,6 @@ class AdzanAlarmScheduler(
                 add(Calendar.DATE, 1)
             }
         }.time.time
-
-        Log.d("waduh", "time: $time")
 
         val intent = Intent(context, AdzanBroadcastReceiver::class.java).apply {
             putExtra(EXTRA_ALARM, item.name)
