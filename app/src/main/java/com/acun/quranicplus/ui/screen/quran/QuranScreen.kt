@@ -219,25 +219,27 @@ fun QuranScreen(
                                                     juz = juz
                                                 )
                                             }
+                                            val firstIndex = arrayListOf<Int>()
+                                            juz.surah.forEachIndexed { i, surah ->
+                                                if (i == 0) firstIndex.add(0)
+
+                                                val start = juz.surah.firstOrNull()?.start ?: 0
+                                                val end = juz.surah.firstOrNull()?.end ?: 0
+                                                val firstSize = end-start+1
+
+                                                if (i == 1) firstIndex.add(firstSize)
+                                                if (i >= 2) {
+                                                    var idx = firstSize
+                                                    for (j in 2..i) {
+                                                        idx+=juz.surah[j-1].end
+                                                    }
+                                                    firstIndex.add(idx)
+                                                }
+                                            }
                                             itemsIndexed(items = juz.surah) {i, juzData ->
                                                 SurahItem(
                                                     modifier = Modifier.padding(horizontal = 24.dp),
-                                                    onItemClicked = { _, _ ->
-                                                        var pos = juz.surah[0].end-juz.surah[0].start+1
-                                                        when (i) {
-                                                            0 -> {
-                                                                onJuzDetailClicked(juz, 0)
-                                                            }
-                                                            1 -> {
-                                                                onJuzDetailClicked(juz, pos)
-                                                            }
-                                                            else -> {
-                                                                for (j in 1 until i) {
-                                                                    pos+=juz.surah[i].end
-                                                                }
-                                                                onJuzDetailClicked(juz, pos)
-                                                            }
-                                                        } },
+                                                    onItemClicked = { _, _ -> onJuzDetailClicked(juz, firstIndex[i]) },
                                                     isDividerEnabled = !(index == juzList.lastIndex && i == juz.surah.lastIndex),
                                                     juz = juzData,
                                                     preference = preference
