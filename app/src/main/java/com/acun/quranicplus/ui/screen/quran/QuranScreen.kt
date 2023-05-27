@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,12 +29,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -61,6 +65,7 @@ import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import com.acun.quranicplus.data.remote.response.surah_list.Tafsir
 import com.acun.quranicplus.data.remote.response.surah_list.Translation
 import com.acun.quranicplus.data.remote.response.surah_list.Transliteration
+import com.acun.quranicplus.ui.component.AnimatedFab
 import com.acun.quranicplus.ui.component.LoadingComponent
 import com.acun.quranicplus.ui.component.TabComponent
 import com.acun.quranicplus.ui.component.TopBarComponent
@@ -100,6 +105,7 @@ fun QuranScreen(
         BoxWithConstraints {
             val screenHeight = maxHeight
             val scrollState = rememberScrollState()
+            val fabExtended by remember { derivedStateOf { scrollState.value == 0 } }
 
             Column(
                 modifier = Modifier
@@ -256,17 +262,33 @@ fun QuranScreen(
 
             FloatingActionButton(
                 modifier = Modifier
-                    .padding(18.dp)
-                    .align(Alignment.BottomEnd),
-                backgroundColor = MaterialTheme.colors.surface,
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+                    .height(46.dp)
+                    .widthIn(min = 46.dp),
+                backgroundColor = MaterialTheme.colors.onBackground,
+                elevation = FloatingActionButtonDefaults.elevation(1.dp),
                 onClick = {
                     onSearchClicked()
-                }
+                },
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_search),
-                    tint = MaterialTheme.colors.primary,
-                    contentDescription = null
+                AnimatedFab(
+                    icon = { 
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_search),
+                            tint = MaterialTheme.colors.onSecondary,
+                            contentDescription = null
+                        )              
+                    }, 
+                    text = { 
+                        Text(
+                            modifier = Modifier.padding(top = 2.dp),
+                            text = "Search",
+                            fontFamily = Poppins,
+                            color = MaterialTheme.colors.onSecondary
+                        )
+                    },
+                    extended = fabExtended
                 )
             }
         }

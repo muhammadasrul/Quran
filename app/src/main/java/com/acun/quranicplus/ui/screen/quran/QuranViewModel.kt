@@ -93,11 +93,22 @@ class QuranViewModel @Inject constructor(
     val filteredSurahList: LiveData<SurahState> = _filteredSurahList
 
     fun updateQuery(query: String) {
+        val cleanQuery = query
+            .replace("-", "")
+            .replace(" ", "")
+            .lowercase()
+
         val filtered = _surahList.value?.surahList?.filter {
             if (preference.value?.languagePos == Language.ID) {
-                it.name.transliteration.id.replace("-", "").lowercase().contains(query.replace("-", "").lowercase())
+                it.name.transliteration.id
+                    .replace("-", "")
+                    .lowercase()
+                    .contains(cleanQuery)
             } else {
-                it.name.transliteration.en.replace("-", "").lowercase().contains(query.replace("-", "").lowercase())
+                it.name.transliteration.en
+                    .replace("-", "")
+                    .lowercase()
+                    .contains(cleanQuery)
             }
         } ?: emptyList()
 

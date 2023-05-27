@@ -1,6 +1,7 @@
 package com.acun.quranicplus.ui.screen.quran
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -61,7 +61,10 @@ fun SearchScreen(
         ) {
             SearchBar(
                 modifier = Modifier.padding(12.dp),
-                query = query
+                query = query,
+                onClearClicked = {
+                    query.value = ""
+                }
             )
             LazyColumn {
                 itemsIndexed(items = surahList) { index, surah ->
@@ -82,7 +85,8 @@ fun SearchScreen(
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    query: MutableState<String>
+    query: MutableState<String>,
+    onClearClicked: () -> Unit
 ) {
     val focusRequester by remember { mutableStateOf(FocusRequester()) }
     LaunchedEffect(true) {
@@ -94,38 +98,49 @@ fun SearchBar(
             .background(color = MaterialTheme.colors.surface)
             .padding(horizontal = 12.dp, vertical = 8.dp),
     ) {
-        if (query.value.isEmpty()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        Row {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_search),
+                contentDescription = null,
+                tint = MaterialTheme.colors.onSecondary
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Box {
+                if (query.value.isEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(top = 2.dp),
+                        fontFamily = Poppins,
+                        fontSize = 15.sp,
+                        text = "Search",
+                        color = MaterialTheme.colors.onSecondary
+                    )
+                }
+                BasicTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(if (query.value.isEmpty()) 1f else .92f)
+                        .focusRequester(focusRequester),
+                    textStyle = TextStyle(
+                        color = MaterialTheme.colors.onSurface,
+                        fontFamily = Poppins,
+                        fontSize = 15.sp,
+                    ),
+                    value = query.value,
+                    onValueChange = {
+                        query.value = it
+                    },
+                    maxLines = 1
+                )
+            }
+            if (query.value.isNotEmpty()) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_search),
+                    modifier = Modifier.clickable {
+                        onClearClicked()
+                    },
+                    painter = painterResource(id = R.drawable.x),
                     contentDescription = null,
                     tint = MaterialTheme.colors.onSecondary
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    modifier = Modifier.padding(top = 2.dp),
-                    fontFamily = Poppins,
-                    fontSize = 15.sp,
-                    text = "Search",
-                    color = MaterialTheme.colors.onSecondary
-                )
             }
         }
-        BasicTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            textStyle = TextStyle(
-                color = MaterialTheme.colors.onSurface,
-                fontFamily = Poppins,
-                fontSize = 15.sp,
-            ),
-            value = query.value,
-            onValueChange = {
-                query.value = it
-            }
-        )
     }
 }
