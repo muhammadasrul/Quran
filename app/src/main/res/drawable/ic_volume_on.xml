@@ -11,19 +11,19 @@
         android:strokeLineJoin="round"
         android:strokeWidth="1.3"
         android:fillColor="#00000000"
-        android:strokeColor="#5F7EE0"
+        android:strokeColor="#4F9A7C"
         android:strokeLineCap="round"/>
     <path
         android:pathData="M17.352,8.134C17.873,8.647 18.293,9.261 18.573,9.938C18.852,10.614 19,11.337 19,12.075C19,12.814 18.852,13.537 18.573,14.213C18.293,14.889 17.873,15.503 17.352,16.016"
         android:strokeLineJoin="round"
         android:strokeWidth="1.3"
         android:fillColor="#00000000"
-        android:strokeColor="#5F7EE0"
+        android:strokeColor="#4F9A7C"
         android:strokeLineCap="round"/>
     <path
         android:pathData="M12.004,8.305V15.845C12.004,17.206 11.219,17.532 10.263,16.545C9.353,15.713 8.195,15.216 6.959,15.146C6.702,15.146 6.446,15.099 6.213,14.998C5.972,14.897 5.754,14.757 5.575,14.571C5.396,14.384 5.249,14.174 5.148,13.933C5.047,13.692 5,13.443 5,13.179V10.855C5,10.334 5.21,9.836 5.575,9.463C5.948,9.098 6.446,8.888 6.959,8.888C8.187,8.81 9.353,8.313 10.263,7.489C11.219,6.611 12.004,6.937 12.004,8.297V8.305Z"
         android:strokeWidth="1.3"
         android:fillColor="#00000000"
-        android:strokeColor="#5F7EE0"/>
+        android:strokeColor="#4F9A7C"/>
   </group>
 </vector>

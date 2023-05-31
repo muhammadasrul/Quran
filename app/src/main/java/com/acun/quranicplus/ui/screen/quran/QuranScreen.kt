@@ -301,7 +301,7 @@ fun QuranCard(
     lastAyah: String,
     lastSurah: String
 ) {
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 4.dp)
@@ -316,9 +316,13 @@ fun QuranCard(
                     }
                 )
             )
-            .height(164.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .height(164.dp)
     ) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.banner),
+            contentDescription = null
+        )
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -356,24 +360,6 @@ fun QuranCard(
                 )
             }
         }
-        Box(
-            contentAlignment = Alignment.TopEnd
-        ) {
-            Image(
-                modifier = Modifier
-                    .size(146.dp),
-                painter = painterResource(id = R.drawable.fg_circle),
-                contentDescription = "Quran Image",
-                alignment = Alignment.TopEnd
-            )
-            Image(
-                modifier = Modifier
-                    .padding(top = 24.dp, end = 8.dp)
-                    .size(182.dp),
-                painter = painterResource(id = R.drawable.img_quran),
-                contentDescription = "Quran Image"
-            )
-        }
     }
 }
 
@@ -410,16 +396,16 @@ fun SurahItem(
                 Column {
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = 12.dp),
+                            .padding(horizontal = 16.dp),
                         text = (if (isEng) surah?.name?.transliteration?.en else surah?.name?.transliteration?.id) ?: juz?.name ?: "",
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 15.sp,
+                        fontSize = 14.sp,
                         color = MaterialTheme.colors.onSurface
                     )
                     Text(
                         modifier = Modifier
-                            .padding(horizontal = 12.dp),
+                            .padding(horizontal = 16.dp),
                         text = surah?.numberOfVerses?.let { stringResource(id = R.string.number_of_verses, it) } ?: "${juz?.start} - ${juz?.end}",
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Normal,
@@ -439,7 +425,7 @@ fun SurahItem(
         }
         if (isDividerEnabled) {
             Divider(
-                modifier = Modifier.alpha(0.15f),
+                modifier = Modifier.alpha(0.12f),
                 thickness = 1.dp,
                 color = MaterialTheme.colors.onSecondary
             )
@@ -486,7 +472,7 @@ fun ItemHeader(
             text = stringResource(id = R.string.juz, juz.juz),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
+            fontSize = 19.sp,
             color = MaterialTheme.colors.onSurface
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -494,7 +480,7 @@ fun ItemHeader(
             text = stringResource(id = R.string.juz_number_of_verses, juz.totalVerses),
             fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             color = Mariner
         )
     }

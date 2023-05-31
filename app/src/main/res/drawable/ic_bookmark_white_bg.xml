@@ -11,7 +11,7 @@
         android:fillColor="#ffffff"/>
     <path
         android:pathData="M12,6C7.725,6 7.003,6.589 7.003,11.324C7.003,16.624 6.898,18 7.966,18C9.034,18 10.777,15.673 12,15.673C13.223,15.673 14.966,18 16.034,18C17.102,18 16.997,16.624 16.997,11.324C16.997,6.589 16.275,6 12,6Z"
-        android:fillColor="#5F7EE0"
+        android:fillColor="#4F9A7C"
         android:fillType="evenOdd"/>
     <path
         android:pathData="M10,10H14"

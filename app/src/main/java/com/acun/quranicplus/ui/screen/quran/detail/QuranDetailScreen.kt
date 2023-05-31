@@ -316,7 +316,7 @@ fun VerseItem(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp),
                 text = verse.text.transliteration.en,
                 fontFamily = Poppins,
                 fontSize = fontSize,
@@ -338,7 +338,7 @@ fun VerseItem(
         Divider(
             modifier = Modifier
                 .padding(top = 8.dp)
-                .alpha(.3f),
+                .alpha(.12f),
             color = if (isDividerVisible) MaterialTheme.colors.onSecondary else Color.Transparent,
             thickness = 1.dp
         )

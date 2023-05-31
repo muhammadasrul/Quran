@@ -139,16 +139,16 @@ fun SplashScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    modifier = Modifier.size(72.dp),
+                    modifier = Modifier.size(100.dp),
                     contentScale = ContentScale.Fit,
                     painter = painterResource(id = R.drawable.icon),
                     contentDescription = stringResource(id = R.string.app_name)
                 )
                 Text(
-                    modifier = Modifier.padding(top = 12.dp),
+                    modifier = Modifier.padding(top = 24.dp),
                     text = stringResource(id = R.string.app_name),
-                    color = Mariner,
-                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colors.onSurface,
+                    fontWeight = FontWeight.Bold,
                     fontFamily = Poppins,
                     fontSize = 22.sp
                 )

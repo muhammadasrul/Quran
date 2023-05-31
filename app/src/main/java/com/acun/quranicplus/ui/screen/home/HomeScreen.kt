@@ -68,10 +68,10 @@ import com.acun.quranicplus.data.remote.response.prayer.model.hour
 import com.acun.quranicplus.data.remote.response.prayer.model.minute
 import com.acun.quranicplus.ui.component.TopBarComponent
 import com.acun.quranicplus.ui.theme.AliceBlue
+import com.acun.quranicplus.ui.theme.GrayChateau
 import com.acun.quranicplus.ui.theme.HavelockBlue
 import com.acun.quranicplus.ui.theme.Mariner
 import com.acun.quranicplus.ui.theme.Poppins
-import com.acun.quranicplus.ui.theme.TropicalBlue
 import com.acun.quranicplus.util.shimmer
 import com.google.android.gms.location.LocationServices
 import java.util.Calendar
@@ -212,7 +212,7 @@ fun HomeScreen(
             PrayerTimesComponent(prayerList = prayerList, isLoading = prayer.value?.isLoading == true) {
                 viewModel.updatePrayer(it)
             }
-            Divider(thickness = 8.dp, color = Color.Transparent)
+            Divider(thickness = 12.dp, color = Color.Transparent)
             QiblaFinderComponent(
                 kaabaDegree = kaabaDegreeState,
                 compassDegree = compassDegreeState
@@ -233,11 +233,11 @@ fun HomeCard(
 
     val background = if (isSystemInDarkTheme()) {
         when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in 19 .. 24, in 1 .. 5 -> painterResource(id = R.drawable.pagi_dark_mode)
-            in 5..7 -> painterResource(id = R.drawable.pagi_dark_mode)
-            in 7..15 -> painterResource(id = R.drawable.pagi_dark_mode)
-            in 15 .. 19 -> painterResource(id = R.drawable.pagi_dark_mode)
-            else -> painterResource(id = R.drawable.pagi_dark_mode)
+            in 19 .. 24, in 1 .. 5 -> painterResource(id = R.drawable.malam_dark)
+            in 5..7 -> painterResource(id = R.drawable.pagi_dark)
+            in 7..15 -> painterResource(id = R.drawable.siang_dark)
+            in 15 .. 19 -> painterResource(id = R.drawable.sore_dark)
+            else -> painterResource(id = R.drawable.pagi_dark)
         }
     } else {
         when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
@@ -274,21 +274,24 @@ fun HomeCard(
                     modifier = Modifier
                         .height(12.dp)
                         .width(100.dp)
-                        .shimmer(TropicalBlue.copy(alpha = .3f))
+                        .clip(RoundedCornerShape(6.dp))
+                        .shimmer(GrayChateau.copy(alpha = .3f))
                 )
                 Box(
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .height(32.dp)
                         .width(152.dp)
-                        .shimmer(TropicalBlue.copy(alpha = .3f))
+                        .clip(RoundedCornerShape(6.dp))
+                        .shimmer(GrayChateau.copy(alpha = .3f))
                 )
                 Box(
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .height(12.dp)
                         .width(100.dp)
-                        .shimmer(TropicalBlue.copy(alpha = .3f))
+                        .clip(RoundedCornerShape(6.dp))
+                        .shimmer(GrayChateau.copy(alpha = .3f))
                 )
             } else {
                 Text(
@@ -333,7 +336,7 @@ fun PrayerItem(
                     .wrapContentSize()
                     .background(MaterialTheme.colors.onBackground)
                     .border(
-                        width = if (prayer.isNowPrayer) 1.5.dp else 0.dp,
+                        width = if (prayer.isNowPrayer) 1.3.dp else 0.dp,
                         color = HavelockBlue,
                         shape = CircleShape
                     )
@@ -370,7 +373,7 @@ fun PrayerItem(
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .background(Color(0xFFF1E0FC))
+                        .background(Color(0xFFCBEAC4))
                 ) {
                     Icon(
                         painter = painterResource(
@@ -411,7 +414,7 @@ fun PrayerTimesComponent(
     ) {
         Column {
             Text(
-                modifier = Modifier.padding(start = 18.dp),
+                modifier = Modifier.padding(start = 20.dp),
                 text = stringResource(id = R.string.prayer_times),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -426,11 +429,12 @@ fun PrayerTimesComponent(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            val shimmerColor = Mariner.copy(.3f)
                             Box(
                                 modifier = Modifier
-                                    .clip(CircleShape)
                                     .wrapContentSize()
-                                    .shimmer(TropicalBlue)
+                                    .clip(CircleShape)
+                                    .shimmer(shimmerColor)
                                     .size(70.dp)
                             )
                             Divider(color = Color.Transparent, thickness = 8.dp)
@@ -438,7 +442,7 @@ fun PrayerTimesComponent(
                                 .clip(RoundedCornerShape(4.dp))
                                 .width(50.dp)
                                 .height(14.dp)
-                                .shimmer(TropicalBlue)
+                                .shimmer(shimmerColor)
                             )
                         }
                         Spacer(modifier = Modifier.width(14.dp))
@@ -472,7 +476,7 @@ fun QiblaFinderComponent(
 ) {
     Column {
         Text(
-            modifier = Modifier.padding(start = 18.dp),
+            modifier = Modifier.padding(start = 20.dp),
             text = stringResource(id = R.string.qibla_finder),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
@@ -482,7 +486,7 @@ fun QiblaFinderComponent(
         )
         Divider(thickness = 8.dp, color = Color.Transparent)
         Box(
-            modifier = Modifier.padding(horizontal = 32.dp)
+            modifier = Modifier.padding(start = 72.dp, end = 72.dp, top = 20.dp)
         ) {
             Image(
                 modifier = Modifier
