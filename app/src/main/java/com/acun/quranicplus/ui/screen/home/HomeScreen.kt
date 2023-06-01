@@ -77,6 +77,8 @@ import com.acun.quranicplus.ui.theme.GrayChateau
 import com.acun.quranicplus.ui.theme.HavelockBlue
 import com.acun.quranicplus.ui.theme.Mariner
 import com.acun.quranicplus.ui.theme.Poppins
+import com.acun.quranicplus.util.DEFAULT_LAT
+import com.acun.quranicplus.util.DEFAULT_LONG
 import com.acun.quranicplus.util.shimmer
 import com.google.android.gms.location.LocationServices
 import java.util.Calendar
@@ -98,7 +100,10 @@ fun HomeScreen(
     val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     val sensorListener = object: SensorEventListener2 {
         override fun onSensorChanged(event: SensorEvent) {
-            val degree = event.values.firstOrNull()?.roundToInt() ?: 0
+            val degree = event.values.firstOrNull()?.let {
+                if (it.isNaN()) 0
+                else it.roundToInt()
+            } ?: 0
             val kaabaLocation = Location("kaaba_location").apply {
                 latitude = 21.4234756
                 longitude = 39.8246424
@@ -135,14 +140,19 @@ fun HomeScreen(
                     ) != PackageManager.PERMISSION_GRANTED
                 ) { return@LifecycleEventObserver }
 
-                fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-                    locationState = it
-                    val addresses = try {
-                        Geocoder(context).getFromLocation(it.latitude, it.longitude, 1)?.firstOrNull()
-                    } catch (_: Exception) { null }
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                    if (location != null) {
+                        locationState = location
+                        val addresses = try {
+                            Geocoder(context).getFromLocation(location.latitude, location.longitude, 1)?.firstOrNull()
+                        } catch (_: Exception) { null }
 
-                    viewModel.getPrayer(lat = it.latitude, long = it.longitude)
-                    viewModel.setLocation(addresses?.locality ?: context.getString(R.string.error_location_not_found))
+                        viewModel.getPrayer(lat = location.latitude, long = location.longitude)
+                        viewModel.setLocation(addresses?.locality ?: context.getString(R.string.error_location_not_found))
+                    } else {
+                        viewModel.getPrayer(lat = DEFAULT_LAT, long = DEFAULT_LONG)
+                    }
+
                 }
             } else if (event == Lifecycle.Event.ON_STOP) {
                 sensorManager.unregisterListener(sensorListener)

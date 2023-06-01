@@ -6,3 +6,6 @@ object Language {
 }
 
 const val EXTRA_ALARM = "extra_alarm"
+
+const val DEFAULT_LAT = -6.168739
+const val DEFAULT_LONG = 106.824013
