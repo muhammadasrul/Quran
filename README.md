@@ -1,18 +1,20 @@
 # QuranicPlus
 
-<img width="200px" src="https://user-images.githubusercontent.com/49424141/216088091-5413622c-0820-4c31-90a6-786d7feefcb3.png" />
+<img width="200px" src="https://github.com/muhammadasrul/Quran/assets/49424141/77e91d25-b970-4cdb-9564-a63ab6282b24" />
 
+\
 QuranicPlus is a simple and lightweight application for Muslims to access the quran and also provides prayer times and qibla direction finder.
 
-<img src="https://user-images.githubusercontent.com/49424141/216086971-c6448528-a15b-419d-9b5b-f6a1e9eb9db0.png"/>
 
+#
+<img height="450px" src="https://github.com/muhammadasrul/Quran/assets/49424141/da02efce-e70a-46ee-8ff6-cae141186124"/>
 
 ## Screenshot
 <table style="width:100%">
   <tr>
-      <th><img src="https://user-images.githubusercontent.com/49424141/216092445-e690fe92-55c9-45f5-95d8-8caff76b5505.jpeg"/></th>
-      <th><img src="https://user-images.githubusercontent.com/49424141/216092429-6d3b5bae-f29f-4b2d-aff3-60e5bb1ffcfc.jpeg"/></th>
-      <th><img src="https://user-images.githubusercontent.com/49424141/216092339-965ece7b-535e-46cf-b361-09821c88fb2e.jpeg"/></th>
-      <th><img src="https://user-images.githubusercontent.com/49424141/216092337-b9a44bd4-79ae-4d7a-9b0f-7131a286b95a.jpeg"/></th>
+      <th><img src="https://github.com/muhammadasrul/Quran/assets/49424141/4766c39d-40d6-40d3-be20-17a342e8930b"/></th>
+      <th><img src="https://github.com/muhammadasrul/Quran/assets/49424141/78b0ed4e-b66f-490c-bf50-fb05f4985d8b"/></th>
+      <th><img src="https://github.com/muhammadasrul/Quran/assets/49424141/4ea8dda1-b4c1-4470-9ee1-fcaeb50116c9"/></th>
+      <th><img src="https://github.com/muhammadasrul/Quran/assets/49424141/2d31d329-81fe-431a-965e-d811227d4f67"/></th>
   </tr>
 </table>
