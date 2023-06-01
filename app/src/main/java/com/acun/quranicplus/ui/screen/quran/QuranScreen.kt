@@ -155,7 +155,7 @@ fun QuranScreen(
                 Column(
                     modifier = Modifier.height(screenHeight)
                 ) {
-                    val pagerState = rememberPagerState()
+                    val pagerState = rememberPagerState { tabTitle.size }
                     TabComponent(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -182,7 +182,6 @@ fun QuranScreen(
                                     }
                                 }
                             ),
-                        pageCount = tabTitle.size,
                         state = pagerState
                     ) { page ->
                         when (page) {
@@ -226,7 +225,7 @@ fun QuranScreen(
                                                 )
                                             }
                                             val firstIndex = arrayListOf<Int>()
-                                            juz.surah.forEachIndexed { i, surah ->
+                                            juz.surah.forEachIndexed { i, _ ->
                                                 if (i == 0) firstIndex.add(0)
 
                                                 val start = juz.surah.firstOrNull()?.start ?: 0

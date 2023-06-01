@@ -11,14 +11,22 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file(STORE_PATH)
+            storePassword KEY_PASSWORD
+            keyPassword KEY_PASSWORD
+            keyAlias KEY_ALIAS
+        }
+    }
     compileSdk 33
 
     defaultConfig {
         applicationId "com.acun.quranicplus"
         minSdk 22
         targetSdk 33
-        versionCode 3
-        versionName "v1.1.0"
+        versionCode 4
+        versionName "v1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -28,8 +36,16 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+            applicationIdSuffix ".debug"
         }
     }
     compileOptions {
@@ -69,15 +85,15 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:1.4.3"
     implementation "androidx.compose.ui:ui-tooling:1.4.3"
     implementation "androidx.compose.ui:ui-util:1.4.3"
-    implementation "com.google.accompanist:accompanist-permissions:0.29.0-alpha"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.29.0-alpha"
+    implementation 'com.google.accompanist:accompanist-permissions:0.31.3-beta'
+    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.31.3-beta'
     implementation "dev.shreyaspatil:capturable:1.0.3"
-    implementation "com.airbnb.android:lottie-compose:5.2.0"
+    implementation 'com.airbnb.android:lottie-compose:6.0.0'
     implementation "androidx.navigation:navigation-compose:2.5.3"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
-    implementation 'com.google.dagger:hilt-android:2.44.2'
-    kapt 'com.google.dagger:hilt-compiler:2.44.2'
+    implementation 'com.google.dagger:hilt-android:2.46.1'
+    kapt 'com.google.dagger:hilt-compiler:2.46.1'
 
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
@@ -92,6 +108,6 @@ dependencies {
     implementation "androidx.room:room-ktx:2.5.1"
     ksp "androidx.room:room-compiler:2.5.1"
 
-    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+    implementation platform('com.google.firebase:firebase-bom:32.1.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 }
