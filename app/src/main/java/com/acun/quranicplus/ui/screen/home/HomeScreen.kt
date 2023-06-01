@@ -40,9 +40,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,6 +56,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +64,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.acun.quranicplus.R
 import com.acun.quranicplus.alarm_shceduler.AdzanAlarmScheduler
 import com.acun.quranicplus.data.remote.response.prayer.model.Prayer
@@ -85,14 +90,15 @@ fun HomeScreen(
     viewModel: HomeViewModel
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     var locationState by remember { mutableStateOf(Location("my_location")) }
-    var compassDegreeState by remember { mutableStateOf(0F) }
-    var kaabaDegreeState by remember { mutableStateOf(0F) }
+    var compassDegreeState by remember { mutableFloatStateOf(0f) }
+    var kaabaDegreeState by remember { mutableFloatStateOf(0f) }
 
     val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     val sensorListener = object: SensorEventListener2 {
         override fun onSensorChanged(event: SensorEvent) {
-            val degree = event.values[0].roundToInt()
+            val degree = event.values.firstOrNull()?.roundToInt() ?: 0
             val kaabaLocation = Location("kaaba_location").apply {
                 latitude = 21.4234756
                 longitude = 39.8246424
@@ -110,31 +116,44 @@ fun HomeScreen(
 
     }
 
-    LaunchedEffect(key1 = true) {
-        sensorManager.registerListener(
-            sensorListener,
-            sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-            SensorManager.SENSOR_DELAY_GAME
-        )
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                sensorManager.registerListener(
+                    sensorListener,
+                    sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+                    SensorManager.SENSOR_DELAY_GAME
+                )
 
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) { return@LaunchedEffect }
+                val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) { return@LifecycleEventObserver }
 
-        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-            locationState = it
-            val addresses = try {
-                Geocoder(context).getFromLocation(it.latitude, it.longitude, 1)?.firstOrNull()
-            } catch (_: Exception) { null }
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+                    locationState = it
+                    val addresses = try {
+                        Geocoder(context).getFromLocation(it.latitude, it.longitude, 1)?.firstOrNull()
+                    } catch (_: Exception) { null }
 
-            viewModel.getPrayer(lat = it.latitude, long = it.longitude)
-            viewModel.setLocation(addresses?.locality ?: context.getString(R.string.error_location_not_found))
+                    viewModel.getPrayer(lat = it.latitude, long = it.longitude)
+                    viewModel.setLocation(addresses?.locality ?: context.getString(R.string.error_location_not_found))
+                }
+            } else if (event == Lifecycle.Event.ON_STOP) {
+                sensorManager.unregisterListener(sensorListener)
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            sensorManager.unregisterListener(sensorListener)
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 

@@ -48,9 +48,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-//    private val _prayer = MutableLiveData<Resource<List<Prayer>>>()
-//    val prayer: LiveData<Resource<List<Prayer>>> = _prayer
-
     private val _prayerList = MutableLiveData<PrayerState>()
     val prayerList: LiveData<PrayerState> = _prayerList
 

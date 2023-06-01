@@ -30,7 +30,6 @@ class QuranRepositoryImpl @Inject constructor(
     private val prayerApi: PrayerApi,
     private val db: QuranicPlusDatabase
 ) : QuranRepository {
-    private val unexpectedError = "An unexpected error occurred."
 
     override fun getAllSurah(): Flow<Resource<List<Surah>>> = flow {
         emit(Resource.Loading())
@@ -115,26 +114,33 @@ class QuranRepositoryImpl @Inject constructor(
                 month = month,
                 year = year
             )
+
             if (prayer.code == 200) {
                 val date = Calendar.getInstance().get(Calendar.DATE)
-                var prayerList = prayer.data[date-1].timings.toPrayerList()
+                try {
+                    var prayerList = prayer.data[date-1].timings.toPrayerList()
 
-                if (prayerReminder.isEmpty()) db.prayerDao().insertAllPrayer(prayerList.map {
-                    PrayerEntity(it.id, it.isNotificationOn)
-                }) else {
-                    prayerList = prayerList.mapIndexed { i, p -> Prayer(
-                        id = p.id,
-                        name = p.name,
-                        time = p.time,
-                        isNowPrayer = p.isNowPrayer,
-                        isNearestPrayer = p.isNearestPrayer,
-                        isNotificationOn = prayerReminder[i].isNotificationOn
-                    ) }
+                    if (prayerReminder.isEmpty()) db.prayerDao().insertAllPrayer(prayerList.map {
+                        PrayerEntity(it.id, it.isNotificationOn)
+                    }) else {
+                        prayerList = prayerList.mapIndexed { i, p -> Prayer(
+                            id = p.id,
+                            name = p.name,
+                            time = p.time,
+                            isNowPrayer = p.isNowPrayer,
+                            isNearestPrayer = p.isNearestPrayer,
+                            isNotificationOn = prayerReminder[i].isNotificationOn
+                        ) }
+                    }
+
+                    emit(Resource.Success(data = prayerList, message = "Success"))
+                } catch (e: IndexOutOfBoundsException) {
+                    emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
+                } catch (e: Exception) {
+                    emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
                 }
-
-                emit(Resource.Success(data = prayerList, message = "Success"))
             } else {
-                emit(Resource.Failed(message = "Failed"))
+                emit(Resource.Failed(message = prayer.status))
             }
         } catch (e: HttpException) {
             emit(Resource.Failed(message = e.localizedMessage ?: unexpectedError))
@@ -145,5 +151,9 @@ class QuranRepositoryImpl @Inject constructor(
 
     override suspend fun updateLocalPrayer(prayer: Prayer) {
         db.prayerDao().updatePrayer(PrayerEntity(prayer.id, prayer.isNotificationOn))
+    }
+
+    companion object {
+        private const val unexpectedError = "An unexpected error occurred."
     }
 }
