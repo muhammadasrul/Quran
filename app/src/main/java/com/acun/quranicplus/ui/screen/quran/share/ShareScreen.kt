@@ -2,6 +2,7 @@ package com.acun.quranicplus.ui.screen.quran.share
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -105,7 +106,6 @@ fun ShareScreen(
             outputStream.flush()
             outputStream.close()
         } catch (e: Exception) {
-            // TODO: Show error message
             return
         }
         val fileUri = FileProvider.getUriForFile(
@@ -202,11 +202,10 @@ fun ShareScreen(
                     .animateContentSize()
                     .padding(paddingSize),
                 controller = captureController,
-                onCaptured = { imageBitmap, _ ->
+                onCaptured = { imageBitmap, err ->
                     roundedCornerSize = 18.dp
-                    if (imageBitmap != null) {
-                        shareImage(imageBitmap.asAndroidBitmap())
-                    }
+                    if (imageBitmap != null) shareImage(imageBitmap.asAndroidBitmap())
+                    else Toast.makeText(context, err?.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
             ) {
                 systemUiController.setStatusBarColor(primaryColor)

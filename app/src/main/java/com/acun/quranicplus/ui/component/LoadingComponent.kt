@@ -24,7 +24,7 @@ fun LoadingComponent(
     ) {
         LottieAnimation(
             modifier = Modifier
-                .size(56.dp),
+                .size(76.dp),
             composition = composition,
             iterations = LottieConstants.IterateForever
         )
