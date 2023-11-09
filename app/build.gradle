@@ -11,14 +11,14 @@ plugins {
 }
 
 android {
-    signingConfigs {
+    /*signingConfigs {
         release {
             storeFile file(STORE_PATH)
             storePassword KEY_PASSWORD
             keyPassword KEY_PASSWORD
             keyAlias KEY_ALIAS
         }
-    }
+    }*/
     compileSdk 33
 
     defaultConfig {
@@ -40,7 +40,7 @@ android {
             shrinkResources true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false
