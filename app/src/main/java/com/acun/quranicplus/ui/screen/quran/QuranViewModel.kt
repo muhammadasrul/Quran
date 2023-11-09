@@ -1,7 +1,6 @@
 package com.acun.quranicplus.ui.screen.quran
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,6 +10,9 @@ import com.acun.quranicplus.data.remote.response.Resource
 import com.acun.quranicplus.repository.QuranRepository
 import com.acun.quranicplus.util.Language
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,15 +20,15 @@ import javax.inject.Inject
 class QuranViewModel @Inject constructor(
     val repository: QuranRepository,
     dataStore: QuranDataStore
-): ViewModel() {
+) : ViewModel() {
     val preference = dataStore.versePreference.asLiveData()
-    val lastRead:LiveData<LastReadVerse> = dataStore.lastRead.asLiveData()
+    val lastRead: LiveData<LastReadVerse> = dataStore.lastRead.asLiveData()
 
-    private val _surahList: MutableLiveData<SurahState> = MutableLiveData()
-    val surahList: LiveData<SurahState> = _surahList
+    private val _surahList = MutableStateFlow(SurahState())
+    val surahList = _surahList.asStateFlow()
 
-    private val _juzList = MutableLiveData<JuzState>()
-    val juzList: LiveData<JuzState> = _juzList
+    private val _juzList = MutableStateFlow(JuzState())
+    val juzList = _juzList.asStateFlow()
 
     init {
         getSurahList()
@@ -35,26 +37,34 @@ class QuranViewModel @Inject constructor(
 
     private fun getJuzList() {
         viewModelScope.launch {
-            repository.getAllJuz().collect {
-                when (it) {
+            repository.getAllJuz().collect { resource ->
+                when (resource) {
                     is Resource.Loading -> {
-                        _juzList.postValue(JuzState(
-                            isLoading = true,
-                            isError = false
-                        ))
+                        _juzList.update {
+                            JuzState(
+                                isLoading = true,
+                                isError = false
+                            )
+                        }
                     }
+
                     is Resource.Failed -> {
-                        _juzList.postValue(JuzState(
-                            isLoading = false,
-                            isError = true
-                        ))
+                        _juzList.update {
+                            JuzState(
+                                isLoading = false,
+                                isError = true
+                            )
+                        }
                     }
+
                     is Resource.Success -> {
-                        _juzList.postValue(JuzState(
-                            juzList = it.data ?: emptyList(),
-                            isLoading = false,
-                            isError = false
-                        ))
+                        _juzList.update {
+                            JuzState(
+                                juzList = resource.data ?: emptyList(),
+                                isLoading = false,
+                                isError = false
+                            )
+                        }
                     }
                 }
             }
@@ -63,34 +73,42 @@ class QuranViewModel @Inject constructor(
 
     private fun getSurahList() {
         viewModelScope.launch {
-            repository.getAllSurah().collect {
-                when (it) {
+            repository.getAllSurah().collect { resource ->
+                when (resource) {
                     is Resource.Loading -> {
-                        _surahList.postValue(SurahState(
-                            isLoading = true,
-                            isError = false
-                        ))
+                        _surahList.update {
+                            SurahState(
+                                isLoading = true,
+                                isError = false
+                            )
+                        }
                     }
+
                     is Resource.Failed -> {
-                        _surahList.postValue(SurahState(
-                            isLoading = false,
-                            isError = true
-                        ))
+                        _surahList.update {
+                            SurahState(
+                                isLoading = false,
+                                isError = true
+                            )
+                        }
                     }
+
                     is Resource.Success -> {
-                        _surahList.postValue(SurahState(
-                            surahList = it.data ?: emptyList(),
-                            isLoading = false,
-                            isError = false
-                        ))
+                        _surahList.update {
+                            SurahState(
+                                surahList = resource.data ?: emptyList(),
+                                isLoading = false,
+                                isError = false
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    private val _filteredSurahList: MutableLiveData<SurahState> = MutableLiveData()
-    val filteredSurahList: LiveData<SurahState> = _filteredSurahList
+    private val _filteredSurahList = MutableStateFlow(SurahState())
+    val filteredSurahList = _filteredSurahList.asStateFlow()
 
     fun updateQuery(query: String) {
         val cleanQuery = query
@@ -98,7 +116,7 @@ class QuranViewModel @Inject constructor(
             .replace(" ", "")
             .lowercase()
 
-        val filtered = _surahList.value?.surahList?.filter {
+        val filtered = _surahList.value.surahList.filter {
             if (preference.value?.languagePos == Language.ID) {
                 it.name.transliteration.id
                     .replace("-", "")
@@ -110,12 +128,14 @@ class QuranViewModel @Inject constructor(
                     .lowercase()
                     .contains(cleanQuery)
             }
-        } ?: emptyList()
+        }
 
-        _filteredSurahList.postValue(SurahState(
-            surahList = if (query.isNotEmpty()) filtered else emptyList(),
-            isLoading = false,
-            isError = false
-        ))
+        _filteredSurahList.update {
+            SurahState(
+                surahList = if (query.isNotEmpty()) filtered else emptyList(),
+                isLoading = false,
+                isError = false
+            )
+        }
     }
 }

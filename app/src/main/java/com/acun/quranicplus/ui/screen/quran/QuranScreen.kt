@@ -36,6 +36,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -90,13 +91,8 @@ fun QuranScreen(
     val preference = viewModel.preference.observeAsState()
 
     val lastSurah = lastRead.value?.surah ?: ""
-    val surahState = viewModel.surahList.observeAsState()
-    val surahList = mutableListOf<Surah>()
-    val juzState = viewModel.juzList.observeAsState()
-    val juzList = mutableListOf<Juz>()
-
-    surahState.value?.surahList?.let { surahList.addAll(it) }
-    juzState.value?.juzList?.let { juzList.addAll(it) }
+    val surahState = viewModel.surahList.collectAsState()
+    val juzState = viewModel.juzList.collectAsState()
 
     Scaffold(
         topBar = { TopBarComponent(title = "Quran") },
@@ -186,7 +182,7 @@ fun QuranScreen(
                     ) { page ->
                         when (page) {
                             0 -> {
-                                if (surahState.value?.isLoading == true) {
+                                if (surahState.value.isLoading) {
                                     LoadingComponent(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -194,12 +190,12 @@ fun QuranScreen(
                                     )
                                 } else {
                                     LazyColumn {
-                                        itemsIndexed(items = surahList) { index, surah ->
+                                        itemsIndexed(items = surahState.value.surahList) { index, surah ->
                                             SurahItem(
                                                 modifier = Modifier.padding(horizontal = 24.dp),
                                                 surah = surah,
                                                 preference = preference,
-                                                isDividerEnabled = (index != surahList.lastIndex)
+                                                isDividerEnabled = (index != surahState.value.surahList.lastIndex)
                                             ) { surahData, _ ->
                                                 surahData?.let(onSurahDetailClicked)
                                             }
@@ -208,7 +204,7 @@ fun QuranScreen(
                                 }
                             }
                             1 -> {
-                                if (juzState.value?.isLoading == true) {
+                                if (juzState.value.isLoading) {
                                     LoadingComponent(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -216,7 +212,7 @@ fun QuranScreen(
                                     )
                                 } else {
                                     LazyColumn {
-                                        juzList.forEachIndexed { index, juz ->
+                                        juzState.value.juzList.forEachIndexed { index, juz ->
                                             item {
                                                 ItemHeader(
                                                     modifier = Modifier
@@ -245,7 +241,7 @@ fun QuranScreen(
                                                 SurahItem(
                                                     modifier = Modifier.padding(horizontal = 24.dp),
                                                     onItemClicked = { _, _ -> onJuzDetailClicked(juz, firstIndex[i]) },
-                                                    isDividerEnabled = !(index == juzList.lastIndex && i == juz.surah.lastIndex),
+                                                    isDividerEnabled = !(index == juzState.value.juzList.lastIndex && i == juz.surah.lastIndex),
                                                     juz = juzData,
                                                     preference = preference
                                                 )

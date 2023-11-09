@@ -20,6 +20,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -42,14 +43,8 @@ fun SearchScreen(
     onSurahDetailClicked: (Surah) -> Unit,
 ) {
     val preference = viewModel.preference.observeAsState()
-    val surahState = viewModel.filteredSurahList.observeAsState()
-    val surahList = mutableListOf<Surah>()
+    val surahState = viewModel.filteredSurahList.collectAsState()
     val query = remember { mutableStateOf("") }
-
-    surahState.value?.surahList?.let {
-        surahList.clear()
-        surahList.addAll(it)
-    }
 
     LaunchedEffect(query.value) {
         viewModel.updateQuery(query.value)
@@ -67,12 +62,12 @@ fun SearchScreen(
                 }
             )
             LazyColumn {
-                itemsIndexed(items = surahList) { index, surah ->
+                itemsIndexed(items = surahState.value.surahList) { index, surah ->
                     SurahItem(
                         modifier = Modifier.padding(horizontal = 24.dp),
                         surah = surah,
                         preference = preference,
-                        isDividerEnabled = (index != surahList.lastIndex)
+                        isDividerEnabled = (index != surahState.value.surahList.lastIndex)
                     ) { surahData, _ ->
                         surahData?.let(onSurahDetailClicked)
                     }
