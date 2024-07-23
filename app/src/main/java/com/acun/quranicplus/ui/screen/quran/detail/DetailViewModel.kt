@@ -7,10 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaItem.fromUri
 import androidx.media3.common.Player
 import com.acun.quranicplus.data.local.datastore.LastReadVerse
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.remote.response.Resource
+import com.acun.quranicplus.data.remote.response.Resource.Failed
+import com.acun.quranicplus.data.remote.response.Resource.Loading
+import com.acun.quranicplus.data.remote.response.Resource.Success
+import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.repository.QuranRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,7 +26,7 @@ class DetailViewModel @Inject constructor(
     private val repository: QuranRepository,
     private val dataStore: QuranDataStore,
     private val player: Player
-): ViewModel() {
+) : ViewModel() {
     private val mediaUris = MutableLiveData<List<String>>()
     private val nextUri = MutableLiveData<String>()
     private val _currentPlayIndex = MutableLiveData<Int>()
@@ -33,7 +38,7 @@ class DetailViewModel @Inject constructor(
 
     init {
         player.prepare()
-        player.addListener(object: Player.Listener {
+        player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
                 _playbackState.value = playbackState
@@ -77,33 +82,38 @@ class DetailViewModel @Inject constructor(
                     )
                 } ?: emptyList()
 
-                mediaUris.value = emptyList()
-                val list = mutableListOf<String>()
-                it.data?.verses?.forEach {  verse ->
-                    list.add(verse.audio.primary)
-//                    player.addMediaItem(MediaItem.fromUri(verse.audio.primary))
+                mediaUris.value = it.data?.verses?.map { verse ->
+                    player.addMediaItem(fromUri(verse.audio.primary))
+                    verse.audio.primary
                 }
-                mediaUris.value = list
 
                 when (it) {
-                    is Resource.Success -> {
-                        _surahDetail.postValue(SurahDetailState(
-                            surahDetail = it.data,
-                            isLoading = false,
-                            isError = false
-                        ))
+                    is Success -> {
+                        _surahDetail.postValue(
+                            SurahDetailState(
+                                surahDetail = it.data,
+                                isLoading = false,
+                                isError = false
+                            )
+                        )
                     }
-                    is Resource.Failed -> {
-                        _surahDetail.postValue(SurahDetailState(
-                            isLoading = false,
-                            isError = true
-                        ))
+
+                    is Failed -> {
+                        _surahDetail.postValue(
+                            SurahDetailState(
+                                isLoading = false,
+                                isError = true
+                            )
+                        )
                     }
-                    is Resource.Loading -> {
-                        _surahDetail.postValue(SurahDetailState(
-                            isLoading = true,
-                            isError = false
-                        ))
+
+                    is Loading -> {
+                        _surahDetail.postValue(
+                            SurahDetailState(
+                                isLoading = true,
+                                isError = false
+                            )
+                        )
                     }
                 }
             }
@@ -117,32 +127,37 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getJuz(number).collect {
                 when (it) {
-                    is Resource.Success -> {
-                        mediaUris.value = emptyList()
-                        val list = mutableListOf<String>()
-                        it.data?.verses?.forEach {  verse ->
-                            list.add(verse.audio.primary)
-                            player.addMediaItem(MediaItem.fromUri(verse.audio.primary))
+                    is Success -> {
+                        mediaUris.value = it.data?.verses?.map { verse ->
+                            player.addMediaItem(fromUri(verse.audio.primary))
+                            verse.audio.primary
                         }
-                        mediaUris.value = list
 
-                        _juzDetail.postValue(JuzDetailState(
-                            juzDetail = it.data,
-                            isLoading = false,
-                            isError = false
-                        ))
+                        _juzDetail.postValue(
+                            JuzDetailState(
+                                juzDetail = it.data,
+                                isLoading = false,
+                                isError = false
+                            )
+                        )
                     }
-                    is Resource.Failed -> {
-                        _juzDetail.postValue(JuzDetailState(
-                            isLoading = false,
-                            isError = true
-                        ))
+
+                    is Failed -> {
+                        _juzDetail.postValue(
+                            JuzDetailState(
+                                isLoading = false,
+                                isError = true
+                            )
+                        )
                     }
-                    is Resource.Loading -> {
-                        _juzDetail.postValue(JuzDetailState(
-                            isLoading = true,
-                            isError = false
-                        ))
+
+                    is Loading -> {
+                        _juzDetail.postValue(
+                            JuzDetailState(
+                                isLoading = true,
+                                isError = false
+                            )
+                        )
                     }
                 }
             }
@@ -165,11 +180,11 @@ class DetailViewModel @Inject constructor(
             val indexOfCurrent = list.indexOf(current)
             _currentPlayIndex.value = indexOfCurrent
             if (indexOfCurrent != list.lastIndex) {
-                nextUri.value = list[indexOfCurrent+1]
+                nextUri.value = list[indexOfCurrent + 1]
             }
 
             current?.let { uri ->
-                player.setMediaItem(MediaItem.fromUri(uri))
+                player.setMediaItem(fromUri(uri))
                 player.play()
             }
         }

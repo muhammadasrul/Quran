@@ -2,6 +2,7 @@ package com.acun.quranicplus.data.remote.response.surah
 
 
 import android.os.Parcelable
+import com.acun.quranicplus.data.local.room.entity.VerseEntity
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
@@ -24,4 +25,15 @@ data class Verse(
     var numberOfVerse: String = "",
     var headerName: String = "",
     var isBookmark: Boolean = false
-): Parcelable
+): Parcelable {
+    fun mapToVerseEntity() = VerseEntity(
+        name = text.arab,
+        numberInSurah = number.inSurah,
+        textArab = text.arab,
+        translationEn = text.transliteration.en,
+        transliterationEn = text.transliteration.en,
+        numberInQuran = number.inQuran,
+        audio = audio.primary,
+        juz = meta.juz
+    )
+}

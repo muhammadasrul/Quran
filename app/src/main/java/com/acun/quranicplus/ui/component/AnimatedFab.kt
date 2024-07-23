@@ -16,10 +16,10 @@ import kotlin.math.roundToInt
 
 @Composable
 fun AnimatedFab(
-    icon: @Composable () -> Unit,
-    text: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    extended: Boolean = true
+    extended: Boolean = true,
+    icon: @Composable () -> Unit,
+    text: @Composable () -> Unit
 ) {
     val currentState = if (extended) ExpandableFabStates.Extended else ExpandableFabStates.Collapsed
     val transition = updateTransition(currentState, "fab_transition")

@@ -1,4 +1,4 @@
-package com.acun.quranicplus.data.local.room
+package com.acun.quranicplus.data.local.room.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

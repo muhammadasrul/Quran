@@ -2,7 +2,10 @@ package com.acun.quranicplus.di
 
 import android.app.Application
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.acun.quranicplus.BuildConfig
+import com.acun.quranicplus.BuildConfig.PRAYER_BASE_URL
+import com.acun.quranicplus.BuildConfig.QURAN_BASE_URL
 import com.acun.quranicplus.data.local.datastore.QuranDataStore
 import com.acun.quranicplus.data.local.room.QuranicPlusDatabase
 import com.acun.quranicplus.data.remote.PrayerApi
@@ -35,7 +38,7 @@ object QuranModule {
     @Singleton
     fun provideQuranApiService(client: OkHttpClient): QuranApi {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.QURAN_BASE_URL)
+            .baseUrl(QURAN_BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -46,7 +49,7 @@ object QuranModule {
     @Singleton
     fun providePrayerApiService(client: OkHttpClient): PrayerApi {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.PRAYER_BASE_URL)
+            .baseUrl(PRAYER_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
@@ -60,12 +63,18 @@ object QuranModule {
             app,
             QuranicPlusDatabase::class.java,
             "quranic_plus"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
     @Singleton
-    fun provideRepository(app: Application ,quranApi: QuranApi, prayerApi: PrayerApi, db: QuranicPlusDatabase): QuranRepository {
+    fun provideRepository(
+        app: Application,
+        quranApi: QuranApi,
+        prayerApi: PrayerApi,
+        db: QuranicPlusDatabase
+    ): QuranRepository {
         return QuranRepositoryImpl(app, quranApi, prayerApi, db)
     }
 

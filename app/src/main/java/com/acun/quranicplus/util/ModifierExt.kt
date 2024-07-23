@@ -13,12 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.IntSize.Companion.Zero
 
 fun Modifier.shimmer(color: Color): Modifier = composed {
-    var size by remember { mutableStateOf(IntSize.Zero) }
+    var size by remember { mutableStateOf(Zero) }
 
     val transition = rememberInfiniteTransition(label = "shimmer")
     val startOffsetX by transition.animateFloat(
@@ -31,7 +33,7 @@ fun Modifier.shimmer(color: Color): Modifier = composed {
     )
 
     background(
-        brush = Brush.linearGradient(
+        brush = linearGradient(
             colors = listOf(
                 color,
                 color.copy(alpha = .5f),

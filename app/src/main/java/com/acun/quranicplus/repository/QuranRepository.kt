@@ -5,6 +5,7 @@ import com.acun.quranicplus.data.remote.response.juz.JuzDetail
 import com.acun.quranicplus.data.remote.response.juz_list.Juz
 import com.acun.quranicplus.data.remote.response.prayer.model.Prayer
 import com.acun.quranicplus.data.remote.response.surah.SurahDetail
+import com.acun.quranicplus.data.remote.response.surah.Verse
 import com.acun.quranicplus.data.remote.response.surah_list.Surah
 import kotlinx.coroutines.flow.Flow
 
